@@ -8,7 +8,7 @@ pymarc
 ## rdflib 2.5 before it got broken
 # rdflib>=2.4,<2.4.99
 -e svn+http://rdflib.googlecode.com/svn/trunk@1744#egg=rdflib
--e git+http://github.com/benosteen/Pairtree#egg=Pairtree
+-e git+http://github.com/benosteen/pairtree.git#egg=Pairtree
 -e hg+http://bitbucket.org/ww/ordf#egg=ordf
 ## install openbiblio
 ## Assume for the present we install from local checkout
