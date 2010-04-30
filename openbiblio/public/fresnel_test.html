@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="/css/fresnel.css" />
         <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
         <script type="text/javascript" src="/js/jquery.rdfquery.ordf.js"></script>
@@ -23,12 +24,45 @@
             }});
         }
 
+        change_graph = false;
+        change_history = function(graph) {
+            query = "PREFIX cs: <http://purl.org/vocab/changeset/schema#>\n" +
+                    "PREFIX gr: <http://bibliographica.org/schema/graph#>\n" +
+                    "CONSTRUCT {\n" +
+                    "    ?cs a cs:ChangeSet .\n" +
+                    "    ?cs cs:changeReason ?reason .\n" +
+                    "    ?cs cs:createdDate ?date .\n" +
+                    "    ?cs cs:creatorName ?name\n" +
+                    "} WHERE {\n" +
+                    "    ?cs a cs:ChangeSet .\n" +
+                    "    { ?cs cs:addition [ gr:graph <" + graph + "> ] } UNION\n" +
+                    "    { ?cs cs:removal [ gr:graph <" + graph + "> ] } .\n" +
+                    "    ?cs cs:changeReason ?reason .\n" + 
+                    "    ?cs cs:createdDate ?date .\n" + 
+                    "    ?cs cs:creatorName ?name\n" +
+                    "} ORDER BY DESC(?date)";
+            $.rdf.ordf.construct({ query: query, callback: function(changes) {
+                change_graph = changes;
+                var parent = $("#history").parent();
+                $("#history").remove();
+                $("<div></div>").attr("id", "history").appendTo(parent);
+                change_fresnel.format(changes).appendTo("#history");
+            }});
+            
+        }
+        change_lens = "http://bibliographica.org/lens/changeset";
+
         start = function() {
             fresnel = $.rdf.fresnel();
             $.rdf.ordf.recv({
                 uri: test_lens,
                 databank: fresnel.databank,
                 callback: fetch_graph
+            });
+            change_fresnel = $.rdf.fresnel();
+            $.rdf.ordf.recv({
+                uri: change_lens,
+                databank: change_fresnel.databank
             });
         }
 
@@ -37,8 +71,10 @@
     <body onLoad="start();" >
         <div id="content" style="width: 70%; float: left;"></div>
         <div id="tools" style="width: 30%; float: left;">
-            <input type="submit" value="Save to Store" onClick="$.rdf.ordf.send({ databank: graph, callback: recv_cs });" />
+            <input type="submit" value="Save to Store" onClick="$.rdf.ordf.send({ databank: graph, callback: recv_cs });" /><br />
+            <input type="submit" value="History" onClick="change_history(test_graph);" />
+            <div id="history"></div>
         </div>
-        <pre id="debug"></pre>
+        <div id="debug"></div>
     </body>
 </html>
