@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:frbr="http://purl.org/vocab/frbr/core#"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:dbpprop="http://dbpedia.org/property/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dct="http://purl.org/dc/terms/"
+>
+  <frbr:Work rdf:about="urn:uuid:cbb67b85-8c31-468c-b8b8-2d1c82378fee">
+    <frbr:creator>
+      <frbr:Person rdf:about="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4">
+        <dct:source>ngcoba::F003332</dct:source>
+        <dbpprop:dateOfDeath rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1939-09-23</dbpprop:dateOfDeath>
+        <frbr:creatorOf rdf:resource="urn:uuid:cbb67b85-8c31-468c-b8b8-2d1c82378fee"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:8d3d6096-1515-4b8a-82ca-fa6317327ad3"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:f194b909-d140-4c0d-8d81-4b3a0ebe2fad"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:92a75e0b-ea9a-494b-acd8-6fc5e9394c67"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:1c47b95b-81f1-4889-8fab-01a4fa7be1a3"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:0da2dd33-861a-425e-b863-0f6dc30f2122"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:eae27b7f-eaf2-408a-937a-8e546226a49e"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:9b8cc0ee-795e-43e9-90b9-f98a1f66d28d"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:0fd60d59-2ca9-4a12-9dd6-8caebb992080"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:82c7bdd6-1991-4db4-a977-7b6df76fa1d8"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:10140e84-4fa1-4c98-9a42-2ac6d2be06f0"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:0bf8c2e8-bd56-40da-9bea-b578c694a140"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:8513b972-549b-4f01-8274-8a1cc9166071"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:682cca51-3649-49ec-94a3-deef9f4798e5"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:39093bd7-67f9-49f4-b7ae-babc6dd3742f"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:1eae4582-5af3-4c04-a30c-65b1931dadd0"/>
+        <frbr:creatorOf rdf:resource="urn:uuid:95943f3a-e45a-4516-8849-10e0a84a4501"/>
+        <dbpprop:dateOfBirth rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1856-05-06</dbpprop:dateOfBirth>
+        <foaf:name>Freud, Sigmund(=Sigismund Schlomo) [Prof]</foaf:name>
+      </frbr:Person>
+    </frbr:creator>
+    <dct:title>Uber Psychoanalyse: Funf Vorlesungen</dct:title>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:8d3d6096-1515-4b8a-82ca-fa6317327ad3">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Massenpsychologie Und Ich-Analyse</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1921</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:f194b909-d140-4c0d-8d81-4b3a0ebe2fad">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Thomas Woodrow Wilson, Twenty-Eighth President... (w W C BULLITT)</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1935</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:92a75e0b-ea9a-494b-acd8-6fc5e9394c67">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Three Contributions To The Theory Of Sex [e|Ge-1905] (tr A A BRILL)</dct:title>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:1c47b95b-81f1-4889-8fab-01a4fa7be1a3">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>History Of The Psychoanalytic Movement [n|Ge-?] (tr A A BRILL)</dct:title>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:0da2dd33-861a-425e-b863-0f6dc30f2122">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Young Girl's Diary &amp; Letter [Ge-?] (tr Eden PAUL &amp; Cedar PAUL)</dct:title>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:eae27b7f-eaf2-408a-937a-8e546226a49e">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>The Interpretation Of Dreams [n|Ge-1900] (tr J STRACHEY)</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1952</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:9b8cc0ee-795e-43e9-90b9-f98a1f66d28d">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Drei Abhandlungen Zur Sexualtheorie</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1905</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:0fd60d59-2ca9-4a12-9dd6-8caebb992080">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Autobiography</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1935</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:82c7bdd6-1991-4db4-a977-7b6df76fa1d8">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Die Traumdeutung</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1914</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:10140e84-4fa1-4c98-9a42-2ac6d2be06f0">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>The Psychopathology Of Everyday Life [n|Ge-1901] (tr A A BRILL)</dct:title>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:0bf8c2e8-bd56-40da-9bea-b578c694a140">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Totem Und Tabu</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1922</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:8513b972-549b-4f01-8274-8a1cc9166071">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>The Interpretation Of Dreams [n|Ge-1900] (tr A A BRILL)</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1950</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:682cca51-3649-49ec-94a3-deef9f4798e5">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Dream Psychology [n|Ge-?] (tr M D EDER)</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1921</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:39093bd7-67f9-49f4-b7ae-babc6dd3742f">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Der Witz Und Seine Beziehung Zum Unbewussten</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1912</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:1eae4582-5af3-4c04-a30c-65b1931dadd0">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Why War? (w Albert EINSTEIN)</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1933</dct:date>
+  </frbr:Work>
+  <frbr:Work rdf:about="urn:uuid:95943f3a-e45a-4516-8849-10e0a84a4501">
+    <frbr:creator rdf:resource="urn:uuid:db531d1e-93df-46fe-a79f-f0fe4b99d7c4"/>
+    <dct:title>Zur Psychopathologie Des Alltagslebens</dct:title>
+    <dct:date rdf:datatype="http://www.w3.org/2001/XMLSchema#year">1901</dct:date>
+  </frbr:Work>
+</rdf:RDF>

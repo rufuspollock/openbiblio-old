@@ -1,0 +1,14 @@
+http://knowledgeforge.net/pdw/trac/
+http://knowledgeforge.net/pdw/openbiblio (hg repo)
+http://piratepad.net/KPNGUgcnGT (design docs)
+http://bitbucket.org/okfn/exp/overview/ (old)
+http://piratepad.net/058jBpRAQY (old)
+
+Natural Language Processing
+===========================
+
+Getting Started with Natural Language Processing
+	http://www.acm.org/crossroads/xrds13-4/natural_language.html
+OPUS - open source parallel corpus
+	http://urd.let.rug.nl/tiedeman/OPUS/
+MOSES - http://www.statmt.org/moses
