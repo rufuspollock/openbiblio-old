@@ -36,4 +36,5 @@
 :changeReason a fresnel:Format ;
 	fresnel:propertyFormatDomain cs:changeReason ;
 	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "nolabel"^^fresnel:styleClass ;
 	fresnel:group :csGroup .
