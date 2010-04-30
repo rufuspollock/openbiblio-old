@@ -1,0 +1,77 @@
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix frbr:     <http://purl.org/vocab/frbr/core#> .
+@prefix dc:       <http://purl.org/dc/terms/> .
+@prefix dbpprop:  <http://dbpedia.org/property/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix :         <#> .
+
+:frbrPersonDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain frbr:Person ;
+	fresnel:group :frbrGroup ;
+	fresnel:showProperties (
+		foaf:name
+		dbpprop:dateOfBirth
+		dbpprop:dateOfDeath
+		dc:source 
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property frbr:creatorOf ;
+		  fresnel:sublens :frbrWorkDefaultLens ]
+	) .
+
+:frbrWorkDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:instanceLensDomain frbr:Work ;
+	fresnel:group :frbrGroup ;
+	fresnel:showProperties (
+		dc:title
+		dc:date
+	) .
+
+:frbrGroup a fresnel:Group ;
+	fresnel:stylesheetLink <http://bibliographica.org/css/frbr.css> .
+
+:personFormat a fresnel:Format ;
+	fresnel:classFormatDomain frbr:Person ;
+	fresnel:resourceStyle "border: dotted 1px red;"^^fresnel:stylingInstructions ;
+	fresnel:group :frbrGroup .
+
+:creatorOfFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain frbr:creatorOf ;
+	fresnel:value fresnel:externalLink ;
+	fresnel:label "Works" ;
+	fresnel:group :frbrGroup .
+
+:dateOfBirthFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dbpprop:dateOfBirth ;
+	fresnel:label "Born" ;
+	fresnel:group :frbrGroup .
+:dateOfDeathFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dbpprop:dateOfDeath ;
+	fresnel:label "Died" ;
+	fresnel:group :frbrGroup .
+:dateFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:date ;
+	fresnel:label "Published" ;
+	fresnel:group :frbrGroup .
+
+:nameFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain foaf:name ;
+	fresnel:label fresnel:none;
+	fresnel:propertyStyle "h1_container"^^fresnel:styleClass ;
+	fresnel:valueStyle "h1"^^fresnel:styleClass ;
+	fresnel:group :frbrGroup .
+
+:titleFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:title ;
+	fresnel:label fresnel:none;
+	fresnel:propertyStyle "h2_container"^^fresnel:styleClass ;
+	fresnel:valueStyle "h2"^^fresnel:styleClass ;
+	fresnel:group :frbrGroup .
+
+:sourceFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:source ;
+	fresnel:label "Source";
+	fresnel:group :frbrGroup .

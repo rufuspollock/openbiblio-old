@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
+        <script type="text/javascript" src="/js/jquery.rdfquery.ordf.js"></script>
+        <script type="text/javascript" src="/js/jquery.rdfquery.fresnel.js"></script>
+        <script type="text/javascript" src="/js/jquery.rdfquery.fresnel.edit.js"></script>
+        <script type="text/javascript">
+
+        test_graph = "http://bibliographica.org/test";
+        test_lens = "http://bibliographica.org/lens/frbr_person";
+        graph = null;
+
+        recv_cs = function(cs) {
+            $("Changeset: " + cs).appendTo("#debug");
+        }
+
+        fetch_graph = function() {
+            $.rdf.ordf.recv({ uri: test_graph, callback: function (g) {
+                graph = g;
+                fresnel.format(g).appendTo("#content");
+                $.rdf.fresnel.edit("#content");
+            }});
+        }
+
+        start = function() {
+            fresnel = $.rdf.fresnel();
+            $.rdf.ordf.recv({
+                uri: test_lens,
+                databank: fresnel.databank,
+                callback: fetch_graph
+            });
+        }
+
+        </script>
+    </head>
+    <body onLoad="start();" >
+        <div id="content" style="width: 70%; float: left;"></div>
+        <div id="tools" style="width: 30%; float: left;">
+            <input type="submit" value="Save to Store" onClick="$.rdf.ordf.send({ databank: graph, callback: recv_cs });" />
+        </div>
+        <pre id="debug"></pre>
+    </body>
+</html>

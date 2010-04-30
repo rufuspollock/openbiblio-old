@@ -2,9 +2,12 @@ from paste.script.command import Command as PasteCommand, BadCommand
 from openbiblio.config.environment import load_environment
 from paste.deploy import appconfig
 from uuid import uuid3, NAMESPACE_URL
+from glob import glob
+from getpass import getuser
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph
 from ordf.term import URIRef
+from ordf.namespace import Namespace
 
 import os
 
@@ -29,40 +32,49 @@ class Command(PasteCommand):
         load_environment(self.config.global_conf, self.config.local_conf)
 
 class Fixtures(Command):
+    done = False
+
     @classmethod
-    def data(cls):
+    def data(cls, store="IOMemory"):
         obproot = os.path.dirname(os.path.dirname(__file__))
         testdata = os.path.join(obproot, "tests", "data")
 
-        ident = URIRef("http://example.org/")
-
-        data = Graph(identifier=ident)
+        ident = URIRef("http://bibliographica.org/test")
+        data = Graph(store, identifier=ident)
         data.parse(os.path.join(testdata, "fixtures.rdf"))
-        return data
+        yield data
 
-    identifier = None
+        lenses = os.path.join(obproot, "lenses", "*.n3")
+        OB = Namespace("http://bibliographica.org/lens/")
+        for filename in glob(lenses):
+            ident = OB[os.path.basename(filename)[:-3]]
+            data = Graph(store, identifier=ident)
+            data.parse(filename, format="n3")
+            data.serialize(filename[:-3] + ".rdf", format="pretty-xml")
+#            yield data
+
     @classmethod
     def setUp(cls):
         from openbiblio.model import store
 
-        if cls.identifier is not None:
-            return ## already done
+        if cls.done:
+            return
 
-        new = cls.data()
-        orig = Graph(identifier=new.identifier)
-        cs = ChangeSet("fixtures", "fixtures")
-        cs.diff(orig, new)
+        cs = ChangeSet(getuser(), "Initial Data")
+        for graph in cls.data():
+            orig = Graph(identifier=graph.identifier)
+            cs.diff(orig, graph)
         cs.commit(store)
 
-        cls.identifier = cs.identifier
-
-        cs.commit()
+        cls.done = True
 
     @classmethod
     def tearDown(cls):
         from openbiblio.model import store
 
-        if cls.identifier is not None:
+        if cls.done:
             cursor = store.cursor()
-            cursor.delete_model(cls.identifier)
-            cursor.delete_model("http://example.org/")
+            for graph in cls.data(store):
+                for change in graph.history():
+                    cursor.delete_model(change)
+                cursor.delete_model(graph)
