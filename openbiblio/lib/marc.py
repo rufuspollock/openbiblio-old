@@ -266,7 +266,7 @@ class Record(object):
 
     def contributors(self, result):
         authors = self.get_authors()
-        return authors + [ { "foaf:name": x } for x in result ]
+        return authors + [ { "foaf:name": [x] } for x in result ]
 
     def __getitem__(self, key):
         spec = dcmap[key]
