@@ -26,14 +26,11 @@
 }
 
 .fresnel_edit_buttons {
-	padding-left: 20px;
-	float: right;
-}
-.fresnel_add_button {
 	float: right;
 }
 .fresnel_edit_buttons span {
 	padding-right: 5px;
+	padding-left: 5px;
 	color: #822;
 	text-decoration: underline;
 }
