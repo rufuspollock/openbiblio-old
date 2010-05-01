@@ -14,6 +14,9 @@
 	padding-right: 10px;
 	border-right: 1px solid black;
 }
+.fresnel_value {
+	padding-right: 20px;
+}
 
 .fresnel_editor {
 	position: absolute;
@@ -24,7 +27,10 @@
 
 .fresnel_edit_buttons {
 	padding-left: 20px;
-	display: inline;
+	float: right;
+}
+.fresnel_add_button {
+	float: right;
 }
 .fresnel_edit_buttons span {
 	padding-right: 5px;
