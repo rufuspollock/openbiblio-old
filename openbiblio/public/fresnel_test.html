@@ -54,6 +54,12 @@
 
         start = function() {
             fresnel = $.rdf.fresnel();
+            fresnel.lensChooser({ uri: test_lens, callback: function () {
+                $("#content")
+                    .children(".fresnel_container")
+                    .each(function () { $(this).remove(); });
+                fresnel.format(graph).appendTo("#content");
+            }}).appendTo("#content");
             $.rdf.ordf.recv({
                 uri: test_lens,
                 databank: fresnel.databank,

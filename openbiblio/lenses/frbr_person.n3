@@ -8,7 +8,7 @@
 @prefix dbpprop:  <http://dbpedia.org/property/> .
 @prefix :         <http://bibliographica.org/lens/frbr_person#> .
 
-<http://bibliographica.org/lens/frbr_person> rdfs:label "FRBR Person Fresnel Lens" .
+<http://bibliographica.org/lens/frbr_person> rdfs:label "FRBR Person" .
 
 :frbrPersonDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

@@ -7,7 +7,7 @@
 @prefix dc:       <http://purl.org/dc/terms/> .
 @prefix :         <http://bibliographica.org/lenses/changeset#> .
 
-<http://bibliographica.org/lens/changeset> rdfs:label "Changeset Fresnel Lens" .
+<http://bibliographica.org/lens/changeset> rdfs:label "Changeset" .
 
 :changeSetDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;
