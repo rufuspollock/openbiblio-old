@@ -70,9 +70,9 @@ class Fixtures(Command):
         cs = ChangeSet(getuser(), "Initial Data")
         for graph in cls.data():
             ## delete any stale history
-            cursor = store.cursor()
-            for change in graph.history(store):
-                cursor.delete_model(change)
+#            cursor = store.cursor()
+#            for change in graph.history(store):
+#                cursor.delete_model(change)
             orig = Graph(identifier=graph.identifier)
             cs.diff(orig, graph)
         cs.commit(store)
