@@ -38,11 +38,6 @@
 	margin-bottom: 10px;
 }
 
-.nolabel {
-	display: block;
-	width: 100%;
-}
-
 .h2 {
 	font-family: 'Hoefler Text', Hoeflertext, Georgia, 'Lucida Bright', Lucidabright, 'Bitstream Vera Serif', serif;
 	font-weight: bold;
@@ -53,4 +48,12 @@
 	width: 100%; 
 	margin-top: 5px;
 }
-	
+
+.highlight {
+	border: 1px dotted #aa4;
+	background: #ffa;
+}
+.nolabel {
+	display: block;
+	width: 100%;
+}
