@@ -15,7 +15,8 @@
 	border-right: 1px solid black;
 }
 .fresnel_edit_buttons {
-	float: right;
+	padding-left: 20px;
+	display: inline;
 }
 .fresnel_edit_buttons span {
 	padding-right: 5px;
@@ -24,12 +25,14 @@
 }
 
 .h1 {
+	font-family: 'Hoefler Text', Hoeflertext, Georgia, 'Lucida Bright', Lucidabright, 'Bitstream Vera Serif', serif;
 	font-weight: bold;
-	font-size: 14pt;
+	font-size: 1.4em;
 }
 .h1_container {
 	display: block;
-	width: 100%; 
+	width: 100%;
+	padding-bottom: 5px; 
 	border-bottom: 1px solid black;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -41,8 +44,9 @@
 }
 
 .h2 {
+	font-family: 'Hoefler Text', Hoeflertext, Georgia, 'Lucida Bright', Lucidabright, 'Bitstream Vera Serif', serif;
 	font-weight: bold;
-	font-size: 12pt;
+	font-size: 1.2em;
 }
 .h2_container {
 	display: block;
