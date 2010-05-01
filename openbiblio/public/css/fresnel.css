@@ -14,6 +14,14 @@
 	padding-right: 10px;
 	border-right: 1px solid black;
 }
+
+.fresnel_editor {
+	position: absolute;
+	z-index: 1;
+	border: 1px dotted #642;
+	background: #ca8;
+}
+
 .fresnel_edit_buttons {
 	padding-left: 20px;
 	display: inline;
