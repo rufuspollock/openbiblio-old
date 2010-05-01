@@ -35,7 +35,6 @@
 
 :workFormat a fresnel:Format ;
 	fresnel:classFormatDomain frbr:Work ;
-	fresnel:resourceStyle "border: dotted 1px red;"^^fresnel:stylingInstructions ;
 	fresnel:group :frbrGroup .
 
 :creatorFormat a fresnel:Format ;
