@@ -23,7 +23,6 @@
 
 :changeSetFormat a fresnel:Format ;
 	fresnel:classFormatDomain cs:ChangeSet ;
-	fresnel:resourceStyle "border: dotted 1px red;"^^fresnel:stylingInstructions ;
 	fresnel:group :csGroup .
 
 :createdDateFormat a fresnel:Format ;

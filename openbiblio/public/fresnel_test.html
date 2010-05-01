@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="http://knowledgeforge.net/media/css/master.css" />
         <link rel="stylesheet" type="text/css" href="/css/fresnel.css" />
         <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
@@ -58,7 +59,7 @@
                     .children(".fresnel_container")
                     .each(function () { $(this).remove(); });
                 fresnel.format(graph).appendTo("#content");
-            }}).appendTo("#content");
+            }}).prependTo("#primary");
             $.rdf.ordf.recv({
                 uri: test_lens,
                 databank: fresnel.databank,
@@ -74,12 +75,20 @@
         </script>
     </head>
     <body onLoad="start();" >
-        <div id="content" style="width: 70%; float: left;"></div>
-        <div id="tools" style="width: 30%; float: left;">
+        <div id="top">
+            <div id="top-inner">
+                <div id="top-bar">
+                    <h1><a href="http://bibliographica.org/">Bibliographica<sup style="font-size:0.4em;">Beta</sup></a></h1>
+                </div>
+            </div>
+        </div>
+        <div id="primary" class="sidebar">
             <input type="submit" value="Save to Store" onClick="$.rdf.ordf.send({ databank: graph, callback: recv_cs });" /><br />
             <input type="submit" value="History" onClick="change_history(test_graph);" />
             <div id="history"></div>
         </div>
-        <div id="debug"></div>
+        <div id="main">
+            <div id="content"></div>
+        </div>
     </body>
 </html>

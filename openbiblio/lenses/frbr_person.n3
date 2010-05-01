@@ -38,7 +38,6 @@
 
 :personFormat a fresnel:Format ;
 	fresnel:classFormatDomain frbr:Person ;
-	fresnel:resourceStyle "border: dotted 1px red;"^^fresnel:stylingInstructions ;
 	fresnel:group :frbrGroup .
 
 :creatorOfFormat a fresnel:Format ;
