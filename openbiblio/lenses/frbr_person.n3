@@ -1,11 +1,14 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
 @prefix foaf:     <http://xmlns.com/foaf/0.1/> .
-@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix frbr:     <http://purl.org/vocab/frbr/core#> .
 @prefix dc:       <http://purl.org/dc/terms/> .
 @prefix dbpprop:  <http://dbpedia.org/property/> .
-@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
-@prefix :         <#> .
+@prefix :         <http://bibliographica.org/lens/frbr_person#> .
+
+<http://bibliographica.org/lens/frbr_person> rdfs:label "FRBR Person Fresnel Lens" .
 
 :frbrPersonDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

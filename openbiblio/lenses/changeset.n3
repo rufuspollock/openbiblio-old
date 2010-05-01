@@ -1,10 +1,13 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
 @prefix cs:       <http://purl.org/vocab/changeset/schema#> .
 @prefix gr:       <http://bibliographica.org/schema/graph#> .
-@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dc:       <http://purl.org/dc/terms/> .
-@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
-@prefix :         <#> .
+@prefix :         <http://bibliographica.org/lenses/changeset#> .
+
+<http://bibliographica.org/lens/changeset> rdfs:label "Changeset Fresnel Lens" .
 
 :changeSetDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

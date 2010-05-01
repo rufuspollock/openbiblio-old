@@ -32,6 +32,9 @@ class Command(PasteCommand):
         load_environment(self.config.global_conf, self.config.local_conf)
 
 class Fixtures(Command):
+    summary = "Load Fixtures"
+    usage = "config.ini"
+    parser = Command.standard_parser(verbose=False)
     done = False
 
     @classmethod
@@ -50,7 +53,11 @@ class Fixtures(Command):
             ident = OB[os.path.basename(filename)[:-3]]
             data = Graph(store, identifier=ident)
             data.parse(filename, format="n3")
-            data.serialize(filename[:-3] + ".rdf", format="pretty-xml")
+            filename_rdf = filename[:-3] + ".rdf"
+            data.serialize(filename_rdf, format="pretty-xml")
+            ## kludge - bnodes have a problem reading directly into the store
+            cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
+            os.system(cmd)
 #            yield data
 
     @classmethod
@@ -62,6 +69,10 @@ class Fixtures(Command):
 
         cs = ChangeSet(getuser(), "Initial Data")
         for graph in cls.data():
+            ## delete any stale history
+            cursor = store.cursor()
+            for change in graph.history(store):
+                cursor.delete_model(change)
             orig = Graph(identifier=graph.identifier)
             cs.diff(orig, graph)
         cs.commit(store)
@@ -78,3 +89,6 @@ class Fixtures(Command):
                 for change in graph.history():
                     cursor.delete_model(change)
                 cursor.delete_model(graph)
+
+    def command(self):
+        self.setUp()
