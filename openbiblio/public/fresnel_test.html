@@ -20,7 +20,8 @@
         fetch_graph = function() {
             $.rdf.ordf.recv({ uri: test_graph, callback: function (g) {
                 graph = g;
-                fresnel.format(g).appendTo("#content");
+                fresnel.addData(g);
+                fresnel.format().appendTo("#content");
             }});
         }
 
@@ -46,7 +47,9 @@
                 var parent = $("#history").parent();
                 $("#history").remove();
                 $("<div></div>").attr("id", "history").appendTo(parent);
-                change_fresnel.format(changes).appendTo("#history");
+                change_fresnel.flushData();
+                change_fresnel.addData(changes);
+                change_fresnel.format().appendTo("#history");
             }});
             
         }
@@ -60,15 +63,11 @@
                     .each(function () { $(this).remove(); });
                 fresnel.format(graph).appendTo("#content");
             }}).prependTo("#primary");
-            $.rdf.ordf.recv({
-                uri: test_lens,
-                databank: fresnel.databank,
-                callback: fetch_graph
-            });
+            fresnel.addFresnel({ uri: test_lens, callback: fetch_graph });
             change_fresnel = $.rdf.fresnel();
             $.rdf.ordf.recv({
                 uri: change_lens,
-                databank: change_fresnel.databank
+                databank: change_fresnel.fresnel_data
             });
         }
 
