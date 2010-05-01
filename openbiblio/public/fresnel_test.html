@@ -20,7 +20,6 @@
             $.rdf.ordf.recv({ uri: test_graph, callback: function (g) {
                 graph = g;
                 fresnel.format(g).appendTo("#content");
-                $.rdf.fresnel.edit("#content");
             }});
         }
 
@@ -53,7 +52,7 @@
         change_lens = "http://bibliographica.org/lens/changeset";
 
         start = function() {
-            fresnel = $.rdf.fresnel();
+            fresnel = $.rdf.fresnel({ editable: true });
             fresnel.lensChooser({ uri: test_lens, callback: function () {
                 $("#content")
                     .children(".fresnel_container")
