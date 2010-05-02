@@ -1,0 +1,71 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix bibo:     <http://purl.org/ontology/bibo/> .
+@prefix dc:       <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix dcam:     <http://purl.org/dc/dcam/> .
+@prefix :         <http://bibliographica.org/lens/bibo#> .
+
+<http://bibliographica.org/lens/bibo> rdfs:label "BIBO Publication" .
+
+:biboBookDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain bibo:Book ;
+	fresnel:group :biboGroup ; 
+	fresnel:showProperties (
+		dcterms:title
+		bibo:edition
+		dcterms:publisher
+		dcterms:issued
+		dc:subject
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dcterms:subject ;
+		  fresnel:sublens :dcSubjectLens ]
+		fresnel:allProperties
+	) ;
+	fresnel:hideProperties (
+		bibo:lccn
+	) .
+
+:biboGroup a fresnel:Group .
+
+:titleFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dcterms:title ;
+	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "h1_container"^^fresnel:styleClass ;
+	fresnel:valueStyle "h1"^^fresnel:styleClass ;
+	fresnel:group :biboGroup .
+
+:editionFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain bibo:edition ;
+	fresnel:label "Edition" ;
+	fresnel:group :biboGroup .
+
+:publisherFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dcterms:publisher ;
+	fresnel:label "Publisher" ;
+	fresnel:group :biboGroup .
+
+:issuedFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dcterms:issued ;
+	fresnel:label "Published" ;
+	fresnel:group :biboGroup .
+
+:subjectFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:subject ;
+	fresnel:propertyFormatDomain dcterms:subject ;
+	fresnel:label "Subject" ;
+	fresnel:group :biboGroup .
+
+:isbnFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain bibo:isbn10 ;
+	fresnel:label "ISBN" ;
+	fresnel:group :biboGroup .
+
+:dcSubjectLens a fresnelLens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:group :biboGroup ;
+	fresnel:showProperties ( fresnel:allProperties ) .
