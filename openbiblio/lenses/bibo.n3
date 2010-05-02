@@ -71,5 +71,20 @@
 
 :dcSubjectLens a fresnelLens ;
 	fresnel:purpose fresnel:defaultLens ;
-	fresnel:group :biboGroup ;
-	fresnel:showProperties ( fresnel:allProperties ) .
+	fresnel:group :dcSubjectGroup ;
+	fresnel:showProperties (
+		dcam:memberOf
+		rdf:value
+		fresnel:allProperties
+	) .
+
+:subjectIdFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain rdf:value ;
+	fresnel:label "Value";
+	fresnel:group :dcSubjectGroup .
+
+:memberOfFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dcam:memberOf ;
+	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "display: block; width: 100%;"^^fresnel:stylingInstructions ;
+	fresnel:group :dcSubjectGroup .
