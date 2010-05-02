@@ -24,10 +24,9 @@
 		[ a fresnel:PropertyDescription ;
 		  fresnel:property dcterms:subject ;
 		  fresnel:sublens :dcSubjectLens ]
-		fresnel:allProperties
-	) ;
-	fresnel:hideProperties (
+		bibo:isbn10
 		bibo:lccn
+		fresnel:allProperties
 	) .
 
 :biboGroup a fresnel:Group .
@@ -63,6 +62,11 @@
 :isbnFormat a fresnel:Format ;
 	fresnel:propertyFormatDomain bibo:isbn10 ;
 	fresnel:label "ISBN" ;
+	fresnel:group :biboGroup .
+
+:lccnFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain bibo:lccn ;
+	fresnel:label "LCCN" ;
 	fresnel:group :biboGroup .
 
 :dcSubjectLens a fresnelLens ;
