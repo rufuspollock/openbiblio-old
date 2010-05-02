@@ -1,92 +1,40 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="http://knowledgeforge.net/media/css/master.css" />
+        <link rel="stylesheet" type="text/css" href="/css/overcast/jquery-ui-1.8.1.custom.css" />
         <link rel="stylesheet" type="text/css" href="/css/fresnel.css" />
         <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
-        <script type="text/javascript" src="/js/jquery.rdfquery.ordf.js"></script>
-        <script type="text/javascript" src="/js/jquery.rdfquery.fresnel.js"></script>
+        <script type="text/javascript" src="/js/jquery.ordf.js"></script>
+        <script type="text/javascript" src="/js/jquery.fresnel.js"></script>
         <script type="text/javascript" src="/js/jquery.rdfquery.fresnel.edit.js"></script>
         <script type="text/javascript">
 
         test_graph = "http://bibliographica.org/test";
+        test_graph2 = "http://dbpedia.org/resource/Sigmund_Freud";
         test_lens = "http://bibliographica.org/lens/frbr_person";
 
-        recv_cs = function(cs) {
-            $("Changeset: " + cs).appendTo("#debug");
-        }
+        $(function() {
+            fresnel = new $.rdf.fresnel();
 
-        fetch_graph = function() {
-            $.rdf.ordf.recv({ uri: test_graph, callback: function (g) {
-                fresnel.addData(g);
-                fresnel.graphChooser({ callback: redraw }).appendTo("#primary");
-                redraw();
-            }});
-        }
+            $("#content").Fresnel({ fresnel: fresnel, editable: true });
+            $("<li></li>")
+                .LensChooser({ fresnel: fresnel, uri: test_lens })
+                .prependTo("#navigation");
+            $("#primary")
+                .GraphChooser({ fresnel: fresnel })
+                .HistoryViewer({ fresnel: fresnel });
+            $("#subnav")
+                .GraphSaver({ fresnel: fresnel });
 
-        change_history = function() {
-            var parent = $("#history").parent();
-            $("#history").remove();
-            $("<div></div>").attr("id", "history").appendTo(parent);
-            change_fresnel.flushData();
-            for (var i=0; i<fresnel.data.length; i++) {
-                change_history_graph(fresnel.data[i]);
-            }
-        }
-        change_history_graph = function(graph) {
-            query = "PREFIX cs: <http://purl.org/vocab/changeset/schema#>\n" +
-                    "PREFIX gr: <http://bibliographica.org/schema/graph#>\n" +
-                    "CONSTRUCT {\n" +
-                    "    ?cs a cs:ChangeSet .\n" +
-                    "    ?cs cs:changeReason ?reason .\n" +
-                    "    ?cs cs:createdDate ?date .\n" +
-                    "    ?cs cs:creatorName ?name\n" +
-                    "} WHERE {\n" +
-                    "    ?cs a cs:ChangeSet .\n" +
-                    "    { ?cs cs:addition [ gr:graph <" + graph + "> ] } UNION\n" +
-                    "    { ?cs cs:removal [ gr:graph <" + graph + "> ] } .\n" +
-                    "    ?cs cs:changeReason ?reason .\n" + 
-                    "    ?cs cs:createdDate ?date .\n" + 
-                    "    ?cs cs:creatorName ?name\n" +
-                    "} ORDER BY DESC(?date)";
-            $.rdf.ordf.construct({ query: query, callback: function(changes) {
-                change_fresnel.addData(changes);
-                change_fresnel.format().appendTo("#history");
-            }});
-            
-        }
-        change_lens = "http://bibliographica.org/lens/changeset";
+            fresnel.addFresnel({ uri: test_lens });
+            var store = new $.ordf();
+            store.recv({ uri: test_graph, callback: function (g) { fresnel.addData(g); }});
+        });
 
-        redraw = function () {
-            $("#content")
-                .children(".fresnel_container")
-                .each(function () { $(this).remove(); });
-            fresnel.format().appendTo("#content");
-        }
-
-        start = function() {
-            fresnel = $.rdf.fresnel({ editable: true });
-            fresnel.lensChooser({ uri: test_lens, callback: redraw })
-                .prependTo($("<li></li>").prependTo("#navigation"));
-            fresnel.addFresnel({ uri: test_lens, callback: fetch_graph });
-            change_fresnel = $.rdf.fresnel();
-            $.rdf.ordf.recv({
-                uri: change_lens,
-                databank: change_fresnel.fresnel_data
-            });
-        }
-
-        save = function() {
-            for (var i=0; i<fresnel.data.length; i++) {
-                $.rdf.ordf.send({
-                    databank: fresnel.data[i],
-                    reason: $("#log_message").val() || "Change via Web"
-                });
-            }
-        }
         </script>
     </head>
-    <body onLoad="start();" >
+    <body>
         <div id="top">
             <div id="top-inner">
                 <div id="top-bar">
@@ -94,12 +42,7 @@
                 </div>
             </div>
             <ul id="navigation"></ul>
-            <ul id="subnav">
-                <li><input type="submit" value="History" onClick="change_history();" /></li>
-                <li><span>&nbsp;Log Message:&nbsp;</span><input type="text" id="log_message" size="35"/>
-                    <input type="submit" value="Save to Store" onClick="save();" />
-                </li>
-            </ul>
+            <ul id="subnav"></ul>
         </div>
         <div id="primary" class="sidebar">
             <div id="history"></div>
