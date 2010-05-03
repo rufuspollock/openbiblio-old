@@ -1,0 +1,56 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix dc:       <http://purl.org/dc/terms/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix dbpedia:  <http://dbpedia.org/ontology/> .
+@prefix :         <http://bibliographica.org/lens/owl#> .
+
+<http://bibliographica.org/lens/owl> rdfs:label "Generic OWL" .
+
+:thingBookDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain owl:Thing ;
+	fresnel:group :owlGroup ; 
+	fresnel:showProperties (
+		dbpedia:thumbnail
+		rdfs:label
+		dc:title
+		dc:description
+		rdfs:comment
+		fresnel:allProperties
+	) .
+
+:owlGroup a fresnel:Group .
+
+:labelFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain rdfs:label ;
+	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "h1_container"^^fresnel:styleClass ;
+	fresnel:valueStyle "h1"^^fresnel:styleClass ;
+	fresnel:group :owlGroup .
+
+titleFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:title ;
+	fresnel:label "Title" ;
+	fresnel:group :owlGroup .
+
+descriptionFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:description ;
+	fresnel:label "Description" ;
+	fresnel:group :owlGroup .
+
+commentFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain rdfs:comment ;
+	fresnel:label "Comment" ;
+	fresnel:group :owlGroup .
+
+depictionFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain foaf:depiction ;
+	fresnel:propertyFormatDomain dbpedia:thumbnail ;
+	fresnel:label fresnel:none ;
+	fresnel:value fresnel:image ;
+	fresnel:propertyStyle "display: block; width: 100%;"^^fresnel:stylingInstructions ;
+	fresnel:group :owlGroup .

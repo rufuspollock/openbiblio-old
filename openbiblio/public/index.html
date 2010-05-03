@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<title>Bibliographica (beta)</title>
         <link rel="stylesheet" type="text/css" href="http://knowledgeforge.net/media/css/master.css" />
 		<link type="text/css" href="css/overcast/jquery-ui-1.8.1.custom.css" rel="stylesheet" />	
@@ -13,24 +13,30 @@
         <script type="text/javascript" src="js/jquery.fresnel.js"></script>
         <script type="text/javascript" src="js/jquery.rdfquery.fresnel.edit.js"></script>
 		<script type="text/javascript">
-            test_lens = "http://bibliographica.org/lens/bibo";
-            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
+            test_lens = "http://bibliographica.org/lens/owl";
+//            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
+            test_graph = "http://dbpedia.org/resource/Iain_Banks";
 			$(function(){
                 fresnel = new $.rdf.fresnel();
                 fresnel.addFresnel({ uri: test_lens });
-                $("#viewer").Fresnel({ fresnel: fresnel, editable: true });
+                $("#viewer").Fresnel({ fresnel: fresnel, editable: false });
                 $("<li></li>")
                     .css({ "padding-left": "5px" })
                     .LensChooser({ fresnel: fresnel, uri: test_lens })
                     .appendTo("#subnav");
+/*
                 $("#primary")
                     .GraphChooser({ fresnel: fresnel });
-
+*/
+                var store = new $.ordf();
+                store.proxy({ uri: test_graph,
+                              callback: function (g) { fresnel.addData(g) }});
 				// Tabs
 				$('#tabs').tabs();
                 $('#add_resource')
                     .val(test_graph)
                     .keydown(function (event) {
+/*
                         if (event.keyCode == 13) {
                             event.stopPropagation();
                             var uri = $(event.target).val();
@@ -39,10 +45,11 @@
                                 store.proxy({ uri: uri,
                                               callback: function (g) { fresnel.addData(g); }});
                             } else {
-                                store.recv({ uri: uri,
+                                store.proxy({ uri: uri,
                                               callback: function (g) { fresnel.addData(g); }});
                             }
                         }
+    */
                     });
                 this.data = {};
 			});
@@ -57,7 +64,7 @@
                 </div>
             </div>
             <ul id="subnav">
-                <li><span>Add Resource: </span><input type="text" size="80" id="add_resource" /></li>
+<!--                <li><span>Add Resource: </span><input type="text" size="80" id="add_resource" /></li> -->
             </ul>
         </div>
         <div id="main">
