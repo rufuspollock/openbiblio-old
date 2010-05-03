@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Bibliographica (beta)</title>
+        <link rel="stylesheet" type="text/css" href="http://knowledgeforge.net/media/css/master.css" />
+		<link type="text/css" href="css/overcast/jquery-ui-1.8.1.custom.css" rel="stylesheet" />	
+		<link type="text/css" href="css/fresnel.css" rel="stylesheet" />	
+		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="ui/jquery-ui-1.8.1.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.rdfquery.rules.min-1.0.js"></script>
+        <script type="text/javascript" src="js/jquery.ordf.js"></script>
+        <script type="text/javascript" src="js/jquery.fresnel.js"></script>
+        <script type="text/javascript" src="js/jquery.rdfquery.fresnel.edit.js"></script>
+		<script type="text/javascript">
+            test_lens = "http://bibliographica.org/lens/bibo";
+            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
+			$(function(){
+                fresnel = new $.rdf.fresnel();
+                fresnel.addFresnel({ uri: test_lens });
+                $("#viewer").Fresnel({ fresnel: fresnel, editable: true });
+                $("<li></li>")
+                    .css({ "padding-left": "5px" })
+                    .LensChooser({ fresnel: fresnel, uri: test_lens })
+                    .appendTo("#subnav");
+                $("#primary")
+                    .GraphChooser({ fresnel: fresnel });
+
+				// Tabs
+				$('#tabs').tabs();
+                $('#add_resource')
+                    .val(test_graph)
+                    .keydown(function (event) {
+                        if (event.keyCode == 13) {
+                            event.stopPropagation();
+                            var uri = $(event.target).val();
+                            var store = new $.ordf();
+                            if (event.ctrlKey) {
+                                store.proxy({ uri: uri,
+                                              callback: function (g) { fresnel.addData(g); }});
+                            } else {
+                                store.recv({ uri: uri,
+                                              callback: function (g) { fresnel.addData(g); }});
+                            }
+                        }
+                    });
+                this.data = {};
+			});
+		</script>
+	</head>
+	<body>
+        <div id="top">
+            <div id="top-inner">
+                <div id="top-bar">
+                    <h1><a href="http://bibliographica.org/">Bibliographica<sup style="font-size:0
+.4em;">Beta</sup></a></h1>
+                </div>
+            </div>
+            <ul id="subnav">
+                <li><span>Add Resource: </span><input type="text" size="80" id="add_resource" /></li>
+            </ul>
+        </div>
+        <div id="main">
+    		<div id="tabs">
+    			<ul>
+                    <li><a href="#viewer">Viewer</a></li>
+    			</ul>
+                <div id="viewer"></div>
+    		</div>
+        </div>
+        <div id="primary" class="sidebar"></div>
+	</body>
+</html>
+
+
