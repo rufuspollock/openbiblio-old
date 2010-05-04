@@ -3,6 +3,20 @@
 	padding-left: 10px;
 }
 
+.fresnel_resource {
+}
+
+.fresnel_resource_uri {
+	font-family: 'Hoefler Text', Hoeflertext, Georgia, 'Lucida Bright', Lucidabright, 'Bitstream Vera Serif', serif;
+	font-weight: bold;
+	font-size: 1.0em;
+	border-top: 1px dotted black;
+	border-bottom: 1px dotted black;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
 .fresnel_property {
 	display: table-row;
 }
@@ -52,13 +66,6 @@ div.fresnel_lang_chooser {
 
 .fresnel_object_language {
 	padding-right: 5px;
-}
-
-.fresnel_resource_focus {
-	border: 1px dotted #884;
-}
-.fresnel_property_focus {
-	border: 1px dotted #884;
 }
 
 .h1 {
