@@ -31,6 +31,10 @@
 	padding-right: 20px;
 }
 
+.fresnel_value img {
+	max-width: 400px;
+}
+
 .fresnel_editor {
 	position: absolute;
 	z-index: 1;
