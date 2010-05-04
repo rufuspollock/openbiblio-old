@@ -46,3 +46,4 @@ def load_environment(global_conf, app_conf):
         store_args = [store_args]
     model.init_store(store_type, *store_args)
     model.init_ptree(config["pairtree.root"])
+    model.init_handler()

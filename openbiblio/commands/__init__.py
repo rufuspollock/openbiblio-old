@@ -64,23 +64,16 @@ class Fixtures(Command):
 
     @classmethod
     def setUp(cls):
-        from openbiblio.model import store, ptree
+        from openbiblio.model import handler
 
         if cls.done:
             return
 
-        cs = ChangeSet(getuser(), "Initial Data")
+        ctx = handler.context(getuser(), "Initial Data")
         for graph in cls.data():
             ## delete any stale history
-#            cursor = store.cursor()
-#            for change in graph.history(store):
-#                cursor.delete_model(change)
-            orig = Graph(identifier=graph.identifier)
-            cs.diff(orig, graph)
-            ptree[graph.identifier] = graph
-            if len(cs):
-                ptree[cs.identifier] = cs
-        cs.commit(store)
+            ctx.add(graph)
+        ctx.commit()
 
         cls.done = True
 

@@ -1,5 +1,6 @@
 store = None
 ptree = None
+handler = None
 
 ## kludge to get rdflib plugin infrastructure to find
 ## the FourStore if we have it
@@ -20,6 +21,12 @@ def init_store(store_type, *av, **kw):
     return store
 
 def init_ptree(ptree_root, ptree_uri="urn:uuid:"):
-    from ordf.ptree import PairTreeStore
+    from ordf.distributed.pt import PairTree
     global ptree
-    ptree = PairTreeStore(store_dir=ptree_root, uri_base=ptree_uri)
+    ptree = PairTree(store_dir=ptree_root, uri_base=ptree_uri)
+
+def init_handler():
+    global handler
+    from ordf.distributed import Handler
+    from ordf.distributed.rdf import FourStore
+    handler = Handler(ptree)
