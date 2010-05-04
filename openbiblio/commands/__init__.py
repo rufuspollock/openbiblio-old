@@ -58,11 +58,13 @@ class Fixtures(Command):
             ## kludge - bnodes have a problem reading directly into the store
             cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
             os.system(cmd)
+            from openbiblio.model import ptree
+            ptree[ident] = data
 #            yield data
 
     @classmethod
     def setUp(cls):
-        from openbiblio.model import store
+        from openbiblio.model import store, ptree
 
         if cls.done:
             return
@@ -75,6 +77,9 @@ class Fixtures(Command):
 #                cursor.delete_model(change)
             orig = Graph(identifier=graph.identifier)
             cs.diff(orig, graph)
+            ptree[graph.identifier] = graph
+            if len(cs):
+                ptree[cs.identifier] = cs
         cs.commit(store)
 
         cls.done = True
