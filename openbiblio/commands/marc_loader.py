@@ -7,7 +7,7 @@ from openbiblio.lib import marc
 
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph
-from ordf.namespace import namespaces, Namespace, DC, FRBR, RDF
+from ordf.namespace import namespaces, Namespace, DC, FRBR, RDF, FOAF, OWL
 from ordf.term import URIRef
 from hashlib import md5
 from uuid import UUID
@@ -57,7 +57,9 @@ class Loader(Command):
         return g
 
     def load(self, record):
-        from openbiblio.model import ptree
+        from openbiblio.model import handler
+        ctx = handler.context(getuser(), "command line import of %s" % (self.filename,))
+
         contributors = record.get("dc:contributor", [])
         for i in range(len(contributors)):
             c = contributors[i]
@@ -68,30 +70,19 @@ class Loader(Command):
             subj = URIRef("urn:uuid:%s" % (UUID(h.hexdigest()),))
             contributors[i] = subj
 
-            cs = ChangeSet(getuser(), "command line import of %s" % (self.filename,))
-            old = ptree[subj]
-            new = self.toGraph(c, subj)
-            new.add((subj, RDF.type, FRBR.Person))
-            cs.diff(old, new)
-            cs.commit()
-            if len(cs) > 0:
-                ptree[cs.identifier] = cs
-                ptree[new.identifier] = new
-            else:
-                self._authors_found += 1
+            graph = self.toGraph(c, subj)
+            graph.add((subj, RDF.type, FRBR.Person))
+            graph.add((subj, RDF.type, FOAF.Person))
+            graph.add((subj, RDF.type, OWL.Thing))
+            ctx.add(graph)
 
         subj = self.record_subject(record)
-        cs = ChangeSet(getuser(), "command line import of %s" % (self.filename,))
-        old = ptree[subj]
-        new = self.toGraph(record, subj)
-        new.add((subj, RDF.type, FRBR.Expression))
-        cs.diff(old, new)
-        cs.commit()
-        if len(cs) > 0:
-            ptree[cs.identifier] = cs
-            ptree[new.identifier] = new
-        else:
-            self._titles_found += 1
+        graph = self.toGraph(record, subj)
+        graph.add((subj, RDF.type, FRBR.Expression))
+        graph.add((subj, RDF.type, OWL.Thing))
+        ctx.add(graph)
+
+        ctx.commit()
 
     	self._total += 1
 
