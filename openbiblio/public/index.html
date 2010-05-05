@@ -62,21 +62,25 @@
 //                              callback: function (g) { fresnel.addData(g) }});
 				// Tabs
 				$('#tabs').tabs();
+                $('#resource')
+                    .val(test_graph);
                 $('#add_resource')
-                    .val(test_graph)
-                    .keydown(function (event) {
-                        if (event.keyCode == 13) {
-                            event.stopPropagation();
-                            var uri = $(event.target).val();
-                            var store = new $.ordf();
-                            if (event.ctrlKey) {
-                                store.proxy({ uri: uri,
-                                              callback: function (g) { fresnel.addData(g); }});
-                            } else {
-                                store.recv({ uri: uri,
-                                             callback: function (g) { fresnel.addData(g); }});
-                            }
-                        }
+                    .val("Load from Store")
+                    .click(function (event) {
+                        event.stopPropagation();
+                        var uri = $("#resource").val();
+                        var store = new $.ordf();
+                        store.recv({ uri: uri,
+                                     callback: function (g) { fresnel.addData(g); }});
+                    });
+                $('#fetch_resource')
+                    .val("Fetch Remote")
+                    .click(function (event) {
+                        event.stopPropagation();
+                        var uri = $("#resource").val();
+                        var store = new $.ordf();
+                        store.proxy({ uri: uri,
+                                      callback: function (g) { fresnel.addData(g); }});
                     });
                 this.data = {};
 			});
@@ -91,7 +95,11 @@
                 </div>
             </div>
             <ul id="subnav">
-                <li><span>Add Resource: </span><input type="text" size="80" id="add_resource" /></li>
+                <li>
+                    <input type="text" size="80" id="resource" />
+                    <input type="submit" id="add_resource" />
+                    <input type="submit" id="fetch_resource" />
+                </li>
             </ul>
         </div>
         <div id="main">
