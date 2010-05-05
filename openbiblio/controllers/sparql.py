@@ -1,5 +1,5 @@
 from ordf.pylons.sparql import SparqlControllerFactory
 from openbiblio.lib import base
-from openbiblio import model
+from openbiblio import handler
 
-SparqlController = SparqlControllerFactory(base, model)
+SparqlController = SparqlControllerFactory(base, handler)

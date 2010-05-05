@@ -1,5 +1,5 @@
 from ordf.pylons.graph import GraphControllerFactory
 from openbiblio.lib import base
-from openbiblio import model
+from openbiblio import handler
 
-GraphController = GraphControllerFactory(base, model)
+GraphController = GraphControllerFactory(base, handler)

@@ -25,9 +25,10 @@ openlibrary_authors = http://openlibrary.org/static/jsondump/authors.json.gz
 openlibrary_editions = http://openlibrary.org/static/jsondump/editions.json.gz
 gutenberg_marc = http://www.cucat.org/library/pgmarc.mrc.zip
 
-rdflib.store = LazyFourStore
-rdflib.args = biblio,soft_limit=-1
-pairtree.root = %(here)s/data/pairtree
+ordf.storage = pairtree
+ordf.indices = fourstore
+fourstore.args = biblio,soft_limit=-1
+pairtree.args = %(here)s/data/pairtree
 
 cache_dir = %(here)s/data
 beaker.session.key = openbiblio

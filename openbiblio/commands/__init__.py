@@ -38,12 +38,12 @@ class Fixtures(Command):
     done = False
 
     @classmethod
-    def data(cls, store="IOMemory"):
+    def data(cls, handler):
         obproot = os.path.dirname(os.path.dirname(__file__))
         testdata = os.path.join(obproot, "tests", "data")
 
         ident = URIRef("http://bibliographica.org/test")
-        data = Graph(store, identifier=ident)
+        data = Graph(identifier=ident)
         data.parse(os.path.join(testdata, "fixtures.rdf"))
         yield data
 
@@ -51,26 +51,25 @@ class Fixtures(Command):
         OB = Namespace("http://bibliographica.org/lens/")
         for filename in glob(lenses):
             ident = OB[os.path.basename(filename)[:-3]]
-            data = Graph(store, identifier=ident)
+            data = Graph(identifier=ident)
             data.parse(filename, format="n3")
             filename_rdf = filename[:-3] + ".rdf"
             data.serialize(filename_rdf, format="pretty-xml")
             ## kludge - bnodes have a problem reading directly into the store
             cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
             os.system(cmd)
-            from openbiblio.model import ptree
-            ptree[ident] = data
+            handler.pairtree.set(data)
 #            yield data
 
     @classmethod
     def setUp(cls):
-        from openbiblio.model import handler
+        from openbiblio import handler
 
         if cls.done:
             return
 
         ctx = handler.context(getuser(), "Initial Data")
-        for graph in cls.data():
+        for graph in cls.data(handler):
             ## delete any stale history
             ctx.add(graph)
         ctx.commit()
@@ -79,14 +78,7 @@ class Fixtures(Command):
 
     @classmethod
     def tearDown(cls):
-        from openbiblio.model import store
-
-        if cls.done:
-            cursor = store.cursor()
-            for graph in cls.data(store):
-                for change in graph.history():
-                    cursor.delete_model(change)
-                cursor.delete_model(graph)
+        pass
 
     def command(self):
         self.setUp()

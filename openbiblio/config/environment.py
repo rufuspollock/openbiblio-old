@@ -9,7 +9,8 @@ import openbiblio.lib.app_globals as app_globals
 import openbiblio.lib.helpers
 from openbiblio.config.routing import make_map
 
-import openbiblio.model as model
+from ordf.pylons.handler import init_handler
+import openbiblio
 
 def load_environment(global_conf, app_conf):
     """Configure the Pylons environment via the ``pylons.config``
@@ -39,11 +40,4 @@ def load_environment(global_conf, app_conf):
 
     # CONFIGURATIOr OPTIONS HERE (note: all config options will override
     # any Pylons config options)
-
-    store_type = config.get("rdflib.store", "IOMemory")
-    store_args = config.get("rdflib.args", [])
-    if store_args:
-        store_args = [store_args]
-    model.init_store(store_type, *store_args)
-    model.init_ptree(config["pairtree.root"])
-    model.init_handler()
+    openbiblio.handler = init_handler(config)
