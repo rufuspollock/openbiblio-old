@@ -14,7 +14,6 @@ setup(
         'Pylons>=0.9.7',
         'Genshi>=0.5',
         'Cython',
-        'namaste',
     	'pymarc',
     	'swiss',
         'ordf',
