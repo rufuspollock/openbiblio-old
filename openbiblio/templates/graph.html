@@ -1,0 +1,44 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+<py:def function="page_title">Bibliographica</py:def> 
+
+<div py:match="extrahead" strip="">
+  <link rel="meta" title="RDF" type="application/rdf+xml" href="${h.rdf_getstr(request)}" />
+
+</div>
+
+<div py:match="navlinks"> 
+<a href="${h.rdf_getstr(request)}" title="RDF Resource Description Framework">
+  <img border="0" src="http://www.w3.org/RDF/icons/rdf_w3c_button.32"
+   alt="RDF Resource Description Framework Icon"/>
+</a>
+</div>
+
+<div py:match="content">
+
+<py:if test="c.warnings">
+<div id="warnings">
+  <ul>
+  <py:for each="warning in c.warnings">
+    <li>${warning}</li>
+  </py:for>
+  </ul>
+</div>
+</py:if>
+
+
+<ul>
+	<py:for each="s,p,o in c.triples">
+<li>
+<ul class="item">
+    <li>${h.render_html(s)|n}</li>
+    <li>${h.render_html(p)|n}</li>
+    <li>${h.render_html(o)|n}</li>
+</ul>
+</li>
+</py:for>
+
+</ul>
+</div>
+<xi:include href="base.html" />
+</html>

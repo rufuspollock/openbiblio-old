@@ -1,0 +1,33 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+<py:def function="page_title">Works - Index</py:def> 
+
+<div py:match="content">
+  <form method="get" action=""><div>
+    ${h.text('q', size=40, value=c.q)}
+    ${h.submit('Search &raquo;', 'search')}
+
+  </div></form>
+
+<py:if test="c.warnings">
+<div id="warnings">
+  <ul>
+  <py:for each="warning in c.warnings">
+    <li>${warning}</li>
+  </py:for>
+  </ul>
+</div>
+</py:if>
+
+<py:if test="c.results">
+<h3>Results</h3>
+  <ul class="results">
+	  <py:for each="row in c.results">
+<li class="pd${row['pd']}"><a href="${row['url']}">${row['name']}</a>${row['extra']} (${row['prob']}%)</li>
+</py:for>
+    </ul>
+</py:if>
+</div>
+<xi:include href="base.html" />
+</html>
+

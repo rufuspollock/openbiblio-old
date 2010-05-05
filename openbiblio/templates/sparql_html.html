@@ -1,0 +1,43 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+	<py:def function="page_title">SPARQL Endpoint</py:def>
+
+	<div py:match="content">  
+  <form method="get" action=""><div>
+  <textarea name="query" cols="80" rows="15">
+${c.query}
+  </textarea><br />
+  <input type="submit" value="Run Query" />
+  </div></form>
+
+  <py:if test="c.warnings">
+<div id="warnings">
+  <ul>
+	   <py:for each="warning in c.warnings"> 
+    <li>${warning}</li>
+     </py:for>
+  </ul>
+</div>
+</py:if> 
+
+
+
+<py:if test="c.bindings"> 
+  <table width="100%" border="1">
+    <tr>
+    <py:for each="b in c.bindings">   
+      <th>${b}</th>
+    </py:for>
+    </tr>
+    <py:for each="row in c.results">
+    <tr>
+	    <py:for each="b in c.bindings">
+      <td>${h.literal(h.render_html(row[b]))}</td>
+      </py:for> 
+    </tr>
+    </py:for> 
+  </table>
+  </py:if> 
+</div>
+<xi:include href="base.html" /> 
+</html>

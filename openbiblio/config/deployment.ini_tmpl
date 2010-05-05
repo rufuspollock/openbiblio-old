@@ -30,6 +30,9 @@ ordf.indices = fourstore
 fourstore.args = biblio,soft_limit=-1
 pairtree.args = %(here)s/data/pairtree
 
+search_index_dir = %(here)s/xapian
+
+
 cache_dir = %(here)s/data
 beaker.session.key = openbiblio
 beaker.session.secret = ${app_instance_secret}
