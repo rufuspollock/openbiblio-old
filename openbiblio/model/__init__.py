@@ -21,12 +21,12 @@ def init_store(store_type, *av, **kw):
     return store
 
 def init_ptree(ptree_root, ptree_uri="urn:uuid:"):
-    from ordf.distributed.pt import PairTree
+    from ordf.handler.pt import PairTree
     global ptree
     ptree = PairTree(store_dir=ptree_root, uri_base=ptree_uri)
 
 def init_handler():
     global handler
-    from ordf.distributed import Handler
-    from ordf.distributed.rdf import FourStore
+    from ordf.handler import Handler
+    from ordf.handler.rdf import FourStore
     handler = Handler(ptree)
