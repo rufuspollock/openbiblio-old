@@ -31,9 +31,9 @@
 	<py:for each="s,p,o in c.triples">
 <li>
 <ul class="item">
-    <li>${h.render_html(s)|n}</li>
-    <li>${h.render_html(p)|n}</li>
-    <li>${h.render_html(o)|n}</li>
+    <li>${h.literal(h.render_html(s))}</li>
+    <li>${h.literal(h.render_html(p))}</li>
+    <li>${h.literal(h.render_html(o))}</li>
 </ul>
 </li>
 </py:for>
