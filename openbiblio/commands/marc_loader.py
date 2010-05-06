@@ -57,7 +57,7 @@ class Loader(Command):
         return g
 
     def load(self, record):
-        from openbiblio.model import handler
+        from openbiblio import handler
         ctx = handler.context(getuser(), "command line import of %s" % (self.filename,))
 
         contributors = record.get("dc:contributor", [])
