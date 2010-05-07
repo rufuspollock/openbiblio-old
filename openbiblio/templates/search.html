@@ -23,7 +23,11 @@
 <h3>Results</h3>
   <ul class="results">
 	  <py:for each="row in c.results">
-<li class="pd${row['pd']}"><a href="${row['url']}">${row['name']}</a>${row['extra']} (${row['prob']}%)</li>
+<li class="pd">
+    <a href="/graph?uri=${row.document.get_value(0)}">${row.document.get_value(1).decode("utf-8") or "Untitled"}</a>
+    ${row.document.get_value(2).decode("utf-8")} ${row.document.get_value(3).decode("utf-8")}
+    (${row.percent}%)
+</li>
 </py:for>
     </ul>
 </py:if>

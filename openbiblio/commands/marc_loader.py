@@ -7,7 +7,7 @@ from openbiblio.lib import marc
 
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph
-from ordf.namespace import namespaces, Namespace, DC, FRBR, RDF, FOAF, OWL
+from ordf.namespace import namespaces, Namespace, DC, FRBR, RDF, FOAF, OWL, RDFS
 from ordf.term import URIRef
 from hashlib import md5
 from uuid import UUID
@@ -74,12 +74,16 @@ class Loader(Command):
             graph.add((subj, RDF.type, FRBR.Person))
             graph.add((subj, RDF.type, FOAF.Person))
             graph.add((subj, RDF.type, OWL.Thing))
+            for s,p,o in graph.triples((subj, FOAF.name, None)):
+                graph.add((subj, RDFS.label, o))
             ctx.add(graph)
 
         subj = self.record_subject(record)
         graph = self.toGraph(record, subj)
         graph.add((subj, RDF.type, FRBR.Expression))
         graph.add((subj, RDF.type, OWL.Thing))
+        for s,p,o in graph.triples((subj, DC.title, None)):
+            graph.add((subj, RDFS.label, o))
         ctx.add(graph)
 
         ctx.commit()

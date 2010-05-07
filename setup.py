@@ -44,6 +44,7 @@ setup(
     load_gut = openbiblio.commands.gut_loader:Loader
 
     [ordf.xapian]
-    graph = openbiblio.lib.xapindex:index_graph
+    index = openbiblio.lib.xapindex:index_graph
+    search = openbiblio.lib.xapindex:search
     """,
 )
