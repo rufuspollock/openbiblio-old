@@ -1,0 +1,97 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix dc:       <http://purl.org/dc/terms/> .
+@prefix dcam:     <http://purl.org/dc/dcam/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix pg:       <http://www.gutenberg.org/2009/pgterms/> .
+@prefix :         <http://bibliographica.org/lens/gutenberg#> .
+
+<http://bibliographica.org/lens/gutenberg> rdfs:label "Gutenberg" .
+
+:pgGroup a fresnel:Group .
+
+:ebookDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain pg:ebook ;
+	fresnel:group :pgGroup ; 
+	fresnel:showProperties (
+		dc:title
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:creator ;
+		  fresnel:sublens :agentLens ]
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:subject ;
+		  fresnel:sublens :subjectLens ]
+		dc:publisher
+		dc:issued
+		dc:license
+		dc:rights
+		dc:language
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:type ;
+		  fresnel:sublens :typeLens ]
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:hasFormat ;
+		  fresnel:sublens :hasFormatLens ]
+	) .
+
+:agentLens a fresnel:Lens ;
+	fresnel:group :pgGroup ;
+	fresnel:showProperties (
+		pg:name
+		pg:alias
+		pg:birthdate
+		pg:deathdate
+		pg:webpage
+	) .
+
+:subjectLens a fresnel:Lens ;
+	fresnel:group :pgGroup ;
+	fresnel:showProperties (
+		rdf:value
+	) .
+
+:hasFormatLens a fresnel:Lens ;
+	fresnel:group :pgGroup ;
+	fresnel:showProperties (
+		dc:modified
+		dc:extent
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:format ;
+		  fresnel:sublens :formatLens ]
+	) .
+
+:formatLens a fresnel:Lens ;
+	fresnel:group :pgGroup ;
+	fresnel:showProperties (
+		rdf:value
+	) .
+
+:typeLens a fresnel:Lens ;
+	fresnel:group :pgGroup ;
+	fresnel:showProperties (
+		rdf:value
+	) .
+
+:titleFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:title ;
+        fresnel:label fresnel:none ;
+        fresnel:propertyStyle "h1_container"^^fresnel:styleClass ;
+        fresnel:valueStyle "h1"^^fresnel:styleClass ;
+	fresnel:group :pgGroup .
+
+:nameFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain pg:name ;
+        fresnel:label fresnel:none ;
+        fresnel:propertyStyle "h2_container"^^fresnel:styleClass ;
+        fresnel:valueStyle "h2"^^fresnel:styleClass ;
+	fresnel:group :pgGroup .
+
+:valueFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain rdf:value ;
+	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "display: block; width: 100%;"^^fresnel:stylingInstructions ;
+	fresnel:group :pgGroup .

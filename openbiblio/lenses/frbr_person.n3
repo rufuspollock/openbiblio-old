@@ -31,6 +31,17 @@
 	fresnel:showProperties (
 		dc:title
 		dc:date
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property frbr:realization ;
+		  fresnel:sublens :frbrExpressionDefaultLens ]
+	) .
+
+:frbrExpressionDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:instanceLensDomain frbr:Expression ;
+	fresnel:group :frbrGroup ;
+	fresnel:showProperties (
+		fresnel:allProperties
 	) .
 
 :frbrGroup a fresnel:Group ;
