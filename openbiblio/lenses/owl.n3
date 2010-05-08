@@ -10,7 +10,7 @@
 
 <http://bibliographica.org/lens/owl> rdfs:label "Generic OWL" .
 
-:thingBookDefaultLens a fresnel:Lens ;
+:thingDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;
 	fresnel:classLensDomain owl:Thing ;
 	fresnel:group :owlGroup ; 
