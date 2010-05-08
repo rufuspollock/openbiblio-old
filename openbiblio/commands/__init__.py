@@ -1,7 +1,6 @@
 from paste.script.command import Command as PasteCommand, BadCommand
 from openbiblio.config.environment import load_environment
 from paste.deploy import appconfig
-from uuid import uuid3, NAMESPACE_URL
 from glob import glob
 from getpass import getuser
 from ordf.changeset import ChangeSet
