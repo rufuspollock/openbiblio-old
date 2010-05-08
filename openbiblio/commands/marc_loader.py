@@ -24,6 +24,11 @@ class Loader(Command):
     summary = "Load MARC File"
     usage = "config.ini file.mrc"
     parser = Command.standard_parser(verbose=False)
+    parser.add_option("-s", "--source",
+        dest="source",
+        default=None,
+        help="Source for provenance purposes"
+    )
     def command(self):
         self.cache = swiss.Cache(self.config.get("cache_dir", "data"))
         self.log = logging.getLogger("marc_loader")
@@ -53,7 +58,11 @@ class Loader(Command):
             pred = namespaces[ns][term]
             for obj in d[k]:
                 g.add((subj, pred, obj))
-        g.add((subj, DC.source, URIRef("file://%s/%s" % (os.uname()[1], os.path.abspath(self.filename)))))
+        if self.options.source:
+            source = URIRef(self.options.source)
+        else:
+            source = URIRef("file://%s/%s" % (os.uname()[1], os.path.abspath(self.filename)))
+        g.add((subj, DC.source, source))
         return g
 
     def load(self, record):
