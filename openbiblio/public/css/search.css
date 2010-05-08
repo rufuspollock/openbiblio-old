@@ -1,0 +1,17 @@
+ul.search_result_list li {
+	list-style-type: none;
+}
+div.search_result {
+	clear: both;
+}
+div.search_result_rank {
+	float: left;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	margin-right: 5px;
+	border-right: solid 1px black;
+	border-bottom: solid 1px black;
+}
+div.search_result_relevance {
+	float: right;
+}
