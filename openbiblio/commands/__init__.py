@@ -38,7 +38,7 @@ class Fixtures(Command):
     done = False
 
     @classmethod
-    def data(cls, handler):
+    def data(cls):
         obproot = os.path.dirname(os.path.dirname(__file__))
         testdata = os.path.join(obproot, "tests", "data")
 
@@ -46,20 +46,6 @@ class Fixtures(Command):
         data = Graph(identifier=ident)
         data.parse(os.path.join(testdata, "fixtures.rdf"))
         yield data
-
-        lenses = os.path.join(obproot, "lenses", "*.n3")
-        OB = Namespace("http://bibliographica.org/lens/")
-        for filename in glob(lenses):
-            ident = OB[os.path.basename(filename)[:-3]]
-            data = Graph(identifier=ident)
-            data.parse(filename, format="n3")
-            filename_rdf = filename[:-3] + ".rdf"
-            data.serialize(filename_rdf, format="pretty-xml")
-            ## kludge - bnodes have a problem reading directly into the store
-            cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
-            os.system(cmd)
-            handler.pairtree.set(data)
-#            yield data
 
     @classmethod
     def setUp(cls):
@@ -69,7 +55,7 @@ class Fixtures(Command):
             return
 
         ctx = handler.context(getuser(), "Initial Data")
-        for graph in cls.data(handler):
+        for graph in cls.data():
             ## delete any stale history
             ctx.add(graph)
         ctx.commit()
@@ -82,3 +68,24 @@ class Fixtures(Command):
 
     def command(self):
         self.setUp()
+
+class Lenses(Command):
+    summary = "Load Lenses"
+    usage = "config.ini"
+    parser = Command.standard_parser(verbose=False)
+
+    def command(self):
+        from openbiblio import handler
+        obproot = os.path.dirname(os.path.dirname(__file__))
+        lenses = os.path.join(obproot, "lenses", "*.n3")
+        OB = Namespace("http://bibliographica.org/lens/")
+        for filename in glob(lenses):
+            ident = OB[os.path.basename(filename)[:-3]]
+            data = Graph(identifier=ident)
+            data.parse(filename, format="n3")
+            filename_rdf = filename[:-3] + ".rdf"
+            data.serialize(filename_rdf, format="pretty-xml")
+            ## kludge - bnodes have a problem reading directly into the store
+            cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
+            os.system(cmd)
+            handler.pairtree.set(data)

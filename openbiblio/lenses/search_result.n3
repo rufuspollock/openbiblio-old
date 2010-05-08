@@ -1,0 +1,31 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix dc:       <http://purl.org/dc/terms/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix dbpedia:  <http://dbpedia.org/ontology/> .
+@prefix :         <http://bibliographica.org/lens/search_result#> .
+
+<http://bibliographica.org/lens/search_result> rdfs:label "Search Results" .
+
+:thingDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain owl:Thing ;
+	fresnel:group :srGroup ; 
+	fresnel:showProperties (
+		rdfs:label
+		rdfs:comment
+		dc:description
+	) .
+
+:srGroup a fresnel:Group .
+
+:labelFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain rdfs:label ;
+	fresnel:propertyFormatDomain rdfs:comment ;
+	fresnel:propertyFormatDomain dc:description ;
+	fresnel:label fresnel:none ;
+	fresnel:propertyStyle "display: block; width: 100%;"^^fresnel:stylingInstructions ;
+	fresnel:group :srGroup .
