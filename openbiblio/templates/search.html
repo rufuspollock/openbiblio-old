@@ -1,12 +1,11 @@
 <html xmlns:py="http://genshi.edgewall.org/" 
 	xmlns:xi="http://www.w3.org/2001/XInclude">
-<py:def function="page_title">Works - Index</py:def> 
+<py:def function="page_title">Full Text Search</py:def> 
 
 <div py:match="content">
   <form method="get" action=""><div>
     ${h.text('q', size=40, value=c.q)}
-    ${h.submit('Search &raquo;', 'search')}
-
+    ${h.submit('search', 'Search &raquo;')}
   </div></form>
 
 <py:if test="c.warnings">
