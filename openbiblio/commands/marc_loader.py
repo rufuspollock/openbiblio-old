@@ -80,7 +80,7 @@ class Loader(Command):
 
         subj = self.record_subject(record)
         graph = self.toGraph(record, subj)
-        graph.add((subj, RDF.type, FRBR.Expression))
+        graph.add((subj, RDF.type, FRBR.Manifestation))
         graph.add((subj, RDF.type, OWL.Thing))
         for s,p,o in graph.triples((subj, DC.title, None)):
             graph.add((subj, RDFS.label, o))
