@@ -18,7 +18,9 @@ from webtest import TestApp
 import pylons.test
 from openbiblio.commands import Fixtures
 
-__all__ = ['environ', 'url', 'TestController']
+__all__ = ['environ', 'url', 'test_graph', 'TestController']
+
+test_graph = "http://bibliographica.org/test"
 
 # Invoke websetup with the current config file
 SetupCommand('setup-app').run([config['__file__']])
