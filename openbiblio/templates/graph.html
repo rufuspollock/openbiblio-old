@@ -6,14 +6,18 @@
   <link rel="meta" title="RDF" type="application/rdf+xml" href="${h.rdf_getstr(request)}" />
 </div> -->
 
-<div py:match="navlinks"> 
-<a href="${h.rdf_getstr(request)}" title="RDF Resource Description Framework">
-  <img border="0" src="http://www.w3.org/RDF/icons/rdf_w3c_button.32"
-   alt="RDF Resource Description Framework Icon"/>
-</a>
+<div py:match="navlinks">
+    <li><a href="/docs/ordf.pylons.graph-module.html">API Docs</a></li>
 </div>
 
 <div py:match="content">
+
+<div style="float:right;">
+    <a href="${h.rdf_getstr(request)}" title="RDF Resource Description Framework">
+        <img border="0" src="http://www.w3.org/RDF/icons/rdf_w3c_button.32"
+        alt="RDF Resource Description Framework Icon"/>
+    </a>
+</div>
 
 <py:if test="c.warnings">
 <div id="warnings">
