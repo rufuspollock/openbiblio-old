@@ -1,0 +1,14 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+	<py:def function="page_title">RDF Proxy</py:def>
+
+<div py:match="navlinks">
+    <li><a href="/docs/ordf.pylons.proxy-module.html">API Docs</a></li>
+</div>
+
+<div py:match="content">
+    <h2>RDF Proxy Service</h2>
+    ${c.message}
+</div>
+<xi:include href="base.html" /> 
+</html>
