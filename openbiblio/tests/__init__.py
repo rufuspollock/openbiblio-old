@@ -20,10 +20,18 @@ from openbiblio.commands import Fixtures
 
 __all__ = ['environ', 'url', 'test_graph', 'TestController']
 
-test_graph = "http://bibliographica.org/test"
-
 # Invoke websetup with the current config file
 SetupCommand('setup-app').run([config['__file__']])
+
+test_graph = "http://bibliographica.org/test"
+
+# ensure cache_dir exists as we use it for e.g. pairtree
+# and pair tree falls over if parent dir does not exist
+cachedir = config['cache.dir']
+import os
+if not os.path.exists(cachedir):
+    os.makedirs(cachedir)
+
 
 environ = {}
 

@@ -47,8 +47,7 @@ with the following command:
 
     paster fetch config.ini pdw_archive_20090520
 
-And the data can be loaded into a mongo database with the following two
-commands:
+And the data can be loaded into the store with the following two commands:
 
     paster load_pdw -e config.ini pdw_archive_20090520
     paster load_pdw -l config.ini pdw_archive_20090520

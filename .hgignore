@@ -1,0 +1,7 @@
+syntax: glob
+development.ini
+*.egg-info
+
+## pylons
+data/*
+pylons_data/*
