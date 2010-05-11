@@ -1,0 +1,10 @@
+/* ===================== */
+/* Fixes to KForge theme */
+/* ===================== */
+
+#top { margin-top: 0.4em; }
+/* mess with standard kforge theme to remove second submenu for time being */
+#subnav { background: transparent; height: 1px; }
+#subnav * { display: none; }
+#main { margin-top: 0.5em; }
+#primary { margin-top: 1.2em; }

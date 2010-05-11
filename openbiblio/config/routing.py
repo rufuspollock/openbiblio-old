@@ -21,8 +21,8 @@ def make_map():
     # CUSTOM ROUTES HERE
 
     map.connect('/proxy', controller='proxy', action='index')
-    map.connect('/sparql', controller='sparql', action='index')
-    map.connect('/search', controller='search', action='index')
+    map.connect('sparql', '/sparql', controller='sparql', action='index')
+    map.connect('search', '/search', controller='search', action='index')
     map.connect('/*path', controller='graph', action='index')
 
     return map

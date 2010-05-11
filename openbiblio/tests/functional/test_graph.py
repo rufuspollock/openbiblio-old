@@ -9,7 +9,8 @@ class TestGraphController(TestController):
 
     def test_02_n3(self):
         params = { "format": "text/n3" }
-        response = self.app.get(test_graph + "?" + urlencode(params)) 
+        offset = test_graph + "?" + urlencode(params)
+        response = self.app.get(offset)
         data = StringIO(response.body)
         g = Graph()
         g.parse(data, format="n3")
@@ -36,6 +37,6 @@ class TestGraphController(TestController):
         g.parse(data, format="xml")
 
         ## now put it back
-        response = self.app.put("/graph" + "?" + urlencode(params),
-                           g.serialize(format="pretty-xml"))
+        body = g.serialize(format="pretty-xml")
+        response = self.app.put("/graph" + "?" + urlencode(params), body)
         assert response.body.startswith("urn:uuid:")

@@ -2,6 +2,7 @@
 import os
 
 from pylons import config
+from genshi.template import TemplateLoader
 
 import openbiblio.lib.app_globals as app_globals
 import openbiblio.lib.helpers
@@ -29,8 +30,11 @@ def load_environment(global_conf, app_conf):
 
     config['routes.map'] = make_map()
     config['pylons.h'] = openbiblio.lib.helpers
-    config['pylons.g'] = app_globals.Globals()
+    config['pylons.app_globals'] = app_globals.Globals()
 
+    # Create the Genshi TemplateLoader
+    config['pylons.app_globals'].genshi_loader = TemplateLoader(
+        paths['templates'], auto_reload=True)
 
     # CONFIGURATIOr OPTIONS HERE (note: all config options will override
     # any Pylons config options)

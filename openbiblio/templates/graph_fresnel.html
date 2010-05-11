@@ -1,36 +1,36 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-		<title>Bibliographica (beta)</title>
-        <link rel="stylesheet" type="text/css" href="http://knowledgeforge.net/media/css/master.css" />
+<html xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  >
+
+  <py:def function="page_title">Graph</py:def> 
+
+  <py:def function="optional_head">
 		<link type="text/css" href="css/overcast/jquery-ui-1.8.1.custom.css" rel="stylesheet" />	
 		<link type="text/css" href="css/fresnel.css" rel="stylesheet" />	
-        <style>
-            div.fresnel_controls {
-                display: block;
-            }
-            div.fresnel_edit_controls {
-                float: right;
-            }
-            div.fresnel_controls ul {
-                margin: 0;
-                padding: 0;
-            }
-            div.fresnel_controls li {
-                margin: 2px;
-                position: relative;
-                padding: 4px 0;
-                cursor: pointer;
-                float: left;
-                list-style: none;
-            }
-            div.fresnel_controls span.ui-icon {
-                float: left;
-                margin: 0 4px;
-            }
-        </style>
-		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+    <style>
+        div.fresnel_controls {
+            display: block;
+        }
+        div.fresnel_edit_controls {
+            float: right;
+        }
+        div.fresnel_controls ul {
+            margin: 0;
+            padding: 0;
+        }
+        div.fresnel_controls li {
+            margin: 2px;
+            position: relative;
+            padding: 4px 0;
+            cursor: pointer;
+            float: left;
+            list-style: none;
+        }
+        div.fresnel_controls span.ui-icon {
+            float: left;
+            margin: 0 4px;
+        }
+    </style>
 		<script type="text/javascript" src="ui/jquery-ui-1.8.1.custom.min.js"></script>
         <script type="text/javascript" src="js/jquery.rdfquery.rules.min-1.0.js"></script>
         <script type="text/javascript" src="js/jquery.ordf.js"></script>
@@ -86,32 +86,13 @@
                 this.data = {};
 			});
 		</script>
-	</head>
-	<body>
-        <div id="top">
-            <div id="top-inner">
-                <div id="top-bar">
-                    <h1><a href="http://bibliographica.org/">Bibliographica<sup style="font-size:0.4em;">Beta</sup></a></h1>
-                </div>
-            </div>
-            <ul id="subnav">
-                <li>
-                    <input type="text" size="80" id="resource" />
-                    <input type="submit" id="add_resource" />
-                    <input type="submit" id="fetch_resource" />
-                </li>
-            </ul>
-        </div>
-        <div id="main">
-<!--    		<div id="tabs">
-    			<ul>
-                    <li><a href="#viewer">Viewer</a></li>
-    			</ul> -->
-                <div id="viewer"></div>
-<!--    		</div> -->
-        </div>
-        <div id="primary" class="sidebar"></div>
-	</body>
+  </py:def>
+
+  <div py:match="content">
+    <div id="viewer"></div>
+  </div>
+
+  <xi:include href="base.html" />
 </html>
 
 
