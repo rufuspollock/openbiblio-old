@@ -59,9 +59,9 @@
                 $("#primary")
                     .GraphChooser({ fresnel: fresnel });
 */
-//                var store = new $.ordf();
-//                store.recv({ uri: test_graph,
-//                              callback: function (g) { fresnel.addData(g) }});
+                var store = new $.ordf();
+                store.recv({ uri: "${c.graph.identifier}",
+                              callback: function (g) { fresnel.addData(g) }});
 				// Tabs
 				$('#tabs').tabs();
                 $('#resource')
