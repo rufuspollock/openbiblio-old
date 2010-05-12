@@ -23,6 +23,10 @@ def make_map():
     map.connect('/proxy', controller='proxy', action='index')
     map.connect('sparql', '/sparql', controller='sparql', action='index')
     map.connect('search', '/search', controller='search', action='index')
+    map.connect('home', '/', controller='graph', action='index')
+    map.connect('graph', '/graph', controller='graph', action='index')
+    # for the time being catch everything but soon we will be more specific
+    # e.g. restrict to work|person|entity ...
     map.connect('/*path', controller='graph', action='index')
 
     return map
