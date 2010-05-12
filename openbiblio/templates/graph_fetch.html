@@ -1,0 +1,92 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  py:strip=""
+  >
+
+  <py:def function="page_title">Graph</py:def> 
+
+  <py:def function="optional_head">
+		<link type="text/css" href="css/overcast/jquery-ui-1.8.1.custom.css" rel="stylesheet" />	
+		<link type="text/css" href="css/fresnel.css" rel="stylesheet" />	
+    <style>
+        div.fresnel_controls {
+            display: block;
+        }
+        div.fresnel_edit_controls {
+            float: right;
+        }
+        div.fresnel_controls ul {
+            margin: 0;
+            padding: 0;
+        }
+        div.fresnel_controls li {
+            margin: 2px;
+            position: relative;
+            padding: 4px 0;
+            cursor: pointer;
+            float: left;
+            list-style: none;
+        }
+        div.fresnel_controls span.ui-icon {
+            float: left;
+            margin: 0 4px;
+        }
+    </style>
+		<script type="text/javascript" src="/js/jquery-ui-1.8.1.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.rdfquery.rules.min-1.0.js"></script>
+        <script type="text/javascript" src="js/jquery.ordf.js"></script>
+        <script type="text/javascript" src="js/jquery.fresnel.js"></script>
+        <script type="text/javascript" src="js/jquery.fresnel.widgets.js"></script>
+		<script type="text/javascript">
+            test_lens = "http://bibliographica.org/lens/owl";
+//            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
+//            test_graph = "http://dbpedia.org/resource/Iain_Banks";
+//            test_graph = "http://dbpedia.org/resource/Giovanni_Villani";
+            test_graph = "http://dbpedia.org/resource/Anathem";
+			$(function(){
+                load_default_graph = function() {
+                    var store = new $.ordf();
+                    store.recv({ uri: "${c.graph.identifier}",
+                                 callback: function (g) { fresnel.addData(g) }});
+            }
+            fresnel = new $.rdf.fresnel();
+            fresnel.addFresnel({ uri: test_lens, callback: load_default_graph });
+            $("#viewer")
+                .hide()
+                .Fresnel({ fresnel: fresnel, editable: true })
+                .FresnelControls({ fresnel: fresnel });
+            $('#fetch')
+                .addClass("ui-state-default");
+            $('#resource')
+                .val(test_graph);
+            $('#fetch_resource')
+                .val("Fetch Remote")
+                .click(function (event) {
+                    event.stopPropagation();
+                    var uri = $("#resource").val();
+                    var store = new $.ordf();
+                    store.proxy({ uri: uri,
+                                  callback: function (g) {
+//                                      $("#fetch").hide();
+                                      $("#viewer").show();
+                                      fresnel.addData(g);
+                                }
+                    });
+                });
+            this.data = {};
+    	});
+		</script>
+  </py:def>
+
+  <div py:match="content">
+    <div id="fetch">
+        <input type="text" size="60" id="resource" />
+        <input type="submit" id="fetch_resource" />
+    </div>
+    <div id="viewer"></div>
+  </div>
+
+  <xi:include href="base.html" />
+</html>
+
+
