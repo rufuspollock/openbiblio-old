@@ -44,48 +44,42 @@
 //            test_graph = "http://dbpedia.org/resource/Giovanni_Villani";
             test_graph = "http://dbpedia.org/resource/Anathem";
 			$(function(){
-                fresnel = new $.rdf.fresnel();
-                fresnel.addFresnel({ uri: test_lens });
-                $("#viewer")
-                    .Fresnel({ fresnel: fresnel, editable: true })
-                    .FresnelControls({ fresnel: fresnel });
-/*
-                $("<li></li>")
-                    .css({ "padding-left": "5px" })
-                    .LensChooser({ fresnel: fresnel, uri: test_lens })
-                    .appendTo("#subnav");
- */
+                load_default_graph = function() {
+                    var store = new $.ordf();
+                    store.recv({ uri: "${c.graph.identifier}",
+                                 callback: function (g) { fresnel.addData(g) }});
+            }
+            fresnel = new $.rdf.fresnel();
+            fresnel.addFresnel({ uri: test_lens, callback: load_default_graph });
+            $("#viewer")
+                .Fresnel({ fresnel: fresnel, editable: true })
+                .FresnelControls({ fresnel: fresnel });
 /*
                 $("#primary")
                     .GraphChooser({ fresnel: fresnel });
 */
-                var store = new $.ordf();
-                store.recv({ uri: "${c.graph.identifier}",
-                              callback: function (g) { fresnel.addData(g) }});
-				// Tabs
-				$('#tabs').tabs();
-                $('#resource')
-                    .val(test_graph);
-                $('#add_resource')
-                    .val("Load from Store")
-                    .click(function (event) {
-                        event.stopPropagation();
-                        var uri = $("#resource").val();
-                        var store = new $.ordf();
-                        store.recv({ uri: uri,
-                                     callback: function (g) { fresnel.addData(g); }});
-                    });
-                $('#fetch_resource')
-                    .val("Fetch Remote")
-                    .click(function (event) {
-                        event.stopPropagation();
-                        var uri = $("#resource").val();
-                        var store = new $.ordf();
-                        store.proxy({ uri: uri,
-                                      callback: function (g) { fresnel.addData(g); }});
-                    });
-                this.data = {};
-			});
+            $('#resource')
+                .val(test_graph);
+            $('#add_resource')
+                .val("Load from Store")
+                .click(function (event) {
+                    event.stopPropagation();
+                    var uri = $("#resource").val();
+                    var store = new $.ordf();
+                    store.recv({ uri: uri,
+                                 callback: function (g) { fresnel.addData(g); }});
+                });
+            $('#fetch_resource')
+                .val("Fetch Remote")
+                .click(function (event) {
+                    event.stopPropagation();
+                    var uri = $("#resource").val();
+                    var store = new $.ordf();
+                    store.proxy({ uri: uri,
+                                  callback: function (g) { fresnel.addData(g); }});
+                });
+            this.data = {};
+    	});
 		</script>
   </py:def>
 
