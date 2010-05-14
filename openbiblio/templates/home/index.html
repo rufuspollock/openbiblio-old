@@ -1,0 +1,29 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  >
+
+  <py:def function="page_title">Home</py:def> 
+
+  <div py:match="content">
+    <h2>Welcome to ${c.site_title}</h2>
+    <p>The ${c.site_title} service is an <strong><a
+        href="http://opendefinition.org/">open</a> catalogue of cultural
+      works</strong> that grew out of the <a
+      href="http://www.publicdomainworks.net/">Public Domain Works</a> project
+    (started in 2005).</p>
+    <p>The <strong>Bibliographica software</strong> that powers this site is
+    <strong>open-source</strong> and designed <strong>for
+      others to use</strong>. Moreover, different bibliographica instances can
+    co-operatively share information. Other significant features include
+    <strong>native RDF support</strong>,
+    <strong>FRBR-like domain model</strong>, and <strong>wiki-like recording of
+      every change</strong>. <a
+      href="url('about')">Find out more &raquo;</a>.</p>
+
+    <p>There are currently <strong>${c.person_total} persons, ${c.item_total} items and ${c.work_total} works</strong> in the database.</p> 
+
+    <xi:include href="../search_form.html" />
+  </div>
+
+  <xi:include href="../base.html" />
+</html>

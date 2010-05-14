@@ -20,6 +20,7 @@ def make_map():
 
     # CUSTOM ROUTES HERE
 
+    map.connect('home', '/', controller='home', action='index')
     map.connect('/proxy', controller='proxy', action='index')
     map.connect('sparql', '/sparql', controller='sparql', action='index')
     map.connect('search', '/search', controller='search', action='index')
