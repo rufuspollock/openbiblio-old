@@ -55,6 +55,11 @@ fourstore.args = biblio,soft_limit=-1
 pairtree.args = %(cache_dir)s/pairtree
 xapian.args = 127.0.0.1:44332
 
+## deliverance proxying
+## set to any value to enable
+# deliverance.enabled = 1
+## base url to proxy to
+# deliverance.dest = http://blog.bibliographica.org
 
 ## ==============================================
 ## Logging configuration

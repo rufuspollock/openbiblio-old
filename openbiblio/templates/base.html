@@ -64,6 +64,11 @@
       <li><a href="${url('import')}">Import</a></li>
       <li><a href="${url('search')}">Search</a></li>
       <li><a href="${url('sparql')}">SPARQL</a></li>
+      <li><a href="http://blog.bibliographica.org/">Blog</a></li>
+      <py:if test="c.deliverance_enabled">
+      <li><a href="${url('about')}">About</a></li>
+      <li><a href="${url('get-involved')}">Get Involved</a></li>
+      </py:if>
       <navlinks>
       </navlinks>
     </ul>
@@ -76,7 +81,7 @@
   </div><!-- /top -->
   
   <div id="main">
-    <div class="post">
+    <div id="content">
     <content>
     </content>
     </div>

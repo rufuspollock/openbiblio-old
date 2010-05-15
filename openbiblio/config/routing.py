@@ -21,10 +21,14 @@ def make_map():
     # CUSTOM ROUTES HERE
 
     map.connect('home', '/', controller='home', action='index')
+    # proxied items
+    map.connect('about', '/about', controller='home', action='about')
+    map.connect('get-involved', '/get-involved', controller='home',
+            action='get_involved')
+
     map.connect('/proxy', controller='proxy', action='index')
     map.connect('sparql', '/sparql', controller='sparql', action='index')
     map.connect('search', '/search', controller='search', action='index')
-    map.connect('home', '/', controller='graph', action='index')
     map.connect('graph', '/graph', controller='graph', action='index')
     map.connect('import', '/import', controller='remote', action='index')
     # for the time being catch everything but soon we will be more specific
