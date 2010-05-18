@@ -33,10 +33,10 @@
         }
     </style>
 		<script type="text/javascript" src="/js/jquery-ui-1.8.1.custom.min.js"></script>
-        <script type="text/javascript" src="js/jquery.rdfquery.rules.min-1.0.js"></script>
-        <script type="text/javascript" src="js/jquery.ordf.js"></script>
-        <script type="text/javascript" src="js/jquery.fresnel.js"></script>
-        <script type="text/javascript" src="js/jquery.fresnel.widgets.js"></script>
+        <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
+        <script type="text/javascript" src="/js/jquery.ordf.js"></script>
+        <script type="text/javascript" src="/js/jquery.fresnel.js"></script>
+        <script type="text/javascript" src="/js/jquery.fresnel.widgets.js"></script>
 		<script type="text/javascript">
             test_lens = "http://bibliographica.org/lens/owl";
 //            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
@@ -45,41 +45,18 @@
             test_graph = "http://dbpedia.org/resource/Anathem";
 			$(function(){
                 load_default_graph = function() {
+                    console.log("loading default graph ${c.graph.identifier}");
                     var store = new $.ordf();
                     store.recv({ uri: "${c.graph.identifier}",
                                  callback: function (g) { fresnel.addData(g) }});
-            }
-            fresnel = new $.rdf.fresnel();
-            fresnel.addFresnel({ uri: test_lens, callback: load_default_graph });
-            $("#viewer")
-                .Fresnel({ fresnel: fresnel, editable: true })
-                .FresnelControls({ fresnel: fresnel });
-/*
-                $("#primary")
-                    .GraphChooser({ fresnel: fresnel });
-*/
-            $('#resource')
-                .val(test_graph);
-            $('#add_resource')
-                .val("Load from Store")
-                .click(function (event) {
-                    event.stopPropagation();
-                    var uri = $("#resource").val();
-                    var store = new $.ordf();
-                    store.recv({ uri: uri,
-                                 callback: function (g) { fresnel.addData(g); }});
-                });
-            $('#fetch_resource')
-                .val("Fetch Remote")
-                .click(function (event) {
-                    event.stopPropagation();
-                    var uri = $("#resource").val();
-                    var store = new $.ordf();
-                    store.proxy({ uri: uri,
-                                  callback: function (g) { fresnel.addData(g); }});
-                });
-            this.data = {};
-    	});
+                }
+                fresnel = new $.rdf.fresnel();
+                fresnel.addFresnel({ uri: test_lens, callback: load_default_graph });
+                $("#viewer")
+                    .Fresnel({ fresnel: fresnel, editable: true })
+                    .FresnelControls({ fresnel: fresnel });
+                this.data = {};
+    	    });
 		</script>
   </py:def>
 
