@@ -39,42 +39,34 @@
         <script type="text/javascript" src="js/jquery.fresnel.widgets.js"></script>
 		<script type="text/javascript">
             test_lens = "http://bibliographica.org/lens/owl";
-//            test_graph = "http://upstream.openlibrary.org/books/OL2060998M.rdf";
-//            test_graph = "http://dbpedia.org/resource/Iain_Banks";
-//            test_graph = "http://dbpedia.org/resource/Giovanni_Villani";
             test_graph = "http://dbpedia.org/resource/Anathem";
 			$(function(){
-                load_default_graph = function() {
-                    var store = new $.ordf();
-                    store.recv({ uri: "${c.graph.identifier}",
-                                 callback: function (g) { fresnel.addData(g) }});
-            }
-            fresnel = new $.rdf.fresnel();
-            fresnel.addFresnel({ uri: test_lens, callback: load_default_graph });
-            $("#viewer")
-                .hide()
-                .Fresnel({ fresnel: fresnel, editable: true })
-                .FresnelControls({ fresnel: fresnel });
-            $('#fetch')
-                .addClass("ui-state-default");
-            $('#resource')
-                .val(test_graph);
-            $('#fetch_resource')
-                .val("Fetch Remote")
-                .click(function (event) {
-                    event.stopPropagation();
-                    var uri = $("#resource").val();
-                    var store = new $.ordf();
-                    store.proxy({ uri: uri,
-                                  callback: function (g) {
-//                                      $("#fetch").hide();
-                                      $("#viewer").show();
-                                      fresnel.addData(g);
-                                }
+                fresnel = new $.rdf.fresnel();
+                fresnel.addFresnel({ uri: test_lens });
+                $("#viewer")
+                    .hide()
+                    .Fresnel({ fresnel: fresnel, editable: true })
+                    .FresnelControls({ fresnel: fresnel });
+                $('#fetch')
+                    .addClass("ui-state-default");
+                $('#resource')
+                    .val(test_graph);
+                $('#fetch_resource')
+                    .val("Fetch Remote")
+                    .click(function (event) {
+                        event.stopPropagation();
+                        var uri = $("#resource").val();
+                        var store = new $.ordf();
+                        store.proxy({ uri: uri,
+                                      callback: function (g) {
+    //                                      $("#fetch").hide();
+                                          $("#viewer").show();
+                                          fresnel.addData(g);
+                                    }
+                        });
                     });
-                });
-            this.data = {};
-    	});
+                this.data = {};
+        	});
 		</script>
   </py:def>
 
