@@ -15,6 +15,16 @@
         div.fresnel_edit_controls {
             float: right;
         }
+        div.fresnel_value_editor label {
+            font-size: 10pt;
+            float: left;
+        }
+        div.fresnel_value_editor_value {
+            clear: both;
+        }
+        div.fresnel_value_editor_options {
+            clear: both;
+        }
         div.fresnel_controls ul {
             margin: 0;
             padding: 0;
@@ -45,7 +55,6 @@
             test_graph = "http://dbpedia.org/resource/Anathem";
 			$(function(){
                 load_default_graph = function() {
-                    console.log("loading default graph ${c.graph.identifier}");
                     var store = new $.ordf();
                     store.recv({ uri: "${c.graph.identifier}",
                                  callback: function (g) { fresnel.addData(g) }});
