@@ -8,7 +8,7 @@ import openbiblio.lib.app_globals as app_globals
 import openbiblio.lib.helpers
 from openbiblio.config.routing import make_map
 
-from ordf.pylons.handler import init_handler
+from ordf.handler import init_handler
 import openbiblio
 
 def load_environment(global_conf, app_conf):

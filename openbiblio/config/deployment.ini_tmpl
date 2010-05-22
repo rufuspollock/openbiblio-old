@@ -47,10 +47,10 @@ openlibrary_authors = http://openlibrary.org/static/jsondump/authors.json.gz
 openlibrary_editions = http://openlibrary.org/static/jsondump/editions.json.gz
 gutenberg_marc = http://www.cucat.org/library/pgmarc.mrc.zip
 
-ordf.storage = pairtree
-#ordf.indices = fourstore
-#ordf.indices = xapian
-#ordf.indices = fourstore,xapian
+ordf.readers = pairtree
+#ordf.writers = pairtree,fourstore
+#ordf.writers = pairtree,xapian
+#ordf.writers = pairtree,fourstore,xapian
 fourstore.args = biblio,soft_limit=-1
 pairtree.args = %(cache_dir)s/pairtree
 xapian.args = 127.0.0.1:44332
