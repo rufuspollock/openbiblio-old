@@ -31,6 +31,7 @@ def make_map():
     map.connect('search', '/search', controller='search', action='index')
     map.connect('graph', '/graph', controller='graph', action='index')
     map.connect('import', '/import', controller='remote', action='index')
+    map.connect('uuid', '/api/uuidalloc', controller='uuidalloc', action='index')
 
     # for the time being catch everything but soon we will be more specific
     # e.g. restrict to work|person|entity ...
