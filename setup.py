@@ -39,7 +39,6 @@ setup(
     fetch = openbiblio.commands.fetch:Fetch
     fixtures = openbiblio.commands:Fixtures
     lenses = openbiblio.commands:Lenses
-    reindex = openbiblio.commands.reindex:Indexer
     load_pdw = openbiblio.commands.pdw_loader:Loader
     load_marc = openbiblio.commands.marc_loader:Loader
     load_gut = openbiblio.commands.gut_loader:Loader
