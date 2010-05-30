@@ -30,6 +30,7 @@ def make_map():
     map.connect('sparql', '/sparql', controller='sparql', action='index')
     map.connect('search', '/search', controller='search', action='index')
     map.connect('graph', '/graph', controller='graph', action='index')
+    map.connect('graph', '/add', controller='graph', action='add')
     map.connect('import', '/import', controller='remote', action='index')
     map.connect('uuid', '/api/uuidalloc', controller='uuidalloc', action='index')
 

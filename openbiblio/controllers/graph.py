@@ -14,6 +14,3 @@ class GraphController(_GraphController):
     def _render(self):
         # stuff other things in c
         return render('graph_fresnel.html')
-
-    def test(self):
-        return render('home/index.html')
