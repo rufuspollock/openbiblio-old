@@ -2,8 +2,8 @@
 Parse marc data into a suitable form for DB.
 '''
 
-from rdflib.term import Literal, URIRef
-from rdflib.namespace import _XSD_NS as XSD
+from ordf.term import Literal, URIRef
+from ordf.namespace import XSD
 from time import strptime
 from swiss import date
 from pprint import pprint
@@ -48,7 +48,6 @@ dcmap = {
         ("260", "c", None),
         ("260", "g", None),
         ),
-    "dc:description": tuple(_description()),
     "dc:format": (
         ("340", None, None),
         ("856", "q", None),
@@ -56,8 +55,6 @@ dcmap = {
     "dc:identifier": (
         ("010", None, None),
         ("015", None, None),
-        ("020", "a", None),
-        ("022", "a", None),
         ("024", "a", None),
         ("084", None, None),
         ("856", "u", None),
@@ -85,8 +82,31 @@ dcmap = {
         ("786", "o", None),
         ("786", "t", None),
         ),
+    "marc:isbn": (
+        ("020", "a", None),
+        ),
+    "marc:issn": (
+        ("022", "a", None),
+        ),
+    "marc:lccn": (
+        ("050", "a", None),
+        ),
+    "marc:nlm": (
+        ("060", None, None),
+        ),
+    "marc:scc": (
+        ("072", "a", None),
+        ),
+    "marc:ddc": (
+        ("082", "a", None),
+        ("082", "b", None),
+        ),
+    "marc:lcsh": (
+        ("630", None, None),
+        ("650", None, None),
+        ),
     "dc:subject": [(str("%03d" % x), None, None) for x in
-                    (50, 60, 72, 80, 82, 600, 610, 611, 630, 650, 653)],
+                    (72, 80, 600, 610, 611, 653)],
     "dc:title": [(str(x), None, None) for x in (210, 222, 240, 242, 243, 245, 246, 247)],
     "dc:type": (
         ("655", None, None),
@@ -103,7 +123,7 @@ dcmap = {
         ),
     
     "marc:pubnum": (
-        ("028", None, None),
+        ("028", "a", None),
         ),
     "marc:charset": (
         ("066", None, None),
@@ -111,9 +131,17 @@ dcmap = {
     "marc:edition": (
         ("250", None, None),
         ),
-    "marc:physdesc": (
-        ("300", None, None),
+    "dc:extent": (
+        ("300", "a", None), # extent
         ),
+    "rdfs:comment": (
+        ("300", "b", None), # sound characteristics
+        ("300", "c", None), # colour characteristics
+        ("300", "d", None), # dimensions
+        ("300", "e", None), # accompanying material
+        ("300", "f", None), # speed
+        ),
+    "dc:description": list(_description()),
     "marc:pubseq": (
         ("362", None, None),
         ),
@@ -146,6 +174,8 @@ class _Clean(object):
             return lambda x: Literal(name(x))
         elif field in ("dc:date",):
             return self.date
+        elif field in ("dc:subject",):
+            return self.subject
         return self.default
 
     def default(self, s):
@@ -159,6 +189,9 @@ class _Clean(object):
         except UnicodeError:
             s = s
         return Literal(s)
+
+    def subject(self, subject):
+        return Literal(subject)
 
     def dates(self, dates_str):
         if not dates_str:
