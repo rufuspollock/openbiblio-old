@@ -66,8 +66,10 @@ dcmap = {
         ("043", None, None), ## TODO: normalise geographic representation
         ),
     "dc:language": [("041", x, None) for x in "abdefghj"] + [("546", None, None)],
-    "dc:publisher": (
+    "marc:publoc": (
         ("260", "a", None),
+        ),
+    "marc:publisher": (
         ("260", "b", None),
         ),
     "dc:relation": [("530", None, None)] + \

@@ -1,0 +1,41 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix obp: <http://purl.org/NET/obp/> .
+
+obp:Work a owl:Class ;
+	 rdfs:label "Work" .
+obp:Item a owl:Class ;
+	 rdfs:label "Item" .
+
+obp:work a owl:ObjectProperty ;
+	 rdfs:label "work" ;
+	 rdfs:domain obp:Item ;
+	 rdfs:range obp:Work ;
+	 owl:inverseOf obp:hasItem .
+
+obp:hasItem a owl:ObjectProperty ;
+	 rdfs:label "has item" ;
+	 rdfs:domain obp:Work ;
+	 rdfs:range obp:Item ;
+	 owl:inverseOf obp:work .
+
+obp:contribution a owl:ObjectProperty ;
+	 rdfs:label "contribution" ;
+	 rdfs:domain foaf:Person ;
+	 rdfs:range obp:Work .
+
+obp:published a owl:ObjectProperty ;
+	 rdfs:label "published" ;
+	 rdfs:domain dc:agent ;
+	 rdfs:range obp:item .
+
+obp:edition a owl:DatatypeProperty ;
+	 rdfs:label "edition" ;
+	 rdfs:domain obp:Item .
+
+obp:issue a owl:DatatypeProperty ;
+	 rdfs:label "issue" ;
+	 rdfs:domain obp:Item .

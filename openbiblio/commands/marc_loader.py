@@ -91,18 +91,46 @@ class Loader(Command):
 
             graph = self.toGraph(c, subj)
             graph.add((subj, RDF.type, FOAF.Person))
+            graph.add((subj, RDF.type, DC.Agent))
             for s,p,o in graph.triples((subj, FOAF.name, None)):
                 graph.add((subj, RDFS.label, o))
             cgraphs[subj] = graph
-            ctx.add(graph)
 
         uuid = self.record_uuid(record)
         i = URIRef("%sitem/%s" % (self.options.base, uuid))
         w = URIRef("%swork/%s" % (self.options.base, uuid))
 
+        ## add linkage from authors and other contributors to the work
+        for c in cgraphs:
+            g = cgraphs[c]
+            g.add((g.identifier, OBP.contribution, w))
+
         item = self.toGraph(record, i)
         item.add((i, RDF.type, OBP.Item))
         item.add((i, OBP.work, w))
+
+        publishers = {}
+        for s,p,o in item.triples((i, MARC["publisher"], None)):
+            loc = [c for (a, b, c) in item.triples((i, MARC["publoc"], None))]
+            v = [o] + loc
+            v.sort()
+            uniq = reduce(lambda x,y: x+y, v)
+            h = md5(uniq.encode("utf-8"))
+            pubid = URIRef("%sperson/%s" % (self.options.base, UUID(h.hexdigest())))
+            item.add((i, DC["publisher"], pubid))
+            pub = publishers.setdefault(pubid, handler.get(pubid))
+            pub.add((pubid, RDF["type"], DC["Agent"]))
+            pub.add((pubid, FOAF["name"], o))
+            pub.add((pubid, RDFS["label"], o))
+            for l in loc:
+                pub.add((pubid, DC["spatial"], l))
+        item.remove((i, MARC["publisher"], None))
+        item.remove((i, MARC["publoc"], None))
+
+        for pubid in publishers:
+            g = publishers[pubid]
+            g.add((pubid, OBP["published"], i))
+            ctx.add(g)
 
         self.clean(item)
 
@@ -125,9 +153,10 @@ class Loader(Command):
         for s,p,o in g.triples((None, None, None)):
             if str(p).startswith("marc:"):
                 print g.serialize(format="n3")
-                from sys import exit
-                exit()
-
+        print g.serialize(format="n3")
+        from sys import exit
+        exit()
+        
         ctx.commit()
 
     	self._total += 1
