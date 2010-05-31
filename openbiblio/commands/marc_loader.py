@@ -8,7 +8,7 @@ from openbiblio.lib import marc
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph, ConjunctiveGraph
 from ordf.namespace import namespaces, Namespace, DC, DCAM, RDF, FOAF, OBP, ORE, OWL, RDFS
-from ordf.term import URIRef, BNode
+from ordf.term import URIRef, BNode, Literal
 from hashlib import md5
 from uuid import UUID
 
@@ -86,10 +86,12 @@ class Loader(Command):
             v.sort()
             uniq = reduce(lambda x,y: x+y, v)
             h = md5(uniq.encode("utf-8"))
-            subj = URIRef("%sperson/%s" % (self.options.base, UUID(h.hexdigest()),))
+            cuuid = UUID(h.hexdigest())
+            subj = URIRef("%sperson/%s" % (self.options.base, cuuid))
             contributors[i] = subj
 
-            graph = self.toGraph(c, subj)
+            graph = cgraphs.setdefault(subj, self.toGraph(c, subj))
+            graph.uuid = cuuid
             graph.add((subj, RDF.type, FOAF.Person))
             graph.add((subj, RDF.type, DC.Agent))
             for s,p,o in graph.triples((subj, FOAF.name, None)):
@@ -116,9 +118,11 @@ class Loader(Command):
             v.sort()
             uniq = reduce(lambda x,y: x+y, v)
             h = md5(uniq.encode("utf-8"))
-            pubid = URIRef("%sperson/%s" % (self.options.base, UUID(h.hexdigest())))
+            puuid = UUID(h.hexdigest())
+            pubid = URIRef("%sperson/%s" % (self.options.base, puuid))
             item.add((i, DC["publisher"], pubid))
             pub = publishers.setdefault(pubid, handler.get(pubid))
+            pub.uuid = puuid
             pub.add((pubid, RDF["type"], DC["Agent"]))
             pub.add((pubid, FOAF["name"], o))
             pub.add((pubid, RDFS["label"], o))
@@ -130,7 +134,6 @@ class Loader(Command):
         for pubid in publishers:
             g = publishers[pubid]
             g.add((pubid, OBP["published"], i))
-            ctx.add(g)
 
         self.clean(item)
 
@@ -146,16 +149,76 @@ class Loader(Command):
             work.add((w, DC["title"], o))
             work.add((w, RDFS.label, o))
             
+        aggid = URIRef("%saggregate/work/%s" % (self.options.base, uuid))
+        agg = handler.get(aggid)
+        agg.add((aggid, RDF["type"], ORE["Aggregation"]))
+        agg.add((aggid, ORE["aggregates"], w))
+        for c in cgraphs:
+            g = cgraphs[c]
+            agg.add((aggid, ORE["aggregates"], g.identifier))
+            g.add((g.identifier, ORE["isAggregatedBy"], aggid))
+        label = u" ".join([o for s,p,o in work.triples((w, RDFS.label, None))])
+        label = Literal(u"Work: %s" % label)
+        agg.add((aggid, RDFS.label, label))
+        agg.add((aggid, DC["title"], label))
+        ctx.add(agg)
+
+        aggid = URIRef("%saggregate/item/%s" % (self.options.base, uuid))
+        agg = handler.get(aggid)
+        agg.add((aggid, RDF["type"], ORE["Aggregation"]))
+        agg.add((aggid, ORE["aggregates"], i))
+        for p in publishers:
+            g = publishers[p]
+            agg.add((aggid, ORE["aggregates"], g.identifier))
+            g.add((g.identifier, ORE["isAggregatedBy"], aggid))
+        label = u" ".join([o for s,p,o in item.triples((i, RDFS.label, None))])
+        label = Literal(u"Item: %s" % label)
+        agg.add((aggid, RDFS.label, label))
+        agg.add((aggid, DC["title"], label))
+        ctx.add(agg)
+
+        for c in cgraphs:
+            g = cgraphs[c]
+            aggid = URIRef("%s/aggregate/person/%s" % (self.options.base, g.uuid))
+            agg = handler.get(aggid)
+            agg.add((aggid, RDF["type"], ORE["Aggregation"]))
+            agg.add((aggid, ORE["aggregates"], w))
+            agg.add((aggid, ORE["aggregates"], g.identifier))
+            g.add((g.identifier, ORE["isAggregatedBy"], aggid))
+            work.add((w, ORE["isAggregatedBy"], aggid))
+            label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
+            label = Literal(u"Contributor: %s" % label)
+            agg.add((aggid, RDFS.label, label))
+            agg.add((aggid, DC["title"], label))
+            ctx.add(g)
+            ctx.add(agg)
+
+        for p in publishers:
+            g = publishers[p]
+            aggid = URIRef("%s/aggregate/person/%s" % (self.options.base, g.uuid))
+            agg = handler.get(aggid)
+            agg.add((aggid, RDF["type"], ORE["Aggregation"]))
+            agg.add((aggid, ORE["aggregates"], i))
+            agg.add((aggid, ORE["aggregates"], g.identifier))
+            g.add((g.identifier, ORE["isAggregatedBy"], aggid))
+            item.add((i, ORE["isAggregatedBy"], aggid))
+            label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
+            label = Literal(u"Publisher: %s" % label)
+            agg.add((aggid, RDFS.label, label))
+            agg.add((aggid, DC["title"], label))
+            ctx.add(g)
+            ctx.add(agg)
+
         ctx.add(item)
         ctx.add(work)
-        
+
         g = ConjunctiveGraph(store=ctx.store)
         for s,p,o in g.triples((None, None, None)):
             if str(p).startswith("marc:"):
                 print g.serialize(format="n3")
-        print g.serialize(format="n3")
-        from sys import exit
-        exit()
+#        print g.serialize(format="n3")
+#        from sys import exit
+#        exit()
         
         ctx.commit()
 
