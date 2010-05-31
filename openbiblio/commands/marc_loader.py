@@ -180,17 +180,25 @@ class Loader(Command):
         """
         i = item.identifier
         for s,p,o in item.triples((i, MARC["isbn"], None)):
-            item.add((i, OWL.sameAs, ISBN[o.strip(" -")]))
+            isbn = o.strip(" -")
+            item.add((i, OBP["isbn"], isbn))
+            item.add((i, OWL.sameAs, URIRef("urn:isbn:%s" % isbn)))
+            item.add((i, OWL.sameAs, URIRef("http://purl.org/NET/book/isbn/%s#book" % isbn)))
+            item.add((i, OWL.sameAs, URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % isbn)))
         item.remove((i, MARC["isbn"], None))
         for s,p,o in item.triples((i, MARC["issn"], None)):
-            item.add((i, OWL.sameAs, ISSN[o.strip(" -")]))
+            issn = o.strip(" -")
+            item.add((i, OBP["issn"], issn))
+            item.add((i, OWL.sameAs, URIRef("urn:issn:%s" % issn)))
         item.remove((i, MARC["issn"], None))
         for s,p,o in item.triples((i, MARC["lccn"], None)):
-            item.add((i, OWL.sameAs, URIRef(u"http://lccn.loc.gov/" + o.strip(" -"))))
+            lccn = o.strip(" -")
+            item.add((i, OWL.sameAs, URIRef(u"http://lccn.loc.gov/" + lccn)))
+            item.add((i, OBP["lccn"], lccn))
         item.remove((i, MARC["lccn"], None))
 
         for s,p,o in item.triples((i, MARC["nlm"], None)):
-            item.add((i, DC["identifier"], o))
+            item.add((i, OBP["nlmcn"], o.strip(" -")))
         item.remove((i, MARC["nlm"], None))
 
         for s,p,o in item.triples((i, MARC["lcsh"], None)):

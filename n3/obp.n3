@@ -39,3 +39,20 @@ obp:edition a owl:DatatypeProperty ;
 obp:issue a owl:DatatypeProperty ;
 	 rdfs:label "issue" ;
 	 rdfs:domain obp:Item .
+
+obp:isbn a owl:DatatypeProperty ;
+	 rdfs:label "ISBN" ;
+	 rdfs:domain obp:Item .
+
+obp:issn a owl:DatatypeProperty ;
+	 rdfs:label "ISSN" ;
+	 rdfs:domain obp:Item .
+
+obp:lccn a owl:DatatypeProperty ;
+	 rdfs:label "LCCN" ;
+	 rdfs:domain obp:Item .
+
+obp:nlmcn a owl:DatatypeProperty ;
+	 rdfs:label "NLMCN" ;
+	 rdfs:domain obp:Item .
+
