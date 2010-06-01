@@ -7,7 +7,7 @@ from openbiblio.lib import marc
 
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph, ConjunctiveGraph
-from ordf.namespace import namespaces, Namespace, DC, DCAM, RDF, FOAF, OBP, ORE, OWL, RDFS
+from ordf.namespace import namespaces, Namespace, DC, DCAM, RDF, FOAF, OBP, ORDF, ORE, OWL, RDFS
 from ordf.term import URIRef, BNode, Literal
 from hashlib import md5
 from uuid import UUID
@@ -153,6 +153,7 @@ class Loader(Command):
         agg = handler.get(aggid)
         agg.add((aggid, RDF["type"], ORE["Aggregation"]))
         agg.add((aggid, ORE["aggregates"], w))
+        agg.add((aggid, ORDF["lens"], URIRef("%slens/work" % self.options.base)))
         for c in cgraphs:
             g = cgraphs[c]
             agg.add((aggid, ORE["aggregates"], g.identifier))
@@ -167,6 +168,7 @@ class Loader(Command):
         agg = handler.get(aggid)
         agg.add((aggid, RDF["type"], ORE["Aggregation"]))
         agg.add((aggid, ORE["aggregates"], i))
+        agg.add((aggid, ORDF["lens"], URIRef("%slens/item" % self.options.base)))
         for p in publishers:
             g = publishers[p]
             agg.add((aggid, ORE["aggregates"], g.identifier))
@@ -179,11 +181,12 @@ class Loader(Command):
 
         for c in cgraphs:
             g = cgraphs[c]
-            aggid = URIRef("%s/aggregate/person/%s" % (self.options.base, g.uuid))
+            aggid = URIRef("%saggregate/person/%s" % (self.options.base, g.uuid))
             agg = handler.get(aggid)
             agg.add((aggid, RDF["type"], ORE["Aggregation"]))
             agg.add((aggid, ORE["aggregates"], w))
             agg.add((aggid, ORE["aggregates"], g.identifier))
+            agg.add((aggid, ORDF["lens"], URIRef("%slens/contributor" % self.options.base)))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
             work.add((w, ORE["isAggregatedBy"], aggid))
             label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
@@ -195,11 +198,12 @@ class Loader(Command):
 
         for p in publishers:
             g = publishers[p]
-            aggid = URIRef("%s/aggregate/person/%s" % (self.options.base, g.uuid))
+            aggid = URIRef("%saggregate/person/%s" % (self.options.base, g.uuid))
             agg = handler.get(aggid)
             agg.add((aggid, RDF["type"], ORE["Aggregation"]))
             agg.add((aggid, ORE["aggregates"], i))
             agg.add((aggid, ORE["aggregates"], g.identifier))
+            agg.add((aggid, ORDF["lens"], URIRef("%slens/publisher" % self.options.base)))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
             item.add((i, ORE["isAggregatedBy"], aggid))
             label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
