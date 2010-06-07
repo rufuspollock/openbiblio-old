@@ -1,0 +1,62 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix fresnel:  <http://www.w3.org/2004/09/fresnel#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix obp:     <http://purl.org/NET/obp/> .
+@prefix ordf:     <http://purl.org/NET/ordf/> .
+@prefix dc:       <http://purl.org/dc/terms/> .
+@prefix :         <http://bibliographica.org/lens/work#> .
+
+<http://bibliographica.org/lens/work> rdfs:label "OBP Work" .
+
+:workDefaultLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:classLensDomain obp:Work ;
+	fresnel:group :obpGroup ;
+	fresnel:showProperties (
+		dc:title
+		dc:date
+		[ a fresnel:PropertyDescription ;
+		  fresnel:property dc:contributor ;
+		  fresnel:sublens :personLens ]
+		fresnel:allProperties
+	) .
+
+:personLens a fresnel:Lens ;
+	fresnel:purpose fresnel:defaultLens ;
+	fresnel:instanceLensDomain obp:Person ;
+	fresnel:group :obpGroup ;
+	fresnel:showProperties (
+		foaf:name
+	) .
+
+:obpGroup a fresnel:Group .
+
+:workFormat a fresnel:Format ;
+	fresnel:classFormatDomain obp:Work ;
+	fresnel:group :obpGroup .
+
+:contributorFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:contributor;
+	fresnel:value fresnel:externalLink ;
+	fresnel:label "Contributor" ;
+	fresnel:group :obpGroup .
+
+:titleFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:title ;
+	fresnel:label fresnel:none;
+	fresnel:propertyStyle "h1_container"^^fresnel:styleClass ;
+	fresnel:valueStyle "h1"^^fresnel:styleClass ;
+	fresnel:group :obpGroup .
+
+:dateFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain dc:date ;
+	fresnel:label "Published" ;
+	fresnel:group :obpGroup .
+
+:nameFormat a fresnel:Format ;
+	fresnel:propertyFormatDomain foaf:name ;
+	fresnel:label fresnel:none;
+	fresnel:group :obpGroup .
+
