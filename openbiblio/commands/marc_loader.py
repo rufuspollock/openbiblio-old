@@ -247,6 +247,10 @@ class Loader(Command):
     def move(self, src, dst, pred):
         for s,p,o in src.triples((src.identifier, pred, None)):
             dst.add((dst.identifier, pred, o))
+            ## and one level down, should really do bnode closure or something
+            for ss,pp,oo in src.triples((o, None, None)):
+                dst.add((ss,pp,oo))
+                src.remove((ss,pp,oo))
         src.remove((src.identifier, pred, None))
 
     def record_uuid(self, record):
