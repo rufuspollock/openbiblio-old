@@ -72,19 +72,24 @@ class Lenses(Command):
     summary = "Load Lenses"
     usage = "config.ini"
     parser = Command.standard_parser(verbose=False)
-
+    parser.add_option("-b", "--base",
+                       default="http://localhost:5000/lens/",
+                       help="Base for lenses (default http:localhost:5000)")
     def command(self):
         from openbiblio import handler
         obproot = os.path.dirname(os.path.dirname(__file__))
         lenses = os.path.join(obproot, "lenses", "*.n3")
-        OB = Namespace("http://bibliographica.org/lens/")
+        OB = Namespace(self.options.base)
         for filename in glob(lenses):
             ident = OB[os.path.basename(filename)[:-3]]
             data = Graph(identifier=ident)
             data.parse(filename, format="n3")
             filename_rdf = filename[:-3] + ".rdf"
             data.serialize(filename_rdf, format="pretty-xml")
-            ## kludge - bnodes have a problem reading directly into the store
-            cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
-            os.system(cmd)
-            handler.pairtree.set(data)
+            if hasattr(handler, "fourstore"):
+                ## kludge - bnodes have a problem reading directly into the store
+                cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
+                os.system(cmd)
+                handler.pairtree.put(data)
+            else:
+                handler.put(data)

@@ -45,6 +45,7 @@
     <script type="text/javascript" src="/js/jquery-ui-1.8.1.custom.min.js"></script>
     <script type="text/javascript" src="/js/jquery.rdfquery.rules.min-1.0.js"></script>
     <script type="text/javascript" src="/js/jquery.ordf.js"></script>
+    <script type="text/javascript" src="/js/jquery.aggregation.js"></script>
     <script type="text/javascript" src="/js/jquery.fresnel.js"></script>
     <script type="text/javascript" src="/js/jquery.fresnel.widgets.js"></script>
     <script type="text/javascript">
@@ -53,17 +54,20 @@
           var base_uri = "http://bibliographica.org/resource/";
           var graph_uri = "${c.graph.identifier if c.graph else ''}";
           var fresnel = new $.rdf.fresnel();
+          var store = new $.ordf();
+          var obp = new $.obp({ fresnel: fresnel, ordf: store, lens: test_lens });
           var load_graph = function() {
-              var store = new $.ordf();
-              if (graph_uri) {
-                  store.recv({ uri: graph_uri,
-                               callback: function (g) { fresnel.addData(g) }});
-              } else {
-        	  store.new_resource({ base_uri: base_uri,
-                                       callback: function (bank) { fresnel.addData(bank) } });
-              }
-          }  
-          fresnel.addFresnel({ uri: test_lens, callback: load_graph });
+              store.new_resource({ base_uri: base_uri,
+                                   callback: function (bank) { fresnel.addData(bank) } });
+          }
+          var load_aggregate = function(g) {
+              obp.loadAggregate(g);
+          }
+          if (!graph_uri) {
+              fresnel.addFresnel({ uri: test_lens, callback: load_graph });
+          } else {
+              store.recv({ uri: graph_uri, callback: load_aggregate });
+          }
           $("#viewer")
               .Fresnel({ fresnel: fresnel, editable: true })
               .FresnelControls({ fresnel: fresnel, base_uri: base_uri });

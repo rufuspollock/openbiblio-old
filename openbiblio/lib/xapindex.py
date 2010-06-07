@@ -1,41 +1,54 @@
 import xapian
-from ordf.graph import Graph
-from ordf.namespace import RDF, RDFS, DC, FOAF
+from ordf.graph import Graph, ConjunctiveGraph, AggregateGraph
+from ordf.namespace import RDF, RDFS, DC, FOAF, ORE
+from logging import getLogger
+
+log = getLogger(__name__)
 
 VAL_URI = 0
 VAL_LABEL = 1
 VAL_TITLE = 2
 VAL_NAME = 3
 
-def index_graph(g):
+def index_store(store):
+    for s,p,o in ConjunctiveGraph(store=store).triples((None, RDF["type"], ORE["Aggregation"])):
+        yield index_aggregate(AggregateGraph(store=store, identifier=s))
+
+def index_aggregate(a):
     doc = xapian.Document()
-    doc.add_value(VAL_URI, g.identifier)
-    docid = u"URI" + g.identifier
+    doc.add_value(VAL_URI, a.aggregate)
+    docid = u"URI" + a.aggregate
     doc.add_term(docid)
 
-    ## create an abbreviated graph to store in the xapian database
-    extract = Graph()
-    for pred in (RDF.type, RDFS.label, RDFS.comment, DC.title, DC.description, FOAF.name):
-        for statement in g.triples((g.identifier, pred, None)):
-            extract.add(statement)
-    doc.set_data(extract.serialize(format="n3"))
+    log.debug("Aggregate: %s" % a.aggregate)
 
-    def add_value(val_id, predicate):
+    def add_value(g, val_id, subject, predicate):
         val = []
-        for s,p,o in g.triples((g.identifier, predicate, None)):
+        for s,p,o in g.triples((subject, predicate, None)):
             if not o.language or o.language == "en": ### TODO: fix this
                 val.append(o)
         if val:
             val = u", ".join(val)
             doc.add_value(val_id, val)
             return val
-    add_value(VAL_LABEL, RDFS.label)
-    title = add_value(VAL_TITLE, DC.title)
-    if title:
-        doc.add_term(u"ZT" + title[:160])
-    name = add_value(VAL_NAME, FOAF.name)
-    if name:
-        doc.add_term(u"NA" + name[:160])
+
+
+    ## create an abbreviated graph to store in the xapian database
+    extract = Graph()
+    add_value(a, VAL_LABEL, a.aggregate, RDFS.label)
+    for g in a.contexts():
+        log.debug("Indexing: %s" % g.identifier)
+
+        for pred in (RDF.type, RDFS.label, RDFS.comment, DC.title, DC.description, FOAF.name):
+            for statement in a.triples((g.identifier, pred, None)):
+                extract.add(statement)
+        title = add_value(g, VAL_TITLE, g.identifier, DC.title)
+        if title:
+            doc.add_term(u"ZT" + title[:160])
+        name = add_value(g, VAL_NAME, g.identifier, FOAF.name)
+        if name:
+            doc.add_term(u"NA" + name[:160])
+    doc.set_data(extract.serialize(format="n3"))
 
     ## take any fields that contain text, stem them according to their
     ## language (or english if unsupported or unspecified) and put them
@@ -44,7 +57,7 @@ def index_graph(g):
     termgen.set_document(doc)
     for pred in (RDFS.label, RDFS.comment, DC.title, DC.description,
                  FOAF.name, FOAF.first_name, FOAF.last_name, FOAF.surname):
-        for s,p,o in g.triples((None, pred, None)):
+        for s,p,o in a.triples((None, pred, None)):
             termgen.increase_termpos()
             if o.language:
                 try:

@@ -34,8 +34,13 @@ class Loader(Command):
     )
     parser.add_option("-b", "--base",
                       dest="base",
-                      default="http://example.org/",
-                      help="RDF base for entities (default http://example.org/)")
+                      default="http://localhost:5000/",
+                      help="RDF base for entities (default http://localhost:5000/)")
+    parser.add_option("-x", "--remove",
+                      dest="remove",
+                      action="store_true",
+                      default=False,
+                      help="Remove old triples")
     def command(self):
         self.cache = swiss.Cache(self.config.get("cache_dir", "data"))
         self.log = logging.getLogger("marc_loader")
@@ -58,9 +63,12 @@ class Loader(Command):
         self.log.info("total: %s titles found: %s authors found: %s" %
                 (self._total, self._titles_found, self._authors_found))
 
-    def toGraph(self, d, subj):
+    def get(self, identifier):
         from openbiblio import handler
-        g = handler.get(subj)
+        return Graph(identifier=identifier) if self.options.remove else handler.get(identifier)
+
+    def toGraph(self, d, subj):
+        g = self.get(subj)
         if not g:
             for k in d:
                 ns, term = k.split(":")
@@ -121,7 +129,7 @@ class Loader(Command):
             puuid = UUID(h.hexdigest())
             pubid = URIRef("%sperson/%s" % (self.options.base, puuid))
             item.add((i, DC["publisher"], pubid))
-            pub = publishers.setdefault(pubid, handler.get(pubid))
+            pub = publishers.setdefault(pubid, self.get(pubid))
             pub.uuid = puuid
             pub.add((pubid, RDF["type"], DC["Agent"]))
             pub.add((pubid, FOAF["name"], o))
@@ -137,7 +145,7 @@ class Loader(Command):
 
         self.clean(item)
 
-        work = handler.get(w)
+        work = self.get(w)
         work.add((w, RDF.type, OBP.Work))
         work.add((w, OBP.hasItem, i))
 
@@ -150,30 +158,36 @@ class Loader(Command):
             work.add((w, RDFS.label, o))
             
         aggid = URIRef("%saggregate/work/%s" % (self.options.base, uuid))
-        agg = handler.get(aggid)
+        agg = self.get(aggid)
         agg.add((aggid, RDF["type"], ORE["Aggregation"]))
         agg.add((aggid, ORE["aggregates"], w))
         agg.add((aggid, ORDF["lens"], URIRef("%slens/work" % self.options.base)))
+        work.add((w, ORE["isAggregatedBy"], aggid))
         for c in cgraphs:
             g = cgraphs[c]
             agg.add((aggid, ORE["aggregates"], g.identifier))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
-        label = u" ".join([o for s,p,o in work.triples((w, RDFS.label, None))])
+        labels = [o for s,p,o in work.triples((w, RDFS.label, None))]
+        labels.sort()
+        label = u", ".join(labels)
         label = Literal(u"Work: %s" % label)
         agg.add((aggid, RDFS.label, label))
         agg.add((aggid, DC["title"], label))
         ctx.add(agg)
 
         aggid = URIRef("%saggregate/item/%s" % (self.options.base, uuid))
-        agg = handler.get(aggid)
+        agg = self.get(aggid)
         agg.add((aggid, RDF["type"], ORE["Aggregation"]))
         agg.add((aggid, ORE["aggregates"], i))
+        item.add((i, ORE["isAggregatedBy"], aggid))
         agg.add((aggid, ORDF["lens"], URIRef("%slens/item" % self.options.base)))
         for p in publishers:
             g = publishers[p]
             agg.add((aggid, ORE["aggregates"], g.identifier))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
-        label = u" ".join([o for s,p,o in item.triples((i, RDFS.label, None))])
+        labels = [o for s,p,o in item.triples((i, RDFS.label, None))]
+        labels.sort()
+        label = u", ".join(labels)
         label = Literal(u"Item: %s" % label)
         agg.add((aggid, RDFS.label, label))
         agg.add((aggid, DC["title"], label))
@@ -182,14 +196,16 @@ class Loader(Command):
         for c in cgraphs:
             g = cgraphs[c]
             aggid = URIRef("%saggregate/person/%s" % (self.options.base, g.uuid))
-            agg = handler.get(aggid)
+            agg = self.get(aggid)
             agg.add((aggid, RDF["type"], ORE["Aggregation"]))
             agg.add((aggid, ORE["aggregates"], w))
             agg.add((aggid, ORE["aggregates"], g.identifier))
-            agg.add((aggid, ORDF["lens"], URIRef("%slens/contributor" % self.options.base)))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
             work.add((w, ORE["isAggregatedBy"], aggid))
-            label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
+            agg.add((aggid, ORDF["lens"], URIRef("%slens/contributor" % self.options.base)))
+            labels = [o for s,p,o in g.triples((g.identifier, RDFS.label, None))]
+            labels.sort()
+            label = u", ".join(labels)
             label = Literal(u"Contributor: %s" % label)
             agg.add((aggid, RDFS.label, label))
             agg.add((aggid, DC["title"], label))
@@ -199,14 +215,16 @@ class Loader(Command):
         for p in publishers:
             g = publishers[p]
             aggid = URIRef("%saggregate/person/%s" % (self.options.base, g.uuid))
-            agg = handler.get(aggid)
+            agg = self.get(aggid)
             agg.add((aggid, RDF["type"], ORE["Aggregation"]))
             agg.add((aggid, ORE["aggregates"], i))
             agg.add((aggid, ORE["aggregates"], g.identifier))
             agg.add((aggid, ORDF["lens"], URIRef("%slens/publisher" % self.options.base)))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
             item.add((i, ORE["isAggregatedBy"], aggid))
-            label = u" ".join([o for s,p,o in g.triples((g.identifier, RDFS.label, None))])
+            labels = [o for s,p,o in g.triples((g.identifier, RDFS.label, None))]
+            labels.sort()
+            label = u", ".join(labels)
             label = Literal(u"Publisher: %s" % label)
             agg.add((aggid, RDFS.label, label))
             agg.add((aggid, DC["title"], label))
@@ -220,11 +238,9 @@ class Loader(Command):
         for s,p,o in g.triples((None, None, None)):
             if str(p).startswith("marc:"):
                 print g.serialize(format="n3")
-#        print g.serialize(format="n3")
-#        from sys import exit
-#        exit()
-        
-        ctx.commit()
+
+        cs = ctx.commit()
+#        print cs.serialize(format="n3")
 
     	self._total += 1
 
