@@ -1,9 +1,10 @@
 from openbiblio.commands import Command
 from datetime import datetime
 from pylons import config
-from pprint import pprint
+from pprint import pprint, pformat
 from getpass import getuser
 from openbiblio.lib import marc
+from traceback import format_exc
 
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph, ConjunctiveGraph
@@ -41,6 +42,14 @@ class Loader(Command):
                       action="store_true",
                       default=False,
                       help="Remove old triples")
+    parser.add_option("-c", "--count",
+                      dest="count",
+                      default="-1",
+                      help="Import N records")
+    parser.add_option("-n", "--skip",
+                      dest="skip",
+                      default="0",
+                      help="Skip first N records")
     def command(self):
         self.cache = swiss.Cache(self.config.get("cache_dir", "data"))
         self.log = logging.getLogger("marc_loader")
@@ -53,8 +62,23 @@ class Loader(Command):
         self._authors_found = 0
         self.filename = self.args[0]
         self.log.info("loading records from %s" % (self.filename,))
+        skip = int(self.options.skip)
+        count = int(self.options.count)
+        recno = -1
         for record in marc.Parser(self.filename):
-            self.load(dict(record.items()))
+            recno += 1
+            if recno < skip:
+                continue
+            if (recno - skip) == count:
+                break
+            items = dict(record.items())
+            try:
+                self.load(items)
+            except:
+                self.log.error("Exception processing record %s" % recno)
+                self.log.error("Record:\n%s" % pformat(items))
+                self.log.error("Traceback:\n%s" % format_exc())
+                sys.exit(1)
             if self._total % 1000 == 0:
                 self.report()
         self.report()
@@ -69,12 +93,19 @@ class Loader(Command):
 
     def toGraph(self, d, subj):
         g = self.get(subj)
-        if not g:
+        def dict_to_graph(s, d):
             for k in d:
                 ns, term = k.split(":")
                 pred = namespaces[ns][term]
                 for obj in d[k]:
-                    g.add((subj, pred, obj))
+                    if isinstance(obj, dict):
+                        o = BNode()
+                        g.add((s, pred, o))
+                        dict_to_graph(o, obj)
+                    else:
+                        g.add((s, pred, obj))
+        if not g:
+            dict_to_graph(subj, d)
             if self.options.source:
                 source = URIRef(self.options.source)
             else:
@@ -82,19 +113,36 @@ class Loader(Command):
             g.add((subj, DC.source, source))
         return g
 
+    def dictuuid(self, d):
+        def values(v):
+            for k in v:
+                for x in v[k]:
+                    if isinstance(x, dict):
+                        for y in values(x):
+                            yield y
+                    else:
+                        yield [(k, x)]
+        v = reduce(lambda x,y: list(x)+list(y), values(d))
+        v.sort()
+        def tostr(l):
+            def _f():
+                for k,v in l:
+                    yield u"%s=%s" % (k,v)
+            return "\n".join(_f())
+        s = tostr(v)
+        h = md5(s.encode("utf-8"))
+        return UUID(h.hexdigest())
+        
     def load(self, record):
         from openbiblio import handler
         ctx = handler.context(getuser(), "command line import of %s" % (self.filename,))
 
         contributors = record.get("dc:contributor", [])
         cgraphs = {}
+
         for i in range(len(contributors)):
             c = contributors[i]
-            v = reduce(lambda x,y: x+y, c.values())
-            v.sort()
-            uniq = reduce(lambda x,y: x+y, v)
-            h = md5(uniq.encode("utf-8"))
-            cuuid = UUID(h.hexdigest())
+            cuuid = self.dictuuid(c)
             subj = URIRef("%sperson/%s" % (self.options.base, cuuid))
             contributors[i] = subj
 
@@ -105,7 +153,7 @@ class Loader(Command):
             for s,p,o in graph.triples((subj, FOAF.name, None)):
                 graph.add((subj, RDFS.label, o))
             cgraphs[subj] = graph
-
+        
         uuid = self.record_uuid(record)
         i = URIRef("%sitem/%s" % (self.options.base, uuid))
         w = URIRef("%swork/%s" % (self.options.base, uuid))
@@ -122,11 +170,7 @@ class Loader(Command):
         publishers = {}
         for s,p,o in item.triples((i, MARC["publisher"], None)):
             loc = [c for (a, b, c) in item.triples((i, MARC["publoc"], None))]
-            v = [o] + loc
-            v.sort()
-            uniq = reduce(lambda x,y: x+y, v)
-            h = md5(uniq.encode("utf-8"))
-            puuid = UUID(h.hexdigest())
+            puuid = self.dictuuid({ MARC["publisher"]: [o], MARC["publoc"]: loc})
             pubid = URIRef("%sperson/%s" % (self.options.base, puuid))
             item.add((i, DC["publisher"], pubid))
             pub = publishers.setdefault(pubid, self.get(pubid))

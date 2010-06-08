@@ -3,7 +3,7 @@ Parse marc data into a suitable form for DB.
 '''
 
 from ordf.term import Literal, URIRef
-from ordf.namespace import XSD
+from ordf.namespace import XSD, BIO
 from time import strptime
 from swiss import date
 from pprint import pprint
@@ -294,8 +294,18 @@ class Record(object):
         def _a2d(a):
             name, (birth, death) = a
             d = { "foaf:name": [name] }
-            if birth: d["dbpprop:dateOfBirth"] = [birth]
-            if death: d["dbpprop:dateOfDeath"] = [death]
+            if birth or death:
+                d["bio:event"] = []
+            if birth:
+                d["bio:event"].append({
+                    "rdf:type": [BIO["Birth"]],
+                    "bio:date": [birth]
+                    })
+            if death:
+                d["bio:event"].append({
+                    "rdf:type": [BIO["Death"]],
+                    "bio:date": [death]
+                    })
             return d
         return [ _a2d(x) for x in zip(authors, dates)]
 
