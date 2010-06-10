@@ -49,13 +49,13 @@
     <script type="text/javascript" src="/js/jquery.fresnel.js"></script>
     <script type="text/javascript" src="/js/jquery.fresnel.widgets.js"></script>
     <script type="text/javascript">
-      var test_lens = "http://bibliographica.org/lens/owl";
+      var default_lens = "http://bibliographica.org/lens/rdfs";
       $(function(){
           var base_uri = "http://bibliographica.org/resource/";
           var graph_uri = "${c.graph.identifier if c.graph else ''}";
           var fresnel = new $.rdf.fresnel();
           var store = new $.ordf();
-          var obp = new $.obp({ fresnel: fresnel, ordf: store, lens: test_lens });
+          var obp = new $.obp({ fresnel: fresnel, ordf: store, lens: default_lens });
           var load_graph = function() {
               store.new_resource({ base_uri: base_uri,
                                    callback: function (bank) { fresnel.addData(bank) } });
@@ -64,7 +64,7 @@
               obp.loadAggregate(g);
           }
           if (!graph_uri) {
-              fresnel.addFresnel({ uri: test_lens, callback: load_graph });
+              fresnel.addFresnel({ uri: default_lens, callback: load_graph });
           } else {
               store.recv({ uri: graph_uri, callback: load_aggregate });
           }
