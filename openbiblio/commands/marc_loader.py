@@ -71,8 +71,9 @@ class Loader(Command):
                 continue
             if (recno - skip) == count:
                 break
-            items = dict(record.items())
+            items = record
             try:
+                items = dict(record.items())
                 self.load(items)
             except:
                 self.log.error("Exception processing record %s" % recno)

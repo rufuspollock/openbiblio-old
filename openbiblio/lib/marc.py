@@ -198,7 +198,7 @@ class _Clean(object):
     def dates(self, dates_str):
         if not dates_str:
             return (None, None)
-        out = dates_str.split("-")
+        out = dates_str.rsplit("-", 1)
         if len(out) == 1:
             return self.date(out[0]), None
         return map(self.date, out)
@@ -245,6 +245,11 @@ class Record(object):
             values = self._dict.setdefault(field.tag, [])
             values.append(_field_dict(field))
 
+    def __str__(self):
+        return str(self._marc)
+    def __repr__(self):
+        return str(self._marc)
+    
     def get_field(self, field, subfield=None, indicator=None):
         """
         Return a flattened list of all entries for a given field/subfield
