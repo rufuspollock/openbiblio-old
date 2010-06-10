@@ -12,7 +12,6 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT DISTINCT ?book, ?title, ?authorname, ?pubname, ?date%s
 WHERE {
-    ?book a obp:Item .
     ?book obp:isbn %s .
     ?book obp:work ?work .
     ?work dc:title ?title .
@@ -35,6 +34,9 @@ class IsbnController(SparqlController):
         if isbn is None:
             q = isbn_query % (", ?isbn", '?isbn') + "LIMIT 10"
         else:
+	    if isbn.endswith(".json"):
+                request.GET["format"] = "application/sparql-results+json"
+                isbn = isbn[:-5]
             q = isbn_query % ("", '"%s"' % isbn.replace("-", "").replace(" ", ""))
         request.GET["query"] = q
         return super(IsbnController, self).index()
