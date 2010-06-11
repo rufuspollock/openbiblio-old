@@ -7,19 +7,19 @@
 
 obp:Work a owl:Class ;
 	 rdfs:label "Work" .
-obp:Item a owl:Class ;
-	 rdfs:label "Item" .
+obp:Manifestation a owl:Class ;
+	 rdfs:label "Manifestation" .
 
 obp:work a owl:ObjectProperty ;
 	 rdfs:label "work" ;
-	 rdfs:domain obp:Item ;
+	 rdfs:domain obp:Manifestation ;
 	 rdfs:range obp:Work ;
-	 owl:inverseOf obp:hasItem .
+	 owl:inverseOf obp:hasManifestation .
 
-obp:hasItem a owl:ObjectProperty ;
-	 rdfs:label "has item" ;
+obp:hasManifestation a owl:ObjectProperty ;
+	 rdfs:label "has manifestation" ;
 	 rdfs:domain obp:Work ;
-	 rdfs:range obp:Item ;
+	 rdfs:range obp:Manifestation ;
 	 owl:inverseOf obp:work .
 
 obp:contribution a owl:ObjectProperty ;
@@ -30,29 +30,29 @@ obp:contribution a owl:ObjectProperty ;
 obp:published a owl:ObjectProperty ;
 	 rdfs:label "published" ;
 	 rdfs:domain dc:agent ;
-	 rdfs:range obp:item .
+	 rdfs:range obp:manifestation .
 
 obp:edition a owl:DatatypeProperty ;
 	 rdfs:label "edition" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
 obp:issue a owl:DatatypeProperty ;
 	 rdfs:label "issue" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
 obp:isbn a owl:DatatypeProperty ;
 	 rdfs:label "ISBN" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
 obp:issn a owl:DatatypeProperty ;
 	 rdfs:label "ISSN" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
 obp:lccn a owl:DatatypeProperty ;
 	 rdfs:label "LCCN" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
 obp:nlmcn a owl:DatatypeProperty ;
 	 rdfs:label "NLMCN" ;
-	 rdfs:domain obp:Item .
+	 rdfs:domain obp:Manifestation .
 
