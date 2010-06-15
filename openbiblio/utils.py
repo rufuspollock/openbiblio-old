@@ -1,7 +1,8 @@
 from pylons import config
 from urllib import urlencode
-from ordf.term import URIRef
+from ordf.graph import ConjunctiveGraph
 from ordf.namespace import RDFS
+from ordf.term import URIRef
 import cgi
 
 import logging
@@ -9,7 +10,10 @@ log = logging.getLogger(__name__)
 
 def render_html(u):
     from openbiblio import handler
-    store = handler.fourstore.store
+    if hasattr(handler, "fourstore"):
+        store = handler.fourstore
+    else:
+        store = handler.rdflib
     if not isinstance(u, URIRef):
         return cgi.escape("%s" % u)
     q1 = """SELECT DISTINCT ?l WHERE { %s %s ?l . FILTER( lang(?l) = "EN" ) }""" % \
