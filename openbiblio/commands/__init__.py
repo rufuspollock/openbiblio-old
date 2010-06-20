@@ -84,12 +84,8 @@ class Lenses(Command):
             ident = OB[os.path.basename(filename)[:-3]]
             data = Graph(identifier=ident)
             data.parse(filename, format="n3")
-            filename_rdf = filename[:-3] + ".rdf"
-            data.serialize(filename_rdf, format="pretty-xml")
             if hasattr(handler, "fourstore"):
-                ## kludge - bnodes have a problem reading directly into the store
-                cmd = "4s-import -v -m %s biblio %s" % (ident, os.path.abspath(filename_rdf))
-                os.system(cmd)
-                handler.pairtree.put(data)
+                handler.fourstore.put(data)
             else:
-                handler.put(data)
+                handler.rdflib.put(data)
+            handler.pairtree.put(data)
