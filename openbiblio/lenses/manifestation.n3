@@ -6,13 +6,13 @@
 @prefix obp:     <http://purl.org/NET/obp/> .
 @prefix ordf:     <http://purl.org/NET/ordf/> .
 @prefix dc:       <http://purl.org/dc/terms/> .
-@prefix :         <http://bibliographica.org/lens/item#> .
+@prefix :         <http://bibliographica.org/lens/manifestation#> .
 
-<http://bibliographica.org/lens/item> rdfs:label "OBP Item" .
+<http://bibliographica.org/lens/manifestation> rdfs:label "OBP Manifestation" .
 
-:itemDefaultLens a fresnel:Lens ;
+:manifestationDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;
-	fresnel:classLensDomain obp:Item ;
+	fresnel:classLensDomain obp:Manifestation ;
 	fresnel:group :obpGroup ;
 	fresnel:showProperties (
 		dc:title

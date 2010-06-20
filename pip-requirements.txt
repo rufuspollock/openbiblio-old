@@ -1,4 +1,5 @@
 setuptools
+mercurial
 # routes 1.12 is weird ...
 Routes<=1.11.99
 Pylons==0.9.7

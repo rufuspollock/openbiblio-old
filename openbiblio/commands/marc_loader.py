@@ -8,7 +8,7 @@ from traceback import format_exc
 
 from ordf.changeset import ChangeSet
 from ordf.graph import Graph, ConjunctiveGraph
-from ordf.namespace import namespaces, Namespace, DC, DCAM, RDF, FOAF, OBP, ORDF, ORE, OWL, RDFS
+from ordf.namespace import *
 from ordf.term import URIRef, BNode, Literal
 from hashlib import md5
 from uuid import UUID
@@ -64,19 +64,19 @@ class Loader(Command):
         self.log.info("loading records from %s" % (self.filename,))
         skip = int(self.options.skip)
         count = int(self.options.count)
-        recno = -1
+        self.recno = -1
         for record in marc.Parser(self.filename):
-            recno += 1
-            if recno < skip:
+            self.recno += 1
+            if self.recno < skip:
                 continue
-            if (recno - skip) == count:
+            if (self.recno - skip) == count:
                 break
             items = record
             try:
                 items = dict(record.items())
                 self.load(items)
             except:
-                self.log.error("Exception processing record %s" % recno)
+                self.log.error("Exception processing record %s" % self.recno)
                 self.log.error("Record:\n%s" % pformat(items))
                 self.log.error("Traceback:\n%s" % format_exc())
                 sys.exit(1)
@@ -111,8 +111,24 @@ class Loader(Command):
                 source = URIRef(self.options.source)
             else:
                 source = URIRef("file://%s/%s" % (os.uname()[1], os.path.abspath(self.filename)))
-            g.add((subj, DC.source, source))
+            self.provenance(g, source)
         return g
+
+    def provenance(self, g, source):
+        from openbiblio import version
+        g.add((g.identifier, RDF.type, OPMV["Artifact"]))
+        g.add((source, RDF.type, OPMV["Artifact"]))
+        p = BNode()
+        g.add((g.identifier, OPMV["wasGeneratedBy"], p))
+        g.add((p, RDF.type, OPMV["Process"]))
+        g.add((p, RDFS.comment, Literal("openbiblio load_marc v%s" % version)))
+        g.add((p, OPMV["used"], source))
+        g.add((p, OBP["record"], Literal(self.recno)))
+        t = BNode()
+        g.add((t, RDF.type, TIME["Instant"]))
+        g.add((t, TIME["inXSDDateTime"], Literal(datetime.now())))
+        g.add((g.identifier, OPMV["wasGeneratedAt"], t))
+        g.add((p, OPMV["wasPerformedAt"], t))
 
     def dictuuid(self, d):
         def values(v):
@@ -141,11 +157,11 @@ class Loader(Command):
         contributors = record.get("dc:contributor", [])
         cgraphs = {}
 
-        for i in range(len(contributors)):
-            c = contributors[i]
+        for k in range(len(contributors)):
+            c = contributors[k]
             cuuid = self.dictuuid(c)
             subj = URIRef("%sperson/%s" % (self.options.base, cuuid))
-            contributors[i] = subj
+            contributors[k] = subj
 
             graph = cgraphs.setdefault(subj, self.toGraph(c, subj))
             graph.uuid = cuuid
@@ -156,7 +172,7 @@ class Loader(Command):
             cgraphs[subj] = graph
         
         uuid = self.record_uuid(record)
-        i = URIRef("%sitem/%s" % (self.options.base, uuid))
+        m = URIRef("%smanifestation/%s" % (self.options.base, uuid))
         w = URIRef("%swork/%s" % (self.options.base, uuid))
 
         ## add linkage from authors and other contributors to the work
@@ -164,16 +180,16 @@ class Loader(Command):
             g = cgraphs[c]
             g.add((g.identifier, OBP.contribution, w))
 
-        item = self.toGraph(record, i)
-        item.add((i, RDF.type, OBP.Item))
-        item.add((i, OBP.work, w))
+        manif = self.toGraph(record, m)
+        manif.add((m, RDF.type, OBP.Manifestation))
+        manif.add((m, OBP.work, w))
 
         publishers = {}
-        for s,p,o in item.triples((i, MARC["publisher"], None)):
-            loc = [c for (a, b, c) in item.triples((i, MARC["publoc"], None))]
-            puuid = self.dictuuid({ MARC["publisher"]: [o], MARC["publoc"]: loc})
+        for s,p,o in manif.triples((m, MARC["publisher"], None)):
+            loc = [c for (a, b, c) in manif.triples((m, MARC["publoc"], None))]
+            puuid = self.dictuuid({ DC["publisher"]: [o], DC["spatial"]: loc})
             pubid = URIRef("%sperson/%s" % (self.options.base, puuid))
-            item.add((i, DC["publisher"], pubid))
+            manif.add((m, DC["publisher"], pubid))
             pub = publishers.setdefault(pubid, self.get(pubid))
             pub.uuid = puuid
             pub.add((pubid, RDF["type"], DC["Agent"]))
@@ -181,24 +197,25 @@ class Loader(Command):
             pub.add((pubid, RDFS["label"], o))
             for l in loc:
                 pub.add((pubid, DC["spatial"], l))
-        item.remove((i, MARC["publisher"], None))
-        item.remove((i, MARC["publoc"], None))
+        manif.remove((m, MARC["publisher"], None))
+        manif.remove((m, MARC["publoc"], None))
 
         for pubid in publishers:
             g = publishers[pubid]
-            g.add((pubid, OBP["published"], i))
+            g.add((pubid, OBP["published"], m))
 
-        self.clean(item)
+        self.clean(manif)
 
         work = self.get(w)
         work.add((w, RDF.type, OBP.Work))
-        work.add((w, OBP.hasItem, i))
+        work.add((w, OBP.hasItem, m))
+        self.provenance(work, manif.identifier)
 
-        self.move(item, work, DC.contributor)
-        self.move(item, work, DC.subject)
+        self.move(manif, work, DC.contributor)
+        self.move(manif, work, DC.subject)
 
-        for s,p,o in item.triples((i, DC["title"], None)):
-            item.add((i, RDFS.label, o))
+        for s,p,o in manif.triples((m, DC["title"], None)):
+            manif.add((m, RDFS.label, o))
             work.add((w, DC["title"], o))
             work.add((w, RDFS.label, o))
             
@@ -220,20 +237,20 @@ class Loader(Command):
         agg.add((aggid, DC["title"], label))
         ctx.add(agg)
 
-        aggid = URIRef("%saggregate/item/%s" % (self.options.base, uuid))
+        aggid = URIRef("%saggregate/manifestation/%s" % (self.options.base, uuid))
         agg = self.get(aggid)
         agg.add((aggid, RDF["type"], ORE["Aggregation"]))
-        agg.add((aggid, ORE["aggregates"], i))
-        item.add((i, ORE["isAggregatedBy"], aggid))
-        agg.add((aggid, ORDF["lens"], URIRef("%slens/item" % self.options.base)))
+        agg.add((aggid, ORE["aggregates"], m))
+        manif.add((m, ORE["isAggregatedBy"], aggid))
+        agg.add((aggid, ORDF["lens"], URIRef("%slens/manifestation" % self.options.base)))
         for p in publishers:
             g = publishers[p]
             agg.add((aggid, ORE["aggregates"], g.identifier))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
-        labels = [o for s,p,o in item.triples((i, RDFS.label, None))]
+        labels = [o for s,p,o in manif.triples((m, RDFS.label, None))]
         labels.sort()
         label = u", ".join(labels)
-        label = Literal(u"Item: %s" % label)
+        label = Literal(u"Manifestation: %s" % label)
         agg.add((aggid, RDFS.label, label))
         agg.add((aggid, DC["title"], label))
         ctx.add(agg)
@@ -262,11 +279,11 @@ class Loader(Command):
             aggid = URIRef("%saggregate/person/%s" % (self.options.base, g.uuid))
             agg = self.get(aggid)
             agg.add((aggid, RDF["type"], ORE["Aggregation"]))
-            agg.add((aggid, ORE["aggregates"], i))
+            agg.add((aggid, ORE["aggregates"], m))
             agg.add((aggid, ORE["aggregates"], g.identifier))
             agg.add((aggid, ORDF["lens"], URIRef("%slens/publisher" % self.options.base)))
             g.add((g.identifier, ORE["isAggregatedBy"], aggid))
-            item.add((i, ORE["isAggregatedBy"], aggid))
+            manif.add((m, ORE["isAggregatedBy"], aggid))
             labels = [o for s,p,o in g.triples((g.identifier, RDFS.label, None))]
             labels.sort()
             label = u", ".join(labels)
@@ -276,7 +293,7 @@ class Loader(Command):
             ctx.add(g)
             ctx.add(agg)
 
-        ctx.add(item)
+        ctx.add(manif)
         ctx.add(work)
 
         g = ConjunctiveGraph(store=ctx.store)
@@ -306,58 +323,62 @@ class Loader(Command):
         h = md5(uniq.encode("utf-8"))
         return UUID(h.hexdigest())
 
-    def clean(self, item):
+    def clean(self, manif):
         """
         Clean out marc: pseudo-namespace
         """
-        i = item.identifier
-        for s,p,o in item.triples((i, MARC["isbn"], None)):
-            isbn = o.strip(" -")
-            item.add((i, OBP["isbn"], isbn))
-            item.add((i, OWL.sameAs, URIRef("urn:isbn:%s" % isbn)))
-            item.add((i, OWL.sameAs, URIRef("http://purl.org/NET/book/isbn/%s#book" % isbn)))
-            item.add((i, OWL.sameAs, URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % isbn)))
-        item.remove((i, MARC["isbn"], None))
-        for s,p,o in item.triples((i, MARC["issn"], None)):
-            issn = o.strip(" -")
-            item.add((i, OBP["issn"], issn))
-            item.add((i, OWL.sameAs, URIRef("urn:issn:%s" % issn)))
-        item.remove((i, MARC["issn"], None))
-        for s,p,o in item.triples((i, MARC["lccn"], None)):
+        i = manif.identifier
+        for s,p,o in manif.triples((i, BIBO["isbn"], None)):
+            manif.add((i, OWL.sameAs, URIRef("urn:isbn:%s" % o)))
+            manif.add((i, OWL.sameAs, URIRef("http://purl.org/NET/book/isbn/%s#book" % o)))
+            manif.add((i, OWL.sameAs, URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % o)))
+
+        for s,p,o in manif.triples((i, BIBO["issn"], None)):
+            manif.add((i, OBP["issn"], o))
+            manif.add((i, OWL.sameAs, URIRef("urn:issn:%s" % o)))
+
+        for s,p,o in manif.triples((i, MARC["lccn"], None)):
             lccn = o.strip(" -")
-            item.add((i, OWL.sameAs, URIRef(u"http://lccn.loc.gov/" + lccn)))
-            item.add((i, OBP["lccn"], lccn))
-        item.remove((i, MARC["lccn"], None))
+            manif.add((i, OWL.sameAs, URIRef(u"http://lccn.loc.gov/" + lccn)))
+            manif.add((i, OBP["lccn"], lccn))
+        manif.remove((i, MARC["lccn"], None))
 
-        for s,p,o in item.triples((i, MARC["nlm"], None)):
-            item.add((i, OBP["nlmcn"], o.strip(" -")))
-        item.remove((i, MARC["nlm"], None))
+        for s,p,o in manif.triples((i, MARC["nlm"], None)):
+            manif.add((i, OBP["nlmcn"], o.strip(" -")))
+        manif.remove((i, MARC["nlm"], None))
 
-        for s,p,o in item.triples((i, MARC["lcsh"], None)):
+        for s,p,o in manif.triples((i, MARC["lcsh"], None)):
             b = BNode()
-            item.add((i, DC["subject"], b))
-            item.add((b, DCAM["member"], DC["LCSH"]))
-            item.add((b, RDF.value, o))
-        item.remove((i, MARC["lcsh"], None))
+            manif.add((i, DC["subject"], b))
+            manif.add((b, DCAM["member"], DC["LCSH"]))
+            manif.add((b, RDF.value, o))
+        manif.remove((i, MARC["lcsh"], None))
 
-        for s,p,o in item.triples((i, MARC["edition"], None)):
-            item.add((i, OBP["edition"], o))
-        item.remove((i, MARC["edition"], None))
+        for s,p,o in manif.triples((i, MARC["edition"], None)):
+            manif.add((i, OBP["edition"], o))
+        manif.remove((i, MARC["edition"], None))
 
-        for s,p,o in item.triples((i, MARC["pubseq"], None)):
-            item.add((i, RDFS.comment, o))
-        item.remove((i, MARC["pubseq"], None))
+        for s,p,o in manif.triples((i, MARC["pubseq"], None)):
+            manif.add((i, RDFS.comment, o))
+        manif.remove((i, MARC["pubseq"], None))
 
         # as much as I hate to remove... marc:scc usually contains
         # one letter things...
-        item.remove((i, MARC["scc"], None))
+        manif.remove((i, MARC["scc"], None))
 
         ## dewey decimal system is encumbered
-        item.remove((i, MARC["ddc"], None))
+        manif.remove((i, MARC["ddc"], None))
 
         ## charset... hmmm
-        item.remove((i, MARC["charset"], None))
+        manif.remove((i, MARC["charset"], None))
 
-        for s,p,o in item.triples((i, MARC["pubnum"], None)):
-            item.add((i, OBP["issue"], o))
-        item.remove((i, MARC["pubnum"], None))
+        for s,p,o in manif.triples((i, MARC["pubnum"], None)):
+            manif.add((i, OBP["issue"], o))
+        manif.remove((i, MARC["pubnum"], None))
+
+        ## clean out "[by] foo bar" in title
+        bad_titles = []
+        for s,p,o in manif.triples((i, DC["title"], None)):
+            if o.startswith(u"[by]"):
+                bad_titles.append(o)
+        [manif.remove((i, DC["title"], x)) for x in bad_titles]

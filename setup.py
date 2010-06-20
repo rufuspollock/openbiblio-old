@@ -1,6 +1,18 @@
 from setuptools import setup, find_packages
 
-from openbiblio import __version__, __description__, __long_description__, __license__
+from openbiblio import __description__, __long_description__, __license__
+
+__version__ = "0.3"
+
+try:
+    from mercurial import ui, hg, error
+    repo = hg.repository(ui.ui(), ".")
+    ver = repo[__version__]
+except ImportError:
+    pass
+except error.RepoLookupError:
+    tip = repo["tip"]
+    __version__ = "hg+%s:%s" % (tip.rev(), tip.hex()[:12])
 
 setup(
     name='openbiblio',

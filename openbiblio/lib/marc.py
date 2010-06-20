@@ -84,10 +84,10 @@ dcmap = {
         ("786", "o", None),
         ("786", "t", None),
         ),
-    "marc:isbn": (
+    "bibo:isbn": (
         ("020", "a", None),
         ),
-    "marc:issn": (
+    "bibo:issn": (
         ("022", "a", None),
         ),
     "marc:lccn": (
@@ -178,6 +178,8 @@ class _Clean(object):
             return self.date
         elif field in ("dc:subject",):
             return self.subject
+        elif field in ("bibo:isbn", "bibo:issn"):
+            return self.isbn
         return self.default
 
     def default(self, s):
@@ -191,6 +193,9 @@ class _Clean(object):
         except UnicodeError:
             s = s
         return Literal(s)
+
+    def isbn(self, s):
+        return Literal(s.replace(" ", "").replace("-", ""))
 
     def subject(self, subject):
         return Literal(subject)
