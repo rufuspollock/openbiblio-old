@@ -4,6 +4,7 @@
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix obp: <http://purl.org/NET/obp/> .
+@prefix opmv: <http://purl.org/net/opmv/ns#> .
 
 obp:Work a owl:Class ;
 	 rdfs:label "Work" .
@@ -32,20 +33,17 @@ obp:published a owl:ObjectProperty ;
 	 rdfs:domain dc:agent ;
 	 rdfs:range obp:manifestation .
 
+obp:record a owl:DatatypeProperty ;
+	rdfs:label "record number" ;
+	rdfs:comment "Record number in an input (e.g. MARC) file" ;
+	rdfs:domain opmv:Process .
+
 obp:edition a owl:DatatypeProperty ;
 	 rdfs:label "edition" ;
 	 rdfs:domain obp:Manifestation .
 
 obp:issue a owl:DatatypeProperty ;
 	 rdfs:label "issue" ;
-	 rdfs:domain obp:Manifestation .
-
-obp:isbn a owl:DatatypeProperty ;
-	 rdfs:label "ISBN" ;
-	 rdfs:domain obp:Manifestation .
-
-obp:issn a owl:DatatypeProperty ;
-	 rdfs:label "ISSN" ;
 	 rdfs:domain obp:Manifestation .
 
 obp:lccn a owl:DatatypeProperty ;
