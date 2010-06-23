@@ -2,8 +2,10 @@
 Parse marc data into a suitable form for DB.
 '''
 
-from ordf.term import Literal, URIRef
-from ordf.namespace import XSD, BIO
+from ordf.graph import Graph
+from ordf.term import Literal, URIRef, BNode
+from openbiblio.namespace import *
+
 from time import strptime
 from swiss import date
 from pprint import pprint
@@ -52,12 +54,22 @@ dcmap = {
         ("340", None, None),
         ("856", "q", None),
         ),
+    "bibo:lccn": (
+        ("010", "a", None),
+        ),
+    "obp:lccall": (
+        ("050", "a", None),
+        ),
     "dc:identifier": (
-        ("010", None, None),
-        ("015", None, None),
         ("024", "a", None),
         ("084", None, None),
         ("856", "u", None),
+        ),
+    "marc:nbn": (
+        ("015", "a", None),
+        ),
+    "marc:nbnc": (
+        ("015", "2", None),
         ),
     "dc:rightsHolder": (
         ("038", None, None),
@@ -69,7 +81,7 @@ dcmap = {
     "marc:publoc": (
         ("260", "a", None),
         ),
-    "marc:publisher": (
+    "dc:publisher": (
         ("260", "b", None),
         ),
     "dc:relation": [("530", None, None)] + \
@@ -90,14 +102,17 @@ dcmap = {
     "bibo:issn": (
         ("022", "a", None),
         ),
-    "marc:lccn": (
-        ("050", "a", None),
-        ),
-    "marc:nlm": (
+    "obp:nlmcall": (
         ("060", None, None),
         ),
     "marc:scc": (
         ("072", "a", None),
+        ),
+    "marc:scc2": (
+        ("072", "x", None),
+        ),
+    "marc:scc3": (
+        ("072", "2", None),
         ),
     "marc:ddc": (
         ("082", "a", None),
@@ -108,7 +123,7 @@ dcmap = {
         ("650", None, None),
         ),
     "dc:subject": [(str("%03d" % x), None, None) for x in
-                    (72, 80, 600, 610, 611, 653)],
+                    (80, 600, 610, 611, 653)],
     "dc:title": [(str(x), None, None) for x in (210, 222, 240, 242, 243, 245, 246, 247)],
     "dc:type": (
         ("655", None, None),
@@ -123,14 +138,13 @@ dcmap = {
     "dc:accrualPeriodicity": (
         ("310", "a", None),
         ),
-    
-    "marc:pubnum": (
+    "obp:pubnum": (
         ("028", "a", None),
         ),
     "marc:charset": (
         ("066", None, None),
         ),
-    "marc:edition": (
+    "obp:edition": (
         ("250", None, None),
         ),
     "dc:extent": (
@@ -144,7 +158,7 @@ dcmap = {
         ("300", "f", None), # speed
         ),
     "dc:description": list(_description()),
-    "marc:pubseq": (
+    "obp:pubseq": (
         ("362", None, None),
         ),
     "marc:spatialResolution": (
@@ -303,7 +317,7 @@ class Record(object):
         dates = map(_clean.dates, dates)
         def _a2d(a):
             name, (birth, death) = a
-            d = { "foaf:name": [name] }
+            d = { "rdf:type": [FOAF["Person"]], "foaf:name": [name] }
             if birth or death:
                 d["bio:event"] = []
             if birth:
@@ -323,6 +337,14 @@ class Record(object):
         authors = self.get_authors()
         return authors + [ { "foaf:name": [x] } for x in result ]
 
+    def title(self, result):
+        title = []
+        for part in result:
+            if part.startswith("[by] ") or part.startswith("by "):
+                continue
+            title.append(part)
+        return [Literal("\n".join(title))]
+
     def __getitem__(self, key):
         spec = dcmap[key]
         result = [self.get_field(*s) for s in spec]
@@ -332,13 +354,97 @@ class Record(object):
         result = map(cleaner, result)
         if key in ("dc:contributor",): # special case to allow for dates
             return self.contributors(result)
+        elif key in ("dc:title",): # special case to preserve title
+            return self.title(result)
+        elif key in ("dc:subject",):
+            return result + self.lcsh() + self.ddc() + self.scc()
+        elif key in ("dc:publisher",):
+            return self.publisher(result)
         return result
+
+    def lcsh(self):
+        subjects = []
+        for sh in self["marc:lcsh"]:
+            subjects.append({
+                    "dcam:member": [DC["LCSH"]],
+                    "rdf:value": [sh]
+                    })
+        return subjects
+
+    def ddc(self):
+        ddc = []
+        for s in self["marc:ddc"]:
+            try:
+                c, rest = s.split(".", 1)
+            except:
+                c = s
+            ddc.append({
+                    "dcam:member": [DC["DDC"]],
+                    "rdf:value": [s],
+                    "rdfs:seeAlso": [URIRef("http://dewey.info/class/%s/" % c)]
+                    })
+        return ddc
+
+    def scc(self):
+        scc = self["marc:scc"]
+        scc2 = self["marc:scc2"]
+        thesaurus = self["marc:scc3"]
+        if scc2: 
+            print scc, scc2, thesaurus
+            raise
+        if scc:
+            if thesaurus == ["lcco"]:
+                return [{
+                        "dcam:member": [DC["LCC"]],
+                        "rdf:value": scc,
+                        }]
+            else:
+                raise ValueError("Unknown SCC Thesaurus: %s" % thesaurus)
+        return []
+    def publisher(self, publisher):
+        if publisher:
+            result = [{
+                    "rdf:type": [DC["Agent"]],
+                    "foaf:name": publisher,
+                    "dc:spatial": self["marc:publoc"],
+                    }]
+        else:
+            result = []
+        return result
+
+    def nbn(self, g):
+        """
+        Add urn:nbn: identifiers for national bibliographic
+        numbers per:
+
+        http://www.ietf.org/rfc/rfc3188.txt
+
+        TODO: transform nbn prefixes to ISO country codes
+        """
+        nbn = self["marc:nbn"]
+        nbnc = self["marc:nbnc"]
+        if nbn and nbnc:
+            for n, c in zip(nbn, nbnc):
+                g.add((g.identifier, OWL["sameAs"], URIRef("urn:nbn:%s-%s" % (c, n))))
+                b = BNode()
+                g.add((g.identifier, OBP["nbn"], b))
+                g.add((b, DCAM["member"], NBN[c]))
+                g.add((b, RDF["value"], n))
 
     def keys(self):
         return dcmap.keys()
-    
+
+    def charset(self):
+        ## TODO
+        pass
+
     def items(self):
         for k in self.keys():
+            if k in ("marc:lcsh", "marc:ddc",
+                     "marc:scc", "marc:scc2", "marc:scc3",
+                     "marc:publoc", "marc:charset",
+                     "marc:nbn", "marc:nbnc"):
+                continue
             v = self[k]
             if v: yield k,v
             
@@ -347,7 +453,44 @@ class Record(object):
             if field.tag not in _handled_fields:
                 pprint (self._dict)
                 raise KeyError(field.tag)
-            
+
+    def rdf(self, *av, **kw):
+        g = Graph(*av, **kw)
+        g.add((g.identifier, RDF["type"], OBP["MarcRecord"]))
+        def merge(d, s):
+            for k,v  in d.items():
+                ns, term = k.split(":")
+                p = namespaces[ns][term]
+                for o in v:
+                    if isinstance(o, dict):
+                        b = BNode()
+                        g.add((s, p, b))
+                        merge(o, b)
+                    else:
+                        g.add((s, p, o))
+
+        ident = g.identifier
+        merge(self, ident)
+
+        for s,p,o in g.triples((ident, BIBO["isbn"], None)):
+            g.add((ident, OWL["sameAs"], URIRef("urn:isbn:%s" % o)))
+            g.add((ident, OWL["sameAs"], URIRef("http://purl.org/NET/book/isbn/%s#book" % o)))
+            g.add((ident, OWL["sameAs"], URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % o)))
+            if len(o) == 10:
+                g.add((ident, BIBO["isbn10"], o))
+            elif len(o) == 13:
+                g.add((ident, BIBO["isbn13"], o))
+
+        for s,p,o in g.triples((ident, BIBO["issn"], None)):
+            g.add((ident, OWL["sameAs"], URIRef("urn:issn:%s" % o)))
+
+        for s,p,o in g.triples((ident, BIBO["lccn"], None)):
+            g.add((ident, OWL["sameAs"], URIRef(u"http://lccn.loc.gov/" + o)))
+
+        self.nbn(g)
+
+        return g
+
 class Parser(object):
     def __init__(self, f):
         if isinstance(f, basestring):

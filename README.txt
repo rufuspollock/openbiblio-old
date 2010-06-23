@@ -40,26 +40,4 @@ repo here:
 Loading Data
 ============
 
-This package adds subcommands to the paster command to download and manipulate
-data sets. Source URLs for the data should be in the configuration file. The
-sample config lists pdw_archive_20090520 as a dataset. It can be retrieved 
-with the following command:
-
-    paster fetch config.ini pdw_archive_20090520
-
-And the data can be loaded into the store with the following two commands:
-
-    paster load_pdw -e config.ini pdw_archive_20090520
-    paster load_pdw -l config.ini pdw_archive_20090520
-
-The first one loads the entities (Person, Work, etc.) and the second loads the
-links between them.
-
-As workaround for out of memory issues (to be tracked down if necessary) the
-load function can also take a -f argument with a list of files to load from
-an extracted archive. e.g.:
-
-	for file in /some/where/data/dump/005_WorkPerson_*.js; do
-		paster load_pdw -lf $file config.ini
-	done
-
+... to be redocumented, see "paster load_marc"

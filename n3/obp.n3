@@ -6,6 +6,9 @@
 @prefix obp: <http://purl.org/NET/obp/> .
 @prefix opmv: <http://purl.org/net/opmv/ns#> .
 
+obp:MarcRecord a owl:Class ;
+	 rdfs:label "MARC Record" .
+
 obp:Work a owl:Class ;
 	 rdfs:label "Work" .
 obp:Manifestation a owl:Class ;
@@ -33,21 +36,34 @@ obp:published a owl:ObjectProperty ;
 	 rdfs:domain dc:agent ;
 	 rdfs:range obp:manifestation .
 
-obp:record a owl:DatatypeProperty ;
-	rdfs:label "record number" ;
-	rdfs:comment "Record number in an input (e.g. MARC) file" ;
+obp:cmdline a owl:DatatypeProperty ;
+	rdfs:label "command line" ;
+	rdfs:comment "Command line used to operate on data"
 	rdfs:domain opmv:Process .
 
+obp:record a owl:DatatypeProperty ;
+	rdfs:label "record number" ;
+	rdfs:comment "Record number in an input MARC File" ;
+	rdfs:domain obp:MarcRecord .
+
 obp:edition a owl:DatatypeProperty ;
-	 rdfs:label "edition" ;
+	 rdfs:label "edition (MARC #250)" ;
 	 rdfs:domain obp:Manifestation .
 
 obp:issue a owl:DatatypeProperty ;
 	 rdfs:label "issue" ;
 	 rdfs:domain obp:Manifestation .
 
-obp:lccn a owl:DatatypeProperty ;
-	 rdfs:label "LCCN" ;
+obp:pubnum a owl:DatatypeProperty ;
+	 rdfs:label "publisher number (MARC #028)" 
+    	 rdfs:domain obp:Manifestation .
+
+obp:pubseq a owl:DatatypeProperty ;
+	 rdfs:label "publication sequence (MARC #362)" ;
+	 rdfs:domain obp:Manifestation .
+
+obp:lccall a owl:DatatypeProperty ;
+	 rdfs:label "LC Call Number" ;
 	 rdfs:domain obp:Manifestation .
 
 obp:nlmcn a owl:DatatypeProperty ;
