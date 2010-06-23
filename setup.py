@@ -54,6 +54,9 @@ setup(
     load_marc = openbiblio.commands.marc_loader2:Loader
     dedup = openbiblio.commands.dedup:DeDup
 
+    [ordf.namespace]
+    openbiblio = openbiblio.lib.namespace:init_ns
+
     [ordf.xapian]
     index = openbiblio.lib.xapindex:index_store
     search = openbiblio.lib.xapindex:search

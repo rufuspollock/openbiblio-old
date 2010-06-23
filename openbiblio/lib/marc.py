@@ -4,7 +4,7 @@ Parse marc data into a suitable form for DB.
 
 from ordf.graph import Graph
 from ordf.term import Literal, URIRef, BNode
-from openbiblio.namespace import *
+from ordf.namespace import *
 
 from time import strptime
 from swiss import date
