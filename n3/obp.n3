@@ -62,10 +62,6 @@ obp:pubseq a owl:DatatypeProperty ;
 	 rdfs:label "publication sequence (MARC #362)" ;
 	 rdfs:domain obp:MarcRecod .
 
-obp:lccall a owl:DatatypeProperty ;
-	 rdfs:label "LC Call Number" ;
-	 rdfs:domain obp:MarcRecod .
-
 obp:nlmcn a owl:DatatypeProperty ;
 	 rdfs:label "NLMCN" ;
 	 rdfs:domain obp:MarcRecod .
@@ -73,3 +69,70 @@ obp:nlmcn a owl:DatatypeProperty ;
 obp:nbn a owl:ObjectProperty ;
  	 rdfs:label "National Bibliographic Number" ;
 	 rdfs:domain obp:MarcRecod .
+
+obp:cancelled a owl:DatatypeProperty ;
+	 rdfs:label "cancelled" ;
+	 rdfs:subPropertyOf rdf:value .
+
+obp:physicalDetail a owl:DatatypeProperty ;
+	 rdfs:label "physical detail" ;
+	 rdfs:comment "MARC21 300b" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:dimensions a owl:DatatypeProperty ;
+	 rdfs:label "dimensions" ;
+	 rdfs:comment "MARC21 300c" ;
+	 rdfs:subPropertyOf dc:extent .
+
+obp:accompanyingMaterial a owl:DatatypeProperty ;
+	 rdfs:label "accompanying material" ;
+	 rdfs:comment "MARC21 300e" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:typeOfUnit a owl:DatatypeProperty ;
+	 rdfs:label "type of unit" ;
+	 rdfs:comment "MARC21 300f" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:sizeOfUnit a owl:DatatypeProperty ;
+	 rdfs:label "size of unit" ;
+	 rdfs:comment "MARC21 300g" ;
+	 rdfs:subPropertyOf dc:extent .
+
+obp:soundCharacteristics a owl:DatatypeProperty ;
+	 rdfs:label "sound characterisitcs" ;
+	 rdfs:comment "MARC21 XXXb" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:colourCharacteristics a owl:DatatypeProperty ;
+	 rdfs:label "colour characterisitcs" ;
+	 rdfs:comment "MARC21 XXXc" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:speed a owl:DatatypeProperty ;
+	 rdfs:label "speed" ;
+	 rdfs:comment "MARC21 XXXf" ;
+	 rdfs:subPropertyOf rdfs:comment .
+
+obp:LibraryOfCongressCallNumber a owl:Class .
+obp:LibraryOfCongressCopyInformation a owl:Class .
+
+obp:lccall a owl:DatatypeProperty ;
+	 rdfs:label "LC Call Number" ;
+	 rdfs:comment "MARC21 050" ;
+	 rdfs:domain obp:MarcRecod .
+
+obp:lccopy a owl:DatatypeProperty ;
+         rdfs:label "Library of Congress copy information" ;
+	 rdfs:comment "MARC21 051" ;
+	 rdfs:domain obp:MarcRecod .
+
+obp:sdics a owl:DatatypeProperty ;
+	  rdfs:label "Superintendent of Documents Classification System" ;
+	  rdfs:comment "MARC21 086a" ;
+	  rdfs:subPropertyOf dc:identifier .
+
+obp:gococ a owl:DatatypeProperty ;
+	  rdfs:label "Government of Canada Publications: Outline of Classification" ;
+	  rdfs:comment "MARC21 086a" ;
+	  rdfs:subPropertyOf dc:identifier .

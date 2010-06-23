@@ -11,6 +11,7 @@ from swiss import date
 from pprint import pprint
 import logging
 import pymarc
+import re
 
 log = logging.getLogger("marc")
 
@@ -57,12 +58,37 @@ dcmap = {
     "bibo:lccn": (
         ("010", "a", None),
         ),
-    "obp:lccall": (
+    "marc:lccnc": (
+        ("010", "z", None),
+        ),
+    "marc:lccall_class": (
         ("050", "a", None),
+        ),
+    "marc:lccall_item": (
+        ("050", "b", None),
+        ),
+    "marc:lccall_mat": (
+        ("050", "3", None),
+        ),
+    "marc:lccopy_class": (
+        ("051", "a", None),
+        ),
+    "marc:lccopy_item": (
+        ("051", "b", None),
+        ),
+    "marc:lccopy_copy": (
+        ("051", "c", None),
         ),
     "dc:identifier": (
         ("024", "a", None),
-        ("084", None, None),
+        ),
+    "marc:ocn": (
+        ("084", "a", None),
+        ),
+    "marc:ocns": (
+        ("084", "2", None),
+        ),
+    "foaf:page": (
         ("856", "u", None),
         ),
     "marc:nbn": (
@@ -70,6 +96,12 @@ dcmap = {
         ),
     "marc:nbnc": (
         ("015", "2", None),
+        ),
+    "marc:scn": (
+        ("035", "a", None),
+        ),
+    "marc:scnc": (
+        ("035", "z", None),
         ),
     "dc:rightsHolder": (
         ("038", None, None),
@@ -80,6 +112,7 @@ dcmap = {
     "dc:language": [("041", x, None) for x in "abdefghj"] + [("546", None, None)],
     "marc:publoc": (
         ("260", "a", None),
+        ("044", None, None),
         ),
     "dc:publisher": (
         ("260", "b", None),
@@ -118,12 +151,30 @@ dcmap = {
         ("082", "a", None),
         ("082", "b", None),
         ),
+    "obp:sidcs": (
+        ("086", "a", "0"),
+        ),
+    "obp:gococ": (
+        ("086", "a", "1"),
+        ),
     "marc:lcsh": (
         ("630", None, None),
         ("650", None, None),
         ),
     "dc:subject": [(str("%03d" % x), None, None) for x in
-                    (80, 600, 610, 611, 653)],
+                    (80, 610, 611, 653, 690)],
+    "marc:topic_person_name": (
+        ("600", "a", None),
+        ),
+    "marc:topic_person_title": (
+        ("600", "c", None),
+        ),
+    "marc:topic_person_dates": (
+        ("600", "d", None),
+        ),
+    "marc:topic_person_fullname": (
+        ("600", "q", None),
+        ),
     "dc:title": [(str(x), None, None) for x in (210, 222, 240, 242, 243, 245, 246, 247)],
     "dc:type": (
         ("655", None, None),
@@ -150,12 +201,20 @@ dcmap = {
     "dc:extent": (
         ("300", "a", None), # extent
         ),
-    "rdfs:comment": (
-        ("300", "b", None), # sound characteristics
-        ("300", "c", None), # colour characteristics
-        ("300", "d", None), # dimensions
+    "obp:physicalDetail": (
+        ("300", "b", None), # physical detail characteristics
+        ),
+    "obp:dimensions": (
+        ("300", "c", None), # dimensions
+        ),
+    "obp:accompanyingMaterial": (
         ("300", "e", None), # accompanying material
-        ("300", "f", None), # speed
+        ),
+    "obp:typeOfUnit": (
+        ("300", "f", None), # type of unit
+        ),
+    "obp:sizeOfUnit": (
+        ("300", "g", None),
         ),
     "dc:description": list(_description()),
     "obp:pubseq": (
@@ -166,15 +225,19 @@ dcmap = {
         ),
     
 }
+
+### XXX TODO: handle 007 (physical description and 008 general information)
 _handled_fields = reduce(lambda x,y: x+y,
                  [[spec[0] for spec in x] for x in dcmap.values()] + \
-                 [["001", "003", "005", "008", "029", "035", "040", "042"],
+                 [["001", "003", "005", "007", "008", "029", "035", "040", "042"],
                   ["019"],  # unknown, not in MARC spec
                   ["049",], # found in test data with value CUDA, not in MARC spec
+                  ["069"],  # found in Yale MARC file, not in spec
                   ["100", "700"], # authors handled as special case
                   ["440", "490"],
+                  ["%03d" % x for x in range(690, 700)], # local significance
                   ["880"],  # alternat graphical representation
-                  map(lambda x: "%03d" % x, range(90,100)), # local fields
+                  ["%03d" % x for x in range(90,100)], # local fields
                   map(str, range(900,1000)),                # local fields
                  ])
 
@@ -194,6 +257,8 @@ class _Clean(object):
             return self.subject
         elif field in ("bibo:isbn", "bibo:issn"):
             return self.isbn
+        elif field in ("foaf:page", "foaf:homepage"):
+            return self.uri
         return self.default
 
     def default(self, s):
@@ -207,6 +272,9 @@ class _Clean(object):
         except UnicodeError:
             s = s
         return Literal(s)
+
+    def uri(self, s):
+        return URIRef(s)
 
     def isbn(self, s):
         return Literal(s.replace(" ", "").replace("-", ""))
@@ -337,6 +405,32 @@ class Record(object):
         authors = self.get_authors()
         return authors + [ { "foaf:name": [x] } for x in result ]
 
+    def subject_person(self):
+        name = self["marc:topic_person_name"]
+        fullname = self["marc:topic_person_fullname"]
+        dates = map(_clean.dates, self["marc:topic_person_dates"])
+        title = self["marc:topic_person_title"]
+        if not name and not fullname:
+            return []
+        info = {
+            "rdf:type": [FOAF["Person"]],
+            "foaf:name": name + fullname,
+            "foaf:title": title,
+            "bio:event": [],
+            }
+        for birth, death in dates:
+            if birth:
+                info["bio:event"].append({
+                        "rdf:type": [BIO["Birth"]],
+                        "bio:date": [birth]
+                        })
+            if death:
+                info["bio:event"].append({
+                        "rdf:type": [BIO["Death"]],
+                        "bio:date": [death]
+                        })
+        return [info]
+
     def title(self, result):
         title = []
         for part in result:
@@ -357,7 +451,7 @@ class Record(object):
         elif key in ("dc:title",): # special case to preserve title
             return self.title(result)
         elif key in ("dc:subject",):
-            return result + self.lcsh() + self.ddc() + self.scc()
+            return result + self.lcsh() + self.ddc() + self.scc() + self.ocn() + self.subject_person()
         elif key in ("dc:publisher",):
             return self.publisher(result)
         return result
@@ -401,6 +495,22 @@ class Record(object):
             else:
                 raise ValueError("Unknown SCC Thesaurus: %s" % thesaurus)
         return []
+
+    def ocn(self):
+        """
+        Other Classification Number
+        http://www.loc.gov/standards/sourcelist/classification.html
+        """
+        ocn = self["marc:ocn"]
+        ocns = self["marc:ocns"]
+        subj = []
+        for n, s in zip(ocn, ocns):
+            subj += [{
+                    "dcam:member": [SCCS[s]],
+                    "rdf:value": [n]
+                    }]
+        return subj
+
     def publisher(self, publisher):
         if publisher:
             result = [{
@@ -431,6 +541,62 @@ class Record(object):
                 g.add((b, DCAM["member"], NBN[c]))
                 g.add((b, RDF["value"], n))
 
+    def scn(self, g):
+        """
+        Process system control numbers
+        """
+        _scnre = re.compile(r'\((?P<org>[a-zA-Z]+)\)(?P<num>.*)')
+        scn = self["marc:scn"]
+        for m in map(_scnre.match, scn):
+            if not m:
+                log.warning("Invalid SCN: %s" % scn)
+                break
+            d = m.groupdict()
+            b = BNode()
+            g.add((g.identifier, OBP["scn"], b))
+            g.add((b, DCAM["member"], SCN[d["org"]]))
+            g.add((b, RDF["value"], Literal(d["num"])))
+        scnc = self["marc:scnc"]
+        for m in map(_scnre.match, scnc):
+            if not m:
+                log.warning("Invalid cancelled SCN: %s" % scnc)
+                break
+            d = m.groupdict()
+            b = BNode()
+            g.add((g.identifier, OBP["scn"], b))
+            g.add((b, DCAM["member"], SCN[d["org"]]))
+            g.add((b, OBP["cancelled"], Literal(d["num"])))
+        for n in self["bibo:lccn"]:
+            b = BNode()
+            g.add((g.identifier, OBP["scn"], b))
+            g.add((b, DCAM["member"], SCN["DLC"]))
+            g.add((b, RDF["value"], n))
+        for n in self["marc:lccnc"]:
+            b = BNode()
+            b = BNode()
+            g.add((g.identifier, OBP["scn"], b))
+            g.add((b, DCAM["member"], SCN["DLC"]))
+            g.add((b, RDF["cancelled"], n))
+
+    def lccall(self, g):
+        cls = self["marc:lccall_class"]
+        item = self["marc:lccall_item"]
+        for c,i in zip(cls, item):
+            b = BNode()
+            g.add((g.identifier, OBP["lccall"], Literal(c+i)))
+
+    def lccopy(self, g):
+        cls = self["marc:lccopy_class"]
+        item = self["marc:lccopy_item"]
+        copy = self["marc:lccopy_copy"]
+        if cls + item + copy:
+            b = BNode()
+            g.add((g.identifier, OBP["lccopy"], b))
+            for c,i in zip(cls, item):
+                g.add((b, OBP["lccall"], Literal(c + i)))
+            for c in copy:
+                g.add((b, DC["description"], c))
+                
     def keys(self):
         return dcmap.keys()
 
@@ -443,7 +609,15 @@ class Record(object):
             if k in ("marc:lcsh", "marc:ddc",
                      "marc:scc", "marc:scc2", "marc:scc3",
                      "marc:publoc", "marc:charset",
-                     "marc:nbn", "marc:nbnc"):
+                     "marc:nbn", "marc:nbnc",
+                     "marc:scn", "marc:scnc",
+                     "marc:lcnc",
+                     "marc:ocn", "marc:ocnc",
+                     "marc:lccopy_class", "marc:lccopy_item", "marc:lccopy_copy",
+                     "marc:lccall_class", "marc:lccall_item", "marc:lccall_mat",
+                     "marc:topic_person_name", "marc:topic_person_fullname", 
+                     "marc:topic_person_date", "marc:topic_person_title",
+                     ):
                 continue
             v = self[k]
             if v: yield k,v
@@ -488,6 +662,9 @@ class Record(object):
             g.add((ident, OWL["sameAs"], URIRef(u"http://lccn.loc.gov/" + o)))
 
         self.nbn(g)
+        self.scn(g)
+        self.lccall(g)
+        self.lccopy(g)
 
         return g
 
