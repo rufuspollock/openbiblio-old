@@ -48,25 +48,28 @@ obp:record a owl:DatatypeProperty ;
 
 obp:edition a owl:DatatypeProperty ;
 	 rdfs:label "edition (MARC #250)" ;
-	 rdfs:domain obp:Manifestation .
+	 rdfs:domain obp:MarcRecod .
 
 obp:issue a owl:DatatypeProperty ;
 	 rdfs:label "issue" ;
-	 rdfs:domain obp:Manifestation .
+	 rdfs:domain obp:MarcRecod .
 
 obp:pubnum a owl:DatatypeProperty ;
 	 rdfs:label "publisher number (MARC #028)" 
-    	 rdfs:domain obp:Manifestation .
+    	 rdfs:domain obp:MarcRecod .
 
 obp:pubseq a owl:DatatypeProperty ;
 	 rdfs:label "publication sequence (MARC #362)" ;
-	 rdfs:domain obp:Manifestation .
+	 rdfs:domain obp:MarcRecod .
 
 obp:lccall a owl:DatatypeProperty ;
 	 rdfs:label "LC Call Number" ;
-	 rdfs:domain obp:Manifestation .
+	 rdfs:domain obp:MarcRecod .
 
 obp:nlmcn a owl:DatatypeProperty ;
 	 rdfs:label "NLMCN" ;
-	 rdfs:domain obp:Manifestation .
+	 rdfs:domain obp:MarcRecod .
 
+obp:nbn a owl:ObjectProperty ;
+ 	 rdfs:label "National Bibliographic Number" ;
+	 rdfs:domain obp:MarcRecod .
