@@ -249,7 +249,7 @@ class _Clean(object):
     """
     def __call__(self, field):
         from openbiblio.lib.name import normalize as name
-        if field in ("dc:contributor",):
+        if field in ("dc:contributor", "marc:topic_person_name", "marc:topic_person_fullname"):
             return lambda x: Literal(name(x))
         elif field in ("dc:date",):
             return self.date
