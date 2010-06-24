@@ -2,7 +2,7 @@
 
 body
 {
-  background: #fff url(../images/top-grad.png) repeat-x top left;
+  background: #fff url(http://assets.okfn.org/kforge/images/top-grad.png) repeat-x top left;
   color: #151515;
   /* if you change this, change the same for .sidebar h2 later in this file */
   font-family: "Lucida Grande", Lucidagrande, "Lucida Sans", Lucidasans, "Lucida Sans Unicode", Lucidasansunicode, Lucida, "Bitstream Vera Sans", Helvetica, sans-serif;
@@ -176,7 +176,7 @@ blockquote h2
 .sidebar ul li 
 { 
   list-style: none;
-  background: transparent url(../images/bull.png) no-repeat center left;
+  background: transparent url(http://assets.okfn.org/kforge/images/bull.png) no-repeat center left;
   margin: 0;
   padding: 0 0 0 12px;
 }
