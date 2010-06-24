@@ -28,7 +28,7 @@ test_graph = "http://bibliographica.org/test"
 
 # ensure cache_dir exists as we use it for e.g. pairtree
 # and pair tree falls over if parent dir does not exist
-+cachedir = pylons.test.pylonsapp.config['app_conf']['cache_dir']
+cachedir = pylons.test.pylonsapp.config['app_conf']['cache_dir']
 import os
 if not os.path.exists(cachedir):
     os.makedirs(cachedir)
