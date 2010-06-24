@@ -1,7 +1,7 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c, config
-from pylons.controllers.util import abort, redirect_to
+from pylons import request, tmpl_context as c, config
+from pylons.controllers.util import abort
 
 from openbiblio.lib.base import BaseController, render
 

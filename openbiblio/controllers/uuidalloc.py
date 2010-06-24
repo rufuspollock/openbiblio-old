@@ -1,9 +1,7 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
-
-from openbiblio.lib.base import BaseController, render
+from pylons import response
+from openbiblio.lib.base import BaseController
 from uuid import uuid1
 try: 
     from json import dumps
