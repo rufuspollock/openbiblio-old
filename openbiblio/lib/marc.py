@@ -612,11 +612,11 @@ class Record(object):
                      "marc:nbn", "marc:nbnc",
                      "marc:scn", "marc:scnc",
                      "marc:lcnc",
-                     "marc:ocn", "marc:ocnc",
+                     "marc:ocn", "marc:ocns",
                      "marc:lccopy_class", "marc:lccopy_item", "marc:lccopy_copy",
                      "marc:lccall_class", "marc:lccall_item", "marc:lccall_mat",
                      "marc:topic_person_name", "marc:topic_person_fullname", 
-                     "marc:topic_person_date", "marc:topic_person_title",
+                     "marc:topic_person_dates", "marc:topic_person_title",
                      ):
                 continue
             v = self[k]
