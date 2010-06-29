@@ -176,7 +176,7 @@ dcmap = {
         ("600", "q", None),
         ),
     "dc:title": [(str(x), None, None) for x in (210, 222, 240, 242, 243, 245, 246, 247)],
-    "dc:type": (
+    "obp:topic": (
         ("655", None, None),
         ),
     "dc:isPartOf": (
@@ -308,7 +308,15 @@ class _Clean(object):
             return Literal(val)
 
 _clean = _Clean()
+def _force_unicode(s):
+    if isinstance(s, unicode):
+        return s
+    try:
+        return s.decode("utf-8")
+    except UnicodeError:
+        return s.decode("latin1")
 
+    # special case for authors
 class Record(object):
     def __init__(self, marc):
         self._marc = marc
@@ -363,15 +371,9 @@ class Record(object):
         result = [_subfields(f) for f in value if _indicated(f)]
         if result:
             result = reduce(lambda x,y: x+y, result)
-        def _force_unicode(s):
-            if isinstance(s, unicode):
-                return s
-            try:
-                return s.decode("utf-8")
-            except UnicodeError:
-                return s.decode("latin1")
         return [_force_unicode(x) for x in result if x]
 
+            
     # special case for authors
     def get_authors(self):
         authors = self.get_field("100", "a") + self.get_field("700", "a")
@@ -446,15 +448,94 @@ class Record(object):
             result = reduce(lambda x,y: x+y, result)
         cleaner = _clean(key)
         result = map(cleaner, result)
-        if key in ("dc:contributor",): # special case to allow for dates
+        if key in ("dc:contributor",):
             return self.contributors(result)
         elif key in ("dc:title",): # special case to preserve title
             return self.title(result)
         elif key in ("dc:subject",):
-            return result + self.lcsh() + self.ddc() + self.scc() + self.ocn() + self.subject_person()
+            return result + self.lcsh() + self.ddc() + self.scc() + self.ocn() + self.subject_person() + self.index_term()
         elif key in ("dc:publisher",):
             return self.publisher(result)
+        elif key in ("dc:isPartOf",):
+            return self.isPartOf()
         return result
+
+    def frag(self):
+        class Frag(Graph):
+            def __init__(frag, field):
+                Graph.__init__(frag)
+                frag.field = field
+                frag()
+
+            def add_field(frag, predicate, subfield, termtype=Literal):
+                for x in self.get_field(frag.field, subfield):
+                    frag.add((frag.identifier, predicate, termtype(x)))
+        return Frag
+
+    def isPartOf(self, g):
+        class Part(self.frag()):
+            def __call__(self):
+                self.add_field(RDFS["label"], "a")
+                self.add_field(DC["spatial"], "c")
+                self.add_field(DC["date"], "d")
+                self.add_field(DC["description"], "g")
+                self.add_field(DC["lang"], "l")
+                self.add_field(OBP["part"], "p")
+                self.add_field(DC["version"], "s")
+                self.add_field(OBP["volume"], "v")
+                self.add_field(DC["title"], "t"),
+                self.add_field(DC["identifier"], "w")
+                self.add_field(BIBO["issn"], "x")
+                return self
+
+        person = Part("800")
+        if person:
+            g.add((g.identifier, OBP["personalName"], person.identifier))
+            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g += person
+
+        corp = Part("810")
+        if corp:
+            g.add((g.identifier, OBP["corporateName"], corp.identifier))
+            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g += corp
+
+        meeting = Part("811")
+        if meeting:
+            g.add((g.identifier, OBP["meetingName"], corp.identifier))
+            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g += meeting
+
+        uniform = Part("830")
+        if uniform:
+            g.add((g.identifier, OBP["uniformTitle"], uniform.identifier))
+            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            if not uniform.exists((uniform.identifier, DC["title"], None)):
+                uniform += uniform.replace(
+                        (uniform.identifier, RDFS["label"], None), (None, DC["title"], None)
+                        )
+
+            g += uniform
+
+    def subfields(self, field):
+        _subfields = field.subfields
+        subfields = {}
+        for i in range(len(_subfields)/2):
+            subfields[_subfields[i*2]] = _force_unicode(_subfields[i*2+1])
+        return field, subfields
+
+    def index_term(self):
+        terms = []
+        for f,s in map(self.subfields, self._marc.get_fields("655")):
+            d = {}
+            d["obp:thesaurus"] = [Literal(f.indicator2)]
+            if "a" in s: d["rdf:value"] = [Literal(s["a"])]
+            if "x" in s: d["foaf:topic"] = [Literal(s["x"])]
+            if "y" in s: d["dc:date"] = [Literal(s["y"])]
+            if "z" in s: d["dc:spatial"] = [Literal(s["z"])]
+            terms.append(d)
+        return terms
+
 
     def lcsh(self):
         subjects = []
@@ -617,6 +698,7 @@ class Record(object):
                      "marc:lccall_class", "marc:lccall_item", "marc:lccall_mat",
                      "marc:topic_person_name", "marc:topic_person_fullname", 
                      "marc:topic_person_dates", "marc:topic_person_title",
+                     "dc:isPartOf",
                      ):
                 continue
             v = self[k]
@@ -665,6 +747,7 @@ class Record(object):
         self.scn(g)
         self.lccall(g)
         self.lccopy(g)
+        self.isPartOf(g)
 
         return g
 

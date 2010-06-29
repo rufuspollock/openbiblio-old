@@ -151,6 +151,8 @@ class Loader(Command):
 
         self.log.info("import: %s" % marc.identifier)
 
+        print marc.serialize(format="n3")
+
         return marc
 
     def rewrite(self, src, dst, pred):
@@ -178,6 +180,7 @@ class Loader(Command):
         work += self.rewrite(marc, work, DC["title"])
         work += self.rewrite(marc, work, DC["description"])
         work += self.rewrite(marc, work, BIBO["lccn"])
+        work += self.rewrite(marc, work, OBP["scn"])
 
         contributors = self.contributors(marc)
         for c in contributors:
@@ -255,9 +258,11 @@ class Loader(Command):
         manif += self.rewrite(marc, manif, DC["date"])
         manif += self.rewrite(marc, manif, DC["extent"])
         manif += self.rewrite(marc, manif, OBP["dimensions"])
-        manif += self.rewrite(marc, manif, OBP["edition"])
+        manif += self.rewrite(marc, manif, OBP["edition"])  
+        manif += self.rewrite(marc, manif, OBP["lccall"])
+        manif += self.rewrite(marc, manif, OBP["nlmcall"])
         manif += self.rewrite(marc, manif, OBP["nbn"])
-        manif += self.rewrite(marc, manif, OBP["scn"])
+        manif += self.rewrite(marc, manif, OBP["physicalDetail"])
         manif += self.rewrite(marc, manif, OWL["sameAs"])
         
         proc.result(manif)
