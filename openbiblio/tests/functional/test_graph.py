@@ -19,6 +19,12 @@ class TestGraphController(TestController):
         g = Graph()
         g.parse(data, format="xml")
 
+    def test_04_autoneg(self):
+        response = self.app.get(url("/graph", uri=test_graph), headers={"Accept": "text/n3"})
+        data = StringIO(response.body)
+        g = Graph()
+        g.parse(data, format="n3")
+
     def test_05_put(self):
         response = self.app.get(url("/graph", uri=test_graph, format="application/rdf+xml"))
         data = StringIO(response.body)
