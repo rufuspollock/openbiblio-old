@@ -5,3 +5,4 @@ development.ini
 ## pylons
 data/*
 pylons_data/*
+sstore/*
