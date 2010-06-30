@@ -1,5 +1,6 @@
 import xapian
-from ordf.graph import Graph, ConjunctiveGraph, AggregateGraph
+from ordf.graph import Graph, ConjunctiveGraph
+from ordf.vocab.ore import Aggregation
 from ordf.namespace import RDF, RDFS, DC, FOAF, ORE
 from logging import getLogger
 
@@ -12,7 +13,7 @@ VAL_NAME = 3
 
 def index_store(store):
     for s,p,o in ConjunctiveGraph(store=store).triples((None, RDF["type"], ORE["Aggregation"])):
-        yield index_aggregate(AggregateGraph(store=store, identifier=s))
+        yield index_aggregate(Aggregation(store=store, identifier=s))
 
 def index_aggregate(a):
     doc = xapian.Document()
