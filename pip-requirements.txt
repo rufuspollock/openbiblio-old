@@ -7,11 +7,8 @@ Genshi>=0.5
 # run off HEAD
 -e hg+http://knowledgeforge.net/okfn/swiss#egg=swiss
 pymarc
-## rdflib 2.5 before it got broken
-# rdflib>=2.4,<2.4.99
--e svn+http://rdflib.googlecode.com/svn/trunk@1744#egg=rdflib
--e git+http://github.com/benosteen/pairtree.git#egg=Pairtree
 -e hg+http://knowledgeforge.net/pdw/ordf#egg=ordf
+-e git+http://github.com/benosteen/pairtree.git#egg=Pairtree
 ## install openbiblio
 ## Assume for the present we install from local checkout
 # -e https://knowledgeforge.net/pdw/openbiblio
@@ -21,3 +18,4 @@ lxml
 deliverance>=0.3a
 paste
 webob
+mercurial
