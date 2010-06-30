@@ -55,7 +55,7 @@ ordf.writers = pairtree,rdflib
 fourstore.args = biblio,soft_limit=-1
 pairtree.args = %(cache_dir)s/pairtree
 xapian.args = 127.0.0.1:44332
-rdflib.args = %(cache_dir)s/sleepycat
+rdflib.args = %(cache_dir)s/rdflib_sleepycat
 rdflib.store = Sleepycat
 
 
