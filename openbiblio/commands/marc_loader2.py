@@ -13,6 +13,8 @@ from ordf.vocab.opmv import Agent, Process
 from ordf.utils import get_identifier
 from ordf.namespace import *
 
+from openbiblio import version
+
 import logging
 import sys
 import os
@@ -117,6 +119,12 @@ class Loader(Command):
         else:
             return URIRef("file://" + os.path.abspath(self.filename))
 
+    def process(self):
+        proc = Process()
+        proc.agent(self.agent)
+        proc.add((proc.identifier, OBP["version"], Literal(version)))
+        return proc
+
     def uuid(self):
         from uuid import uuid5, NAMESPACE_URL
         return str(uuid5(NAMESPACE_URL, str(self.source())))
@@ -133,8 +141,7 @@ class Loader(Command):
 
         ident = self.record_id()
 
-        proc = Process()
-        proc.agent(self.agent)
+        proc = self.process()
         proc.use(self.source())
 
         marc = record.rdf(identifier = ident)
@@ -170,8 +177,7 @@ class Loader(Command):
             self.context.commit()
 
     def work(self, marc):
-        proc = Process()
-        proc.agent(self.agent)
+        proc = self.process()
         proc.use(marc.identifier)
         proc.start()
 
@@ -201,8 +207,7 @@ class Loader(Command):
         result = []
         i = 0
         for s,p,o in marc.triples((marc.identifier, DC["contributor"], None)):
-            proc = Process()
-            proc.agent(self.agent)
+            proc = self.process()
             proc.use(marc.identifier)
 
             identifier = URIRef(marc.identifier + "/contributor/%d" % i)
@@ -221,8 +226,7 @@ class Loader(Command):
         i = 0
         for s,p,o in marc.triples((marc.identifier, DC["subject"], None)):
             if marc.exists((o, RDF["type"], FOAF["Person"])):
-                proc = Process()
-                proc.agent(self.agent)
+                proc = self.process()
                 proc.use(marc.identifier)
                 identifier = URIRef(marc.identifier + "/subject/%d" % i)
                 subject = Graph(identifier=identifier)
@@ -239,8 +243,7 @@ class Loader(Command):
         return result
 
     def manifestation(self, marc):
-        proc = Process()
-        proc.agent(self.agent)
+        proc = self.process()
         proc.use(marc.identifier)
 
         manif = Graph(identifier = URIRef(marc.identifier + "/manifestation"))
@@ -271,8 +274,7 @@ class Loader(Command):
         return manif
 
     def publisher(self, marc):
-        proc = Process()
-        proc.agent(self.agent)
+        proc = self.process()
         proc.use(marc.identifier)
 
         publisher = Graph(identifier = URIRef(marc.identifier + "/publisher"))
