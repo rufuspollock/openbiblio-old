@@ -12,7 +12,7 @@ except ImportError:
     pass
 except error.RepoLookupError:
     tip = repo["tip"]
-    __version__ = "hg+%s:%s" % (tip.rev(), tip.hex()[:12])
+    __version__ = __version__ + ".%s.%s" % (tip.rev(), tip.hex()[:12])
 
 setup(
     name='openbiblio',
