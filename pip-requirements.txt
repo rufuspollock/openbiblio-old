@@ -18,4 +18,3 @@ lxml
 deliverance>=0.3a
 paste
 webob
-mercurial
