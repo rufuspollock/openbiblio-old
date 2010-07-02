@@ -37,8 +37,8 @@ def make_map():
     map.connect("isbn", "/isbn/:isbn", controller="isbn", action="index")
     map.connect("isbn", "/isbn", controller="isbn", action="index")
 
-    map.connect("changeset", "/changeset/{changeset}", 
-                controller="changeset", action="view")
+    # map.connect("changeset", "/changeset/{changeset}", 
+    #             controller="changeset", action="view")
     map.connect("changesets", "/changeset", 
                 controller="changeset", action="index")
 
