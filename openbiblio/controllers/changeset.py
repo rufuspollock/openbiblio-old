@@ -1,0 +1,67 @@
+import logging
+
+from pylons import request, url, tmpl_context as c
+from pylons.controllers.util import abort
+from openbiblio.controllers.sparql import SparqlController
+from openbiblio.lib.helpers import Page, numberwang
+
+log = logging.getLogger(__name__)
+
+changeset_query = """
+PREFIX cs: <http://purl.org/vocab/changeset/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?changeset ?date ?reason ?creator ?precedingchange ?changed
+WHERE 
+{?changeset a cs:ChangeSet .
+ ?changeset cs:createdDate ?date .
+ ?changeset cs:changeReason ?reason .
+ ?changeset cs:creatorName ?creator .
+ ?changeset cs:preceedingChangeSet ?precedingchange .
+ ?changeset cs:subjectOfChange ?changedthing .
+ ?changedthing a ?changed 
+} 
+ORDER BY DESC(?date) %s
+"""
+
+class SPARQLResultObject(object):
+    """Avoid undue disruption to existing code."""
+    def __init__(self, **kw):
+        for k, v in kw.items():
+            setattr(self, k, v)
+
+class ChangesetController(SparqlController):
+    def _render(self, reqformat):
+        """Paginated version instead of superclass _render(),
+        specialised for handling the changesets, received as
+        a set of results in standard SPARQL XML result format"""
+        if reqformat == 'json':
+            return self.render("sparql_%s.html" % reqformat)
+        else:
+            seq = [SPARQLResultObject(
+                        **dict(zip(c.bindings,res))) 
+                            for res in c.results]
+            c.page = Page(seq, page=c.reqpage,
+                          item_count=len(c.results))
+            return self.render("sparql_paginated_%s.html" % reqformat)
+    
+    def index(self):
+        """Skip to page 1, 
+        """
+        return self.page()
+    
+    def page(self):
+        """Render the changesets, re-using existing pagination code"""
+        from formencode import validators
+        # try:
+        #     c.reqpage = validators.Int().to_python(
+        #                     request.params.get('page', '1'))
+        # except:
+        #     c.reqpage = 1
+        # Specifying "maxn" forces some consideration of UI issues.
+        c.reqpage = numberwang(request.params.get('page', 1),maxn=50)
+        reqformat = request.params.get('format', '')
+        if reqformat == 'json':
+            request.GET["format"] = "application/sparql-results+json"
+        q = changeset_query % ""
+        request.GET["query"] = q
+        return super(ChangesetController, self).index()

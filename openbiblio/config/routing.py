@@ -37,6 +37,11 @@ def make_map():
     map.connect("isbn", "/isbn/:isbn", controller="isbn", action="index")
     map.connect("isbn", "/isbn", controller="isbn", action="index")
 
+    map.connect("changeset", "/changeset/{changeset}", 
+                controller="changeset", action="view")
+    map.connect("changesets", "/changeset", 
+                controller="changeset", action="index")
+
     map.connect('/account', controller='account', action='index')
     map.connect('/account/login', controller='account', action='login')
     map.connect('/account/logout', controller='account', action='logout')

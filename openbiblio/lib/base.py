@@ -8,6 +8,7 @@ from pylons import tmpl_context as c, request, config, response
 from pylons.controllers.util import abort
 
 import openbiblio
+from openbiblio.lib.helpers import numberwang
 
 class BaseController(WSGIController):
 
@@ -23,7 +24,7 @@ class BaseController(WSGIController):
         c.site_title = config.get('site_title', 'Bibliographica')
         # WARNING: you must use request.GET as request.params appears to alter
         # request.body (it gets url-encoded) upon call to request.params
-        c.items_per_page = int(request.GET.get('items_per_page', 20))
+        c.items_per_page = numberwang(request.GET.get('items_per_page', 20))
         c.deliverance_enabled = bool(config.get('deliverance.enabled', ''))
         self._set_user()
 

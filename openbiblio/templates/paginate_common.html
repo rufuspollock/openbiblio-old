@@ -1,0 +1,48 @@
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  py:strip=""
+  >
+      <tr py:def="revision_row(item)">
+        <td>
+          ${
+            h.XML(
+            h.link_to(item.changeset[4:16]+'...'+item.changeset[-8:],
+              h.url_for(
+                controller='changeset',
+                action='index',
+                id=item.changeset)
+              )
+            )
+          }
+        </td>
+        <td style="min-width:12em;">${item.date[:-8].replace('T', ' ')}</td>
+        <td style="min-width:12em;">${item.reason[:24].replace(' ','&nbsp;')}...</td>
+        <td>${item.creator}</td>
+        <td>
+          ${
+            h.XML(
+            h.link_to(item.precedingchange[4:16]+'...'+item.precedingchange[-8:],
+              h.url_for(
+                controller='changeset',
+                action='index',
+                id=item.precedingchange)
+              )
+            )
+          }
+        </td>
+        <td>
+          ${
+            h.XML(
+            h.link_to(item.changed.split('/')[-1],
+              h.url_for(
+                controller='changeset',
+                action='index',
+                id=item.changed)
+              )
+            )
+          }
+        </td>
+      </tr>
+</html>
