@@ -1,0 +1,31 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+  xmlns:i18n="http://genshi.edgewall.org/i18n"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <py:def function="page_title">Account - Login</py:def>
+
+  <div py:match="content">
+    <h2>Login</h2>
+    <p py:if="c.error" class="errormsg">${c.error}</p>
+    <form action="FORM_ACTION" method="post" id="openid_form">
+      <fieldset>
+        <legend>Login to CKAN using Open ID</legend>
+        <div id="openid_input_area">
+          <input id="openid" name="openid" size="50" type="text" value="http://" />
+          <input id="openid_submit" type="submit" value="Log in &raquo;"/>
+        </div>
+      </fieldset>
+    </form>
+
+    <h3>Don't have an OpenID?</h3>
+    <p i18n:msg="">
+      OpenID is service that allows you to log-on to many different websites
+      using a single indentity. Find out <a href="http://openid.net/what/">more
+      about OpenID</a> and <a href="http://openid.net/get/">how to get an
+      OpenID enabled account</a>. Probably the simplest way is sign up with a
+      free OpenID provider such as <a 
+      href="https://www.myopenid.com/">https://www.myopenid.com/</a>.
+    </p>
+  </div>
+  <xi:include href="../base.html" />
+</html>

@@ -36,6 +36,11 @@ def make_map(config):
     map.connect("isbn", "/isbn/:isbn", controller="isbn", action="index")
     map.connect("isbn", "/isbn", controller="isbn", action="index")
 
+    map.connect('/account', controller='account', action='index')
+    map.connect('/account/login', controller='account', action='login')
+    map.connect('/account/logout', controller='account', action='logout')
+    map.connect('/account/{id}', controller='account', action='view')
+
     # for the time being catch everything but soon we will be more specific
     # e.g. restrict to work|person|entity ...
     map.connect('/*path', controller='graph', action='index')

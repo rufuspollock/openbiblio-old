@@ -12,7 +12,7 @@ except ImportError:
     pass
 except error.RepoLookupError:
     tip = repo["tip"]
-    __version__ = "hg+%s:%s" % (tip.rev(), tip.hex()[:12])
+    __version__ = __version__ + ".%s.%s" % (tip.rev(), tip.hex()[:12])
 
 setup(
     name='openbiblio',
@@ -29,6 +29,12 @@ setup(
     	'pymarc',
     	'swiss',
         'ordf',
+        'repoze.who>=1.0.0,<1.0.99',
+        # ensure openid is 2.2.1, since the latest (2.2.3) which is pulled
+        # in by repoze.who.plugins.openid causes exception on importing the
+        # plugin.
+        'python-openid==2.2.1', 
+        'repoze.who.plugins.openid>=0.5,<0.5.99',
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),

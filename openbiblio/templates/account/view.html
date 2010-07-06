@@ -1,0 +1,21 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+  <py:def function="page_title">User Account - ${c.read_user}</py:def>
+
+  <div py:match="content">
+    <h2>User Account - ${c.user}</h2>
+    <py:if test="c.is_myself">
+      <h3>My Account</h3>
+      <p>You are logged in. <a href="${url(controller='account',
+        action='logout')}">Log out</a></p>
+
+      <p>Your API Key: Coming soon!</p>
+    </py:if>
+
+    <h3>Recent changes</h3>
+    <p>Coming soon!</p>
+  </div>
+
+  <xi:include href="../base.html" />
+</html>

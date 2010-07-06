@@ -41,6 +41,11 @@ set debug = false
 ## Open biblio specific
 ## ==============================================
 
+# repoze.who config
+who.config_file = %(here)s/who.ini
+who.log_level = warning
+who.log_file = %(cache_dir)s/who_log.ini
+
 pdw_archive_20090520 = http://www.archive.org/download/publicdomainworks.net/pdw-dump.20090520.json.tgz
 talis_openlibrary = http://www.archive.org/download/talis_openlibrary_contribution/talis-openlibrary-contribution.mrc
 openlibrary_authors = http://openlibrary.org/static/jsondump/authors.json.gz
@@ -48,12 +53,16 @@ openlibrary_editions = http://openlibrary.org/static/jsondump/editions.json.gz
 gutenberg_marc = http://www.cucat.org/library/pgmarc.mrc.zip
 
 ordf.readers = pairtree
+ordf.writers = pairtree,rdflib
 #ordf.writers = pairtree,fourstore
 #ordf.writers = pairtree,xapian
 #ordf.writers = pairtree,fourstore,xapian
 fourstore.args = biblio,soft_limit=-1
 pairtree.args = %(cache_dir)s/pairtree
 xapian.args = 127.0.0.1:44332
+rdflib.args = %(cache_dir)s/rdflib_sleepycat
+rdflib.store = Sleepycat
+
 
 ## deliverance proxying
 ## set to any value to enable

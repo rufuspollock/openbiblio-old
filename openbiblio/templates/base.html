@@ -42,22 +42,20 @@
     <div id="top-inner">
       <div id="top-bar">
         <!--<topbar>-->
-        <!-- TODO: re-enable once user stuff in place
         <py:choose>
         <py:when test="c.user">
         <p>
-          Logged in as <strong>${c.user.name}</strong> |
-          <a href="${url(controller='user',action='read',id=c.user.id)}">My Account</a>
+          Logged in as <strong>${c.user}</strong> |
+          <a href="${url(controller='account', action='index')}">My Account</a>
           | <a href="${url('/logout_openid')}">Logout</a>
         </p>
         </py:when>
         <py:otherwise>
           <p>
-					<a href="${url(controller='user',action='login', id=None)}">Login with <img width="16" height="16" alt="None" src="http://m.okfn.org/images/icons/openid.png"/> OpenID</a>
+					<a href="${url(controller='account',action='login', id=None)}">Login with <img width="16" height="16" alt="None" src="http://m.okfn.org/images/icons/openid.png"/> OpenID</a>
           </p>
         </py:otherwise>
         </py:choose>
-        -->
         <!--</topbar>-->
       </div><!-- /top-bar -->
       <div id="logo">
