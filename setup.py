@@ -23,7 +23,7 @@ setup(
     url='http://bibliographica.org/',
     license=__license__,
     install_requires=[
-        'Pylons>=0.9.7',
+        'Pylons==1.0',
         'Genshi>=0.5',
         'Cython',
     	'pymarc',
