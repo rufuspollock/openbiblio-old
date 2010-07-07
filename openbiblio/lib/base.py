@@ -25,7 +25,7 @@ class BaseController(WSGIController):
         for attr, val in {'url':'', 'bindings':[], 'boolean':False, 
                           'warnings': None, 'person_total': 0, 
                           'item_total': 0, 'work_total': 0, 'results': [],
-                          'q': None}.items():
+                          'read_user': '', 'q': None}.items():
             if not hasattr(c, attr): setattr(c, attr, val)
 
         # WARNING: you must use request.GET as request.params appears to alter

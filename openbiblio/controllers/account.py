@@ -1,7 +1,7 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons import url, request, response, session, tmpl_context as c
+from pylons.controllers.util import abort, redirect
 
 from openbiblio.lib.base import BaseController, render
 
@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 class AccountController(BaseController):
     def index(self):
         if not c.user:
-            redirect_to(controller='account', action='login', id=None)
+            redirect(url(controller='account', action='login', id=None))
         else:
             return self.view(c.user)
 
@@ -20,7 +20,7 @@ class AccountController(BaseController):
 
     def login(self):
         if c.user:
-            redirect_to(controller='account', action='index', id=None)
+            redirect(url(controller='account', action='index', id=None))
         else:
             c.error = request.params.get('error', '')
             form = render('account/openid_form.html')
@@ -30,7 +30,7 @@ class AccountController(BaseController):
 
     def logout(self):
         if c.user:
-            redirect_to('/logout_openid')
+            redirect('/logout_openid')
         c.user = None
         return render('account/logout.html')
 
