@@ -26,11 +26,12 @@ class BaseController(WSGIController):
         for attr, val in {'url':'', 'bindings':[], 'boolean':False, 
                           'warnings': None, 'person_total': 0, 
                           'item_total': 0, 'work_total': 0, 'results': [],
-                          'read_user': '', 'q': None}.items():
+                          'read_user': '', 'q': None, 'graph':None}.items():
             if not hasattr(c, attr): setattr(c, attr, val)
 
         # WARNING: you must use request.GET as request.params appears to alter
         # request.body (it gets url-encoded) upon call to request.params
+        c.limit = numberwang(request.GET.get('limit', 20), maxn=5000)
         c.items_per_page = numberwang(request.GET.get('items_per_page', 20))
         c.deliverance_enabled = bool(config.get('deliverance.enabled', ''))
         self._set_user()

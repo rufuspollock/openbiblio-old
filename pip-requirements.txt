@@ -2,7 +2,7 @@ setuptools
 mercurial
 # routes 1.12 is weird ...
 Routes<=1.11.99
-Pylons==0.9.7
+Pylons==1.0
 Genshi>=0.5
 # run off HEAD
 -e hg+http://knowledgeforge.net/okfn/swiss#egg=swiss
