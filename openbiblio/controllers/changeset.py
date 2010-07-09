@@ -16,7 +16,7 @@ WHERE
  ?changeset cs:createdDate ?date .
  ?changeset cs:changeReason ?reason .
  ?changeset cs:creatorName ?creator .
- ?changeset cs:preceedingChangeSet ?precedingchange .
+ ?changeset cs:precedingChangeSet ?precedingchange .
  ?changeset cs:subjectOfChange ?changedthing .
  ?changedthing a ?changed 
 } 
@@ -40,8 +40,10 @@ class ChangesetController(SparqlController):
             seq = [SPARQLResultObject(
                         **dict(zip(c.bindings,res))) 
                             for res in c.results]
+            npp = 2 if request.environ.get('paste.testing', False) else 20
             c.page = Page(seq, page=c.reqpage,
-                          item_count=len(c.results))
+                          item_count=len(c.results),
+                          items_per_page=npp)
             return self.render("sparql_paginated_%s.html" % reqformat)
     
     def index(self):
