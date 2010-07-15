@@ -45,4 +45,18 @@
           }
         </td>
       </tr>
+      <tr py:def="search_row(item)">
+        <td>
+          ${h.XML(h.link_to(item.document.get_value(1).decode("utf-8") or "Untitled", 
+                  h.url("/graph?uri="+item.document.get_value(0))
+              )
+            )
+          }
+        </td>
+        <!--
+        <td style="min-width:12em;">${item.document.get_value(2).decode("utf-8")}</td>
+        -->
+        <td style="min-width:8em;vertical-align:top">${item.document.get_value(3).decode("utf-8")}</td>
+        <td style="vertical-align:top">(${item.percent}%)</td>
+      </tr>
 </html>

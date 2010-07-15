@@ -1,0 +1,35 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+  <py:def function="page_title">Search Results</py:def>
+
+  <xi:include href="paginate_common.html" />
+  <div py:match="content">
+    <xi:include href="search_form.html" />
+
+    <py:if test="c.warnings">
+    <div id="warnings">
+      <ul>
+      <py:for each="warning in c.warnings">
+        <li>${warning}</li>
+      </py:for>
+      </ul>
+    </div>
+    </py:if>
+
+    <div py:if="c.query">Search results for “${c.query}” ${("(limited to %s results)" % c.limit) if c.limit else "(all results)"}</div>
+    <py:if test="c.page">
+    ${c.page.pager()}
+
+    <table width="100%">
+      <py:for each="item in c.page.items">
+        ${search_row(item)}
+      </py:for>
+    </table>
+    
+    ${c.page.pager()}
+    </py:if>
+  </div>
+
+<xi:include href="base.html" />
+</html>

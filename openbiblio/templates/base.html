@@ -9,9 +9,8 @@
   <title>${c.site_title} - ${page_title()}</title>
 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!--
+  <!--
   <link rel="shortcut icon" href="http://m.okfn.org/gfx/logo/favicon.ico" type="image/x-icon" />
-
   <link rel="stylesheet" href="http://m.okfn.org/kforge/css/master.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
   <link rel="stylesheet" href="http://m.okfn.org/kforge/css/pagination.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
   -->
@@ -80,14 +79,14 @@
     <h3 class="hidden">Sections:</h3>
     <ul id="navigation">
       <li><a href="${url('home')}">Home</a></li>
-      <li><a href="${url('import')}">Import</a></li>
+      <!-- <li><a href="${url('import')}">Import</a></li> -->
       <li><a href="${url('search')}">Search</a></li>
-      <li><a href="${url('sparql')}">SPARQL</a></li>
+      <!-- <li><a href="${url('sparql')}">SPARQL</a></li> -->
       <li><a href="${url('add')}">Add</a></li>
-      <li><a href="${url('isbn')}">ISBN search</a></li>
+      <!-- <li><a href="${url('isbn')}">ISBN search</a></li> -->
       <li><a href="${url('changesets')}">Changesets</a></li>
-      <li><a href="http://blog.bibliographica.org/">Blog</a></li>
       <py:if test="c.deliverance_enabled">
+      <li><a href="http://blog.bibliographica.org/">Blog</a></li>
       <li><a href="${url('about')}">About</a></li>
       <li><a href="${url('get-involved')}">Get Involved</a></li>
       </py:if>
@@ -139,7 +138,8 @@
     <py:if test="defined('primary_sidebar_extras')">
       ${primary_sidebar_extras()}
     </py:if>
-
+    
+    <!-- OKFN-specific content, elided
     <div class="box">
       <h3>Get in Touch</h3>
       <p>Have a question, found a bug or just want to chat?
@@ -148,6 +148,7 @@
         touch</a>.
       </p>
     </div>
+    -->
   </div><!-- /primary -->
 
 </div><!-- /airlock -->

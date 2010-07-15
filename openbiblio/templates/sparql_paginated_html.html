@@ -1,11 +1,13 @@
 <html xmlns:py="http://genshi.edgewall.org/"
-  xmlns:xi="http://www.w3.org/2001/XInclude">
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  py:strip="">
   
   <py:def function="page_title">Repository History</py:def>
 
   <xi:include href="paginate_common.html" />
   <div py:match="content">
-    <p style="float: right"><a href="?format=atom"><img style="height:16; width:16; margin-bottom:-0.3em" src="/images/icons/atom_feed.png" alt="Atom Feed" title="Repository history"/></a> <a href="?format=atom">Subscribe &raquo;</a></p>
+    <!--
+        <p style="float: right"><a href="?format=atom"><img style="height:16; width:16; margin-bottom:-0.3em" src="/images/icons/atom_feed.png" alt="Atom Feed" title="Repository history"/></a> <a href="?format=atom">Subscribe &raquo;</a></p> -->
     <h2>Change History</h2>
     <p style="margin-bottom:4em">This page lists all changes to the store, with most recent
     changes first. (${len(c.results)})</p>
