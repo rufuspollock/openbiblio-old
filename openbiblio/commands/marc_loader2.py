@@ -13,8 +13,6 @@ from ordf.vocab.opmv import Agent, Process
 from ordf.utils import get_identifier
 from ordf.namespace import *
 
-from openbiblio import version
-
 import logging
 import sys
 import os
@@ -122,7 +120,6 @@ class Loader(Command):
     def process(self):
         proc = Process()
         proc.agent(self.agent)
-        proc.add((proc.identifier, OBP["version"], Literal(version)))
         return proc
 
     def uuid(self):

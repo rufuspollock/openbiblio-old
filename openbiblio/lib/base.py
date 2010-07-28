@@ -9,18 +9,12 @@ from pylons.controllers.util import abort
 
 import openbiblio
 from openbiblio.lib.helpers import numberwang
+from ordf.onto.lib.base import BaseController as OBaseController
+import pkg_resources
 
-class BaseController(WSGIController):
-
-    def __call__(self, environ, start_response):
-        """Invoke the Controller"""
-        # WSGIController.__call__ dispatches to the Controller method
-        # the request is routed to. This routing information is
-        # available in environ['pylons.routes_dict']
-        return WSGIController.__call__(self, environ, start_response)
+class BaseController(OBaseController):
 
     def __before__(self, action, **params):
-        c.__version__ = openbiblio.__version__
         c.site_title = config.get('site_title', 'Non-Bibliographica')
         # Why doesn't setting strict_c to False avoid this ...?
         for attr, val in {'url':'', 'bindings':[], 'boolean':False, 
@@ -28,6 +22,10 @@ class BaseController(WSGIController):
                           'item_total': 0, 'work_total': 0, 'results': [],
                           'read_user': '', 'graph':None}.items():
             if not hasattr(c, attr): setattr(c, attr, val)
+
+        super(BaseController, self).__before__(action, **params)
+
+        c.__version__ = pkg_resources.get_distribution("openbiblio").version
         # WARNING: you must use request.GET as request.params appears to alter
         # request.body (it gets url-encoded) upon call to request.params
         c.q = c.query = request.GET.get("q", None)
@@ -37,18 +35,3 @@ class BaseController(WSGIController):
         c.items_per_page = numberwang(request.GET.get('items_per_page', 20))
         c.deliverance_enabled = bool(config.get('deliverance.enabled', ''))
         self._set_user()
-
-    def _set_user(self):
-        # TODO: (?) work out how to use repoze.who.identity stuff
-        # identity = request.environ.get('repoze.who.identity') 
-        c.user = request.environ.get('REMOTE_USER', None)
-        c.remote_addr = request.environ.get('REMOTE_ADDR', 'Unknown IP Address')
-        if c.remote_addr == 'localhost' or c.remote_addr == '127.0.0.1':
-            # see if it was proxied
-            c.remote_addr = request.environ.get('HTTP_X_FORWARDED_FOR',
-                    '127.0.0.1')
-        if c.user:
-            c.author = c.user
-        else:
-            c.author = c.remote_addr
-
