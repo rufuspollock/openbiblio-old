@@ -15,7 +15,7 @@ import pkg_resources
 class BaseController(OBaseController):
 
     def __before__(self, action, **params):
-        c.site_title = config.get('site_title', 'Non-Bibliographica')
+        c.site_title = config.setdefault('site_title', 'Non-Bibliographica')
         # Why doesn't setting strict_c to False avoid this ...?
         for attr, val in {'url':'', 'bindings':[], 'boolean':False, 
                           'warnings': None, 'person_total': 0, 

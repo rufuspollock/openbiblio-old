@@ -1,8 +1,8 @@
 """
 SPARQL Endpoint Controller - see L{ordf.pylons.sparql}.
 """
-from ordf.pylons.sparql import SparqlControllerFactory
-from openbiblio.lib import base
-from openbiblio import handler
+from ordf.onto.controllers.sparql import SparqlController as _SparqlController
+from openbiblio.lib.base import BaseController
 
-SparqlController = SparqlControllerFactory(base, handler)
+class SparqlController(BaseController, _SparqlController):
+    """OpenBiblio SPARQL Controller"""
