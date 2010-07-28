@@ -4,6 +4,8 @@ from getpass import getuser
 from logging import getLogger
 from ordf.graph import Graph
 
+__import__("ordf.vocab.opmv", {}, {}, ["Process"]).Process.add_distribution("openbiblio")
+
 log = getLogger(__name__)
 
 def rdf_data():
