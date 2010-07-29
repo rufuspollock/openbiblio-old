@@ -10,6 +10,7 @@ from webhelpers.html.tags import checkbox, password, text, submit, literal, \
 from webhelpers import paginate
 from openbiblio.utils import rdf_getstr, render_html
 from routes import url_for, redirect_to
+from pylons import url
 
 from genshi import XML
 from genshi.builder import tag
