@@ -58,19 +58,18 @@
         <!--</topbar>-->
       </div><!-- /top-bar -->
       <div id="logo">
-        <a href="http://idea.ed.ac.uk/">
-            <img src="/idealab.png"
-                 alt="IDEALab Edinburgh Logo"
-                 border="0px" style="float: right;" />
-        </a>
-        <a href="http://okfn.org/">
-            <img src="/okflogo.png"
-                 alt="Open Knowledge Foundation Logo"
-                 width="50px" height="55px"
-                 border="0px" style="float: right;" />
-        </a>
         <h1>
-          <a href="${url('home')}" title="${c.site_title} Home">${c.site_title}</a><sup>v${c.version}</sup>
+          <a href="${url('home')}" title="${c.site_title} Home">${c.site_title}</a>
+          <a href="http://idea.ed.ac.uk/">
+              <img src="/idealab.png"
+                   alt="IDEALab Edinburgh Logo"
+                   style="height: 50px; float: right; border: none; margin-top: -13px;" />
+          </a>
+          <a href="http://okfn.org/">
+              <img src="/okflogo.png"
+                   alt="Open Knowledge Foundation Logo"
+                   style="height: 55px; float: right; border: none; margin-top: -13px;" />
+          </a>
         </h1>
       </div>
     </div><!-- /top-inner -->
@@ -111,9 +110,10 @@
       <p>
         <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML</a>
         | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
-        | <a href="http://www.okfn.org/">Project Home Page</a>
+        | <a href="http://openbiblio.net/about/bibliographica/">Project Home Page</a>
         | <a href="http://www.okfn.org/contact/">Contact Us</a>
         | <a href="http://www.okfn.org/privacy-policy/">Privacy Policy</a>
+        | <a href="http://openbiblio.net/">Powered by OpenBiblio</a> v${c.version}
       </p>
       <p>
         <img style="height: 18px; margin-bottom: -4px;" src="http://m.okfn.org/gfx/logo/okf_logo_white_and_green.png" /> An <a href="http://www.okfn.org/">Open Knowledge Foundation</a> Project
