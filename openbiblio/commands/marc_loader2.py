@@ -5,7 +5,6 @@ from getpass import getuser
 from openbiblio.lib import marc
 from traceback import format_exc
 
-from ordf.changeset import ChangeSet
 from ordf.graph import Graph, ConjunctiveGraph
 from ordf.term import URIRef, BNode, Literal
 from ordf.vocab.ore import Aggregation

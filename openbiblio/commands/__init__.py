@@ -3,7 +3,6 @@ from openbiblio.config.environment import load_environment
 from paste.deploy import appconfig
 from glob import glob
 from getpass import getuser
-from ordf.changeset import ChangeSet
 from ordf.graph import Graph
 from ordf.term import URIRef
 from ordf.namespace import Namespace
