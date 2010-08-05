@@ -1,6 +1,7 @@
 syntax: glob
 development.ini
 *.egg-info
+*.pyc
 
 ## pylons
 data/*
