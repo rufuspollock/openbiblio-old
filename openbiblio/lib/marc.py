@@ -616,7 +616,7 @@ class Record(object):
         nbnc = self["marc:nbnc"]
         if nbn and nbnc:
             for n, c in zip(nbn, nbnc):
-                g.add((g.identifier, OWL["sameAs"], URIRef("urn:nbn:%s-%s" % (c, n))))
+                g.add((g.identifier, RDFS["seeAlso"], URIRef("urn:nbn:%s-%s" % (c, n))))
                 b = BNode()
                 g.add((g.identifier, OBP["nbn"], b))
                 g.add((b, DCAM["member"], NBN[c]))
@@ -729,19 +729,19 @@ class Record(object):
         merge(self, ident)
 
         for s,p,o in g.triples((ident, BIBO["isbn"], None)):
-            g.add((ident, OWL["sameAs"], URIRef("urn:isbn:%s" % o)))
-            g.add((ident, OWL["sameAs"], URIRef("http://purl.org/NET/book/isbn/%s#book" % o)))
-            g.add((ident, OWL["sameAs"], URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % o)))
+            g.add((ident, RDFS["seeAlso"], URIRef("urn:isbn:%s" % o)))
+            g.add((ident, RDFS["seeAlso"], URIRef("http://purl.org/NET/book/isbn/%s#book" % o)))
+            g.add((ident, RDFS["seeAlso"], URIRef("http://www4.wiwiss.fu-berlin.de/bookmashup/books/%s" % o)))
             if len(o) == 10:
                 g.add((ident, BIBO["isbn10"], o))
             elif len(o) == 13:
                 g.add((ident, BIBO["isbn13"], o))
 
         for s,p,o in g.triples((ident, BIBO["issn"], None)):
-            g.add((ident, OWL["sameAs"], URIRef("urn:issn:%s" % o)))
+            g.add((ident, RDFS["seeAlso"], URIRef("urn:issn:%s" % o)))
 
         for s,p,o in g.triples((ident, BIBO["lccn"], None)):
-            g.add((ident, OWL["sameAs"], URIRef(u"http://lccn.loc.gov/" + o)))
+            g.add((ident, RDFS["seeAlso"], URIRef(u"http://lccn.loc.gov/" + o)))
 
         self.nbn(g)
         self.scn(g)

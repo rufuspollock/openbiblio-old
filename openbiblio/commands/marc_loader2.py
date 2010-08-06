@@ -58,6 +58,11 @@ class Loader(Command):
                        default=True,
                        action="store_false",
                        help="Do not evolve Work/Manifestation/etc.")
+    parser.add_option("--aggregate",
+                      dest="aggregate",
+                      default=False,
+                      action="store_true",
+                      help="Generate Aggregations")
     parser.add_option("--sanity",
                       default=False,
                       dest="sanity",
@@ -83,6 +88,10 @@ class Loader(Command):
         self.agent = Agent()
         self.agent.nick(getuser())
 
+        if self.options.aggregate:
+            self.options.load = False
+            self.options.evolve = False
+
         for record in marc.Parser(self.filename):
             self.recno += 1
             if self.recno < skip:
@@ -97,6 +106,8 @@ class Loader(Command):
                     marc_rdf = handler.get(self.record_id())
                 if self.options.evolve:
                     self.evolve(marc_rdf)
+                if self.options.aggregate:
+                    self.aggregate(marc_rdf)
                 self.total += 1
             except:
                 self.log.error("Exception processing record %s" % self.recno)
@@ -108,7 +119,7 @@ class Loader(Command):
 
     def report(self):
         self.log.info("total records: %s total processed: %s" %
-                      (self.recno+1, self.total))
+                      (self.recno, self.total))
 
     def source(self):
         if self.options.source:
@@ -136,6 +147,8 @@ class Loader(Command):
             record.sanity()
 
         ident = self.record_id()
+        self.log.info("import: %s" % ident)
+
 
         proc = self.process()
         proc.use(self.source())
@@ -152,9 +165,7 @@ class Loader(Command):
             ctx.add(marc)
             ctx.commit()
 
-        self.log.info("import: %s" % marc.identifier)
-
-        print marc.serialize(format="n3")
+        #print marc.serialize(format="n3")
 
         return marc
 
@@ -167,15 +178,83 @@ class Loader(Command):
         from openbiblio import handler
         self.context = handler.context(getuser(), "evolution of %s" % marc.identifier)
 
+        self.log.info("evolve: %s" % marc.identifier)
+
         self.work(marc)
 
         if not self.options.dryrun:
-            self.context.commit()
+             self.context.commit()
+
+    def aggregate(self, marc):
+        from openbiblio import handler
+        ctx = handler.context(getuser(), "Aggregation of %s" % marc.identifier)
+        def _idx(g):
+            path = g.identifier.lstrip(self.options.base)
+            return URIRef("%saggregate/%s" % (self.options.base, path))
+
+        self.log.info("aggregate %s" % marc.identifier)
+
+        q = """
+SELECT DISTINCT ?x 
+WHERE {
+    ?x a obp:Work .
+    ?x opmv:wasGeneratedBy _:proc .
+    _:proc opmv:used %s
+}
+""" % (marc.identifier.n3(),)
+        for work in [handler.get(x) for x, in handler.query(q)]:
+            work_agg = Aggregation(identifier=_idx(work))
+            work_agg.add((work_agg.identifier, ORDF["lens"], OBPL["work"]))
+            for title in work.distinct_objects(work.identifier, DC["title"]):
+                work_agg.add((work_agg.identifier, RDFS["label"], Literal(u"Work: %s" % (title,))))
+            work_agg.aggregate(work)
+
+            contr_list = []
+            for contr in [handler.get(x) for x in work.distinct_objects(work.identifier, DC["contributor"])]:
+                work_agg.aggregate(contr)
+                contr_agg = Aggregation(identifier=_idx(contr))
+                contr_agg.add((contr_agg.identifier, ORDF["lens"], OBPL["contributor"]))
+                for name in contr.distinct_objects(contr.identifier, FOAF["name"]):
+                    contr_agg.add((contr_agg.identifier, RDFS["label"], Literal(u"Person: %s" % (name,))))
+                contr_agg.aggregate(work)
+                contr_agg.aggregate(contr)
+                ctx.add(contr_agg)
+                contr_list.append(contr)
+
+            for manif in [handler.get(x) for x in work.distinct_objects(work.identifier, OBP["hasManifestation"])]:
+                work_agg.aggregate(manif)
+                manif_agg = Aggregation(identifier=_idx(manif))
+                manif_agg.add((manif_agg.identifier, ORDF["lens"], OBPL["manifestation"]))
+                for title in work.distinct_objects(work.identifier, DC["title"]):
+                    manif_agg.add((manif_agg.identifier, RDFS["label"], Literal(u"Manifestation: %s" % (title,))))
+                manif_agg.aggregate(work)
+                manif_agg.aggregate(manif)
+                for contr in contr_list:
+                    manif_agg.aggregate(contr)
+                
+                for pub in [handler.get(x) for x in manif.distinct_objects(manif.identifier, DC["publisher"])]:
+                    manif_agg.aggregate(pub)
+                    pub_agg = Aggregation(identifier=_idx(pub))
+                    pub_agg.add((pub_agg.identifier, ORDF["lens"], OBPL["publisher"]))
+                    for name in pub.distinct_objects(pub.identifier, FOAF["name"]):
+                        pub_agg.add((pub_agg.identifier, RDFS["label"], Literal(u"Agent: %s" % (name,))))
+                    pub_agg.aggregate(work)
+                    pub_agg.aggregate(manif)
+                    pub_agg.aggregate(pub)
+                    ctx.add(pub), ctx.add(pub_agg)
+
+                ctx.add(manif), ctx.add(manif_agg)
+
+            for contr in contr_list:
+                ctx.add(contr)
+
+            ctx.add(work), ctx.add(work_agg)
+
+        ctx.commit()
 
     def work(self, marc):
         proc = self.process()
         proc.use(marc.identifier)
-        proc.start()
 
         work = Graph(identifier = URIRef(marc.identifier + "/work"))
         work.add((work.identifier, RDF["type"], OBP["Work"]))
@@ -262,7 +341,7 @@ class Loader(Command):
         manif += self.rewrite(marc, manif, OBP["nlmcall"])
         manif += self.rewrite(marc, manif, OBP["nbn"])
         manif += self.rewrite(marc, manif, OBP["physicalDetail"])
-        manif += self.rewrite(marc, manif, OWL["sameAs"])
+        manif += self.rewrite(marc, manif, RDFS["seeAlso"])
         
         proc.result(manif)
         self.context.add(manif)

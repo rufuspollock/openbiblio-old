@@ -4,7 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix obp: <http://purl.org/NET/obp/> .
+@prefix obp: <http://purl.org/okfn/obp#> .
 @prefix ordf: <http://purl.org/NET/ordf/> .
 @prefix opmv: <http://purl.org/net/opmv/ns#> .
 

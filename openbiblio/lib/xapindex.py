@@ -17,11 +17,11 @@ def index_store(store):
 
 def index_aggregate(a):
     doc = xapian.Document()
-    doc.add_value(VAL_URI, a.aggregate)
-    docid = u"URI" + a.aggregate
+    doc.add_value(VAL_URI, a.identifier)
+    docid = u"URI" + a.identifier
     doc.add_term(docid)
 
-    log.debug("Aggregate: %s" % a.aggregate)
+    log.debug("Aggregate: %s" % a.identifier)
 
     def add_value(g, val_id, subject, predicate):
         val = []
@@ -36,7 +36,7 @@ def index_aggregate(a):
 
     ## create an abbreviated graph to store in the xapian database
     extract = Graph()
-    add_value(a, VAL_LABEL, a.aggregate, RDFS.label)
+    add_value(a, VAL_LABEL, a.identifier, RDFS.label)
     for g in a.contexts():
         log.debug("Indexing: %s" % g.identifier)
 
