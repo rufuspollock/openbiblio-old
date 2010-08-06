@@ -66,25 +66,3 @@ class Fixtures(Command):
 
     def command(self):
         self.setUp()
-
-class Lenses(Command):
-    summary = "Load Lenses"
-    usage = "config.ini"
-    parser = Command.standard_parser(verbose=False)
-    parser.add_option("-b", "--base",
-                       default="http://localhost:5000/lens/",
-                       help="Base for lenses (default http:localhost:5000)")
-    def command(self):
-        from openbiblio import handler
-        obproot = os.path.dirname(os.path.dirname(__file__))
-        lenses = os.path.join(obproot, "lenses", "*.n3")
-        OB = Namespace(self.options.base)
-        for filename in glob(lenses):
-            ident = OB[os.path.basename(filename)[:-3]]
-            data = Graph(identifier=ident)
-            data.parse(filename, format="n3")
-            if hasattr(handler, "fourstore"):
-                handler.fourstore.put(data)
-            else:
-                handler.rdflib.put(data)
-            handler.pairtree.put(data)
