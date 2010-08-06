@@ -491,19 +491,19 @@ class Record(object):
         person = Part("800")
         if person:
             g.add((g.identifier, OBP["personalName"], person.identifier))
-            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g.add((g.identifier, DC["isPartOf"], person.identifier))
             g += person
 
         corp = Part("810")
         if corp:
             g.add((g.identifier, OBP["corporateName"], corp.identifier))
-            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g.add((g.identifier, DC["isPartOf"], corp.identifier))
             g += corp
 
         meeting = Part("811")
         if meeting:
-            g.add((g.identifier, OBP["meetingName"], corp.identifier))
-            g.add((g.identifier, DC["isPartOf"], uniform.identifier))
+            g.add((g.identifier, OBP["meetingName"], meeting.identifier))
+            g.add((g.identifier, DC["isPartOf"], meeting.identifier))
             g += meeting
 
         uniform = Part("830")
