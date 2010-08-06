@@ -19,7 +19,7 @@ class BaseController(OBaseController):
         # Why doesn't setting strict_c to False avoid this ...?
         for attr, val in {'url':'', 'bindings':[], 'boolean':False, 
                           'warnings': None, 'person_total': 0, 
-                          'item_total': 0, 'work_total': 0, 'results': [],
+                          'manif_total': 0, 'work_total': 0, 'results': [],
                           'read_user': '', 'graph':None}.items():
             if not hasattr(c, attr): setattr(c, attr, val)
 

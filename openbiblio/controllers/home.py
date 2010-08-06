@@ -12,8 +12,8 @@ class HomeController(BaseController):
     def index(self):
 	q = "SELECT DISTINCT COUNT(?w) AS work WHERE { ?w a obp:Work }"
 	for c.work_total, in self.handler.query(q): pass
-	q = "SELECT DISTINCT COUNT(?m) AS manif WHERE { ?m a obp:Item }"
-	for c.item_total, in self.handler.query(q): pass
+	q = "SELECT DISTINCT COUNT(?m) AS manif WHERE { ?m a obp:Manifestation }"
+	for c.manif_total, in self.handler.query(q): pass
 	q = "SELECT DISTINCT COUNT(?p) AS person WHERE { ?p a foaf:Person }"
 	for c.person_total in self.handler.query(q): pass
         return render('home/index.html')
