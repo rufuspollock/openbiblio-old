@@ -13,7 +13,7 @@ import logging
 import pymarc
 import re
 
-log = logging.getLogger("marc")
+log = logging.getLogger(__name__)
 
 # ===========================================================
 # PDW from scratch MARC Parser
@@ -631,7 +631,7 @@ class Record(object):
         for m in map(_scnre.match, scn):
             if not m:
                 log.warning("Invalid SCN: %s" % scn)
-                break
+                continue
             d = m.groupdict()
             b = BNode()
             g.add((g.identifier, OBP["scn"], b))
@@ -641,7 +641,7 @@ class Record(object):
         for m in map(_scnre.match, scnc):
             if not m:
                 log.warning("Invalid cancelled SCN: %s" % scnc)
-                break
+                continue
             d = m.groupdict()
             b = BNode()
             g.add((g.identifier, OBP["scn"], b))

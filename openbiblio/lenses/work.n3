@@ -6,9 +6,9 @@
 @prefix obp:      <http://purl.org/okfn/obp#> .
 @prefix ordf:     <http://purl.org/NET/ordf/> .
 @prefix dc:       <http://purl.org/dc/terms/> .
-@prefix :         <http://bibliographica.org/lens/work#> .
+@prefix :         <http://purl.org/okfn/obp/lens/work#> .
 
-<http://bibliographica.org/lens/work> rdfs:label "OBP Work" .
+<http://purl.org/okfn/obp/lens/work> rdfs:label "OBP Work" .
 
 :workDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

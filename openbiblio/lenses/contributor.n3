@@ -7,9 +7,9 @@
 @prefix ordf:     <http://purl.org/NET/ordf/> .
 @prefix dc:       <http://purl.org/dc/terms/> .
 @prefix bio:      <http://purl.org/vocab/bio/0.1/> .
-@prefix :         <http://bibliographica.org/lens/contributor#> .
+@prefix :         <http://purl.org/okfn/obp/lens/contributor#> .
 
-<http://bibliographica.org/lens/contributor> rdfs:label "OBP Contributor" .
+<http://purl.org/okfn/obp/lens/contributor> rdfs:label "OBP Contributor" .
 
 :contributorDefaultLens a fresnel:Lens ;
     fresnel:purpose fresnel:defaultLens ;

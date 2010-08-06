@@ -6,9 +6,9 @@
 @prefix obp:      <http://purl.org/okfn/obp#> .
 @prefix ordf:     <http://purl.org/NET/ordf/> .
 @prefix dc:       <http://purl.org/dc/terms/> .
-@prefix :         <http://bibliographica.org/lens/publisher#> .
+@prefix :         <http://purl.org/okfn/obp/lens/publisher#> .
 
-<http://bibliographica.org/lens/publisher> rdfs:label "OBP Publisher" .
+<http://purl.org/okfn/obp/lens/publisher> rdfs:label "OBP Publisher" .
 
 :publisherDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

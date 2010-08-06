@@ -290,6 +290,8 @@ WHERE {
             contributor += marc.bnc((o, None, None)
                                     ).replace(
                 (o, None, None), (identifier, None, None))
+            if not contributor.exists((identifier, RDF["type"], None)):
+                contributor.add((identifier, RDF["type"], FOAF["Person"]))
             proc.result(contributor)
             self.context.add(contributor)
             result.append(contributor)

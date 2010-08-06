@@ -14,7 +14,12 @@ class HomeController(BaseController):
 	for c.work_total, in self.handler.query(q): pass
 	q = "SELECT DISTINCT COUNT(?m) AS manif WHERE { ?m a obp:Manifestation }"
 	for c.manif_total, in self.handler.query(q): pass
-	q = "SELECT DISTINCT COUNT(?p) AS person WHERE { ?p a foaf:Person }"
+	q = """
+		SELECT DISTINCT COUNT(?p) AS person
+		WHERE {
+			GRAPH ?p { ?p a foaf:Person }
+		}
+	"""
 	for c.person_total in self.handler.query(q): pass
         return render('home/index.html')
 

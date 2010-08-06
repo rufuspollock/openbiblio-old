@@ -6,9 +6,9 @@
 @prefix obp:      <http://purl.org/okfn/obp#> .
 @prefix ordf:     <http://purl.org/NET/ordf/> .
 @prefix dc:       <http://purl.org/dc/terms/> .
-@prefix :         <http://bibliographica.org/lens/manifestation#> .
+@prefix :         <http://purl.org/okfn/obp/lens/manifestation#> .
 
-<http://bibliographica.org/lens/manifestation> rdfs:label "OBP Manifestation" .
+<http://purl.org/okfn/obp/lens/manifestation> rdfs:label "OBP Manifestation" .
 
 :manifestationDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;

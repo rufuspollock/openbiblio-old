@@ -6,9 +6,9 @@
 @prefix owl:      <http://www.w3.org/2002/07/owl#> .
 @prefix foaf:     <http://xmlns.com/foaf/0.1/> .
 @prefix dbpedia:  <http://dbpedia.org/ontology/> .
-@prefix :         <http://bibliographica.org/lens/search_result#> .
+@prefix :         <http://purl.org/okfn/obp/lens/search_result#> .
 
-<http://bibliographica.org/lens/search_result> rdfs:label "Search Results" .
+<http://purl.org/okfn/obp/lens/search_result> rdfs:label "Search Results" .
 
 :thingDefaultLens a fresnel:Lens ;
 	fresnel:purpose fresnel:defaultLens ;
