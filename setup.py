@@ -55,7 +55,7 @@ setup(
     fetch = openbiblio.commands.fetch:Fetch
     fixtures = openbiblio.commands:Fixtures
     lenses = openbiblio.commands:Lenses
-    load_marc = openbiblio.commands.marc_loader2:Loader
+    load_marc = openbiblio.commands.marc_loader:Loader
     edit_marc = openbiblio.commands.marc_editor:Editor
 #    dedup = openbiblio.commands.dedup:DeDup
 
