@@ -20,6 +20,11 @@ class Editor(Command):
                       default=False,
                       action="store_true",
                       help="Append rather than overwrite output file")
+    parser.add_option("-c", "--count",
+                      dest="count",
+                      default=False,
+                      action="store_true",
+                      help="Simply count the number of records in the file")
 
     def command(self):
         self.log = logging.getLogger("marc_editor")
@@ -32,7 +37,7 @@ class Editor(Command):
                 records.extend(range(start, end+1))
             else:
                 records.append(int(recspec))
-        if not records: records = range(10)
+        if not records and not self.options.count: records = range(10)
 
         if self.options.output:
             if self.options.append:
@@ -47,14 +52,16 @@ class Editor(Command):
             def output(record):
                 print record
 
-        last = max(records)
+        last = max(records) if records else -1
         i=0
         for record in reader:
             if i in records:
                 output(record)
             i += 1
-            if i > last:
+            if last >= 0 and i > last:
                 break
 
         if self.options.output:
             ofp.close()
+        if self.options.count:
+            print i
