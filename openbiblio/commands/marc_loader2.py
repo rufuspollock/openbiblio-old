@@ -302,7 +302,11 @@ WHERE {
         result = []
         i = 0
         for s,p,o in marc.triples((marc.identifier, DC["subject"], None)):
-            if marc.exists((o, RDF["type"], FOAF["Person"])):
+            if isinstance(o, Literal):
+                subject = Graph()
+                subject.add((subject.identifier, RDF["value"], o))
+                result.append(subject)
+            elif marc.exists((o, RDF["type"], FOAF["Person"])):
                 proc = self.process()
                 proc.use(marc.identifier)
                 identifier = URIRef(marc.identifier + "/subject/%d" % i)
