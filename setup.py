@@ -56,7 +56,8 @@ setup(
     fixtures = openbiblio.commands:Fixtures
     lenses = openbiblio.commands:Lenses
     load_marc = openbiblio.commands.marc_loader2:Loader
-    dedup = openbiblio.commands.dedup:DeDup
+    edit_marc = openbiblio.commands.marc_editor:Editor
+#    dedup = openbiblio.commands.dedup:DeDup
 
     [ordf.namespace]
     openbiblio = openbiblio.lib.namespace:init_ns
