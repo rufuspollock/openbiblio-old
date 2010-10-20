@@ -64,6 +64,7 @@ class ChangesetController(SparqlController):
         reqformat = request.params.get('format', '')
         if reqformat == 'json':
             request.GET["format"] = "application/sparql-results+json"
-        q = changeset_query % ""
+        q = changeset_query % ("OFFSET %s LIMIT 50" % (c.reqpage * 50))
+        log.info(q)
         request.GET["query"] = q
         return super(ChangesetController, self).index()
