@@ -26,8 +26,8 @@ CONSTRUCT {
 
 class GraphController(base.BaseController, _GraphController):
     def _get_graph(self):
-        content_type, format = self._accept()
         uri = self._uri()
+        content_type, format = self._accept(uri)
         graph = self.handler.get(uri)
         if len(graph) == 0:
             q = construct_graph % { "agent" : uri.n3() }
@@ -41,4 +41,5 @@ class GraphController(base.BaseController, _GraphController):
         else:
             data = graph.serialize(format=format)
             response.content_type = str(content_type)
+        self._set_location(uri, format)
         return data
