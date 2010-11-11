@@ -122,7 +122,7 @@ tr
 
 .hidden
 {
-  display: none;
+  display: none !IMPORTANT;
 }
 
 .sidebar

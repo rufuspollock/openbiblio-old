@@ -10,17 +10,16 @@ log = logging.getLogger(__name__)
 
 class HomeController(BaseController):
     def index(self):
-	q = "SELECT DISTINCT COUNT(?w) AS work WHERE { ?w a obp:Work }"
+	q = "SELECT DISTINCT COUNT(?d) WHERE { ?d a bibo:Document }"
 	for c.work_total, in self.handler.query(q): pass
-	q = "SELECT DISTINCT COUNT(?m) AS manif WHERE { ?m a obp:Manifestation }"
-	for c.manif_total, in self.handler.query(q): pass
 	q = """
-		SELECT DISTINCT COUNT(?p) AS person
+		SELECT DISTINCT COUNT(?p)
 		WHERE {
-			GRAPH ?p { ?p a foaf:Person }
+                        ?d a bibo:Document .
+                        ?d dc:contributor ?p 
 		}
 	"""
-	for c.person_total in self.handler.query(q): pass
+	for c.person_total, in self.handler.query(q): pass
         return render('home/index.html')
 
     def about(self):
