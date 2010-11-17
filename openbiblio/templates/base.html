@@ -1,156 +1,217 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:py="http://genshi.edgewall.org/" 
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:i18n="http://genshi.edgewall.org/i18n"
+  xmlns:py="http://genshi.edgewall.org/"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   >
 
 <head>
-  <title>${c.site_title} - ${page_title()}</title>
-
+  <title>${page_title()} - ${c.site_title}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <!--
-  <link rel="shortcut icon" href="http://m.okfn.org/gfx/logo/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="http://m.okfn.org/kforge/css/master.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
-  <link rel="stylesheet" href="http://m.okfn.org/kforge/css/pagination.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
-  -->
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="/css/master.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
-  <link rel="stylesheet" href="/css/pagination.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
+  <link rel="shortcut icon" href="http://assets.okfn.org/images/logo/favicon.ico" type="image/x-icon" />
 
-  <link rel="stylesheet" href="/css/extra.css" type="text/css" media="screen, print" title="Master stylesheet" charset="utf-8" />
-
-<!--
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="http://m.okfn.org/kforge/scripts/kforge.js"></script>
-  <script src="/js/jquery-1.4.2.min.js"></script>
-  <script type="text/javascript" src="/js/kforge.js"></script>
- -->
+  <link rel="stylesheet" href="/css/master.css" type="text/css" media="screen, print" />
 
   <py:if test="defined('optional_head')">
     ${optional_head()}
   </py:if>
 </head>
 
-<body>
-<div id="airlock">
-  <!--[if IE]>
-    <hr class="holder" />
-  <![endif]-->
-  <div id="top">
-    <div id="top-inner">
-      <div id="top-bar">
-        <!--<topbar>-->
+<body class="${value_of('body_class', default='')}">
+
+<div id="wrapper" class="hfeed">
+  <div id="header">
+  <div id="masthead">
+    <div id="branding" role="banner">
+       <h1 id="site-title">
+       <a href="${url('home')}" title="${c.site_title} Home">
+      <py:if test="c.site_logo">
+            <img src="${c.site_logo}" alt="${c.site_title} Logo" title="${c.site_title} Logo" style="display: inline;" />
+          </py:if>
+          <py:if test="not c.site_logo">
+            ${c.site_title}
+          </py:if>
+        </a>
+      </h1>
+      <div id="site-description">${getattr(c, 'site_description', '')}</div>
+    </div> <!-- /branding -->
+
+    <div id="login-and-search">
+      <div class="search-form">
+        <form action="${url('search')}" method="GET">
+          <input type="search" class="search" name="q" value="" autocomplete="off" results="5" placeholder="Search..."/>
+        </form>
+      </div>
+
+      <div class="user-nav">
         <py:choose>
         <py:when test="c.user">
-        <p>
+        <div class="logged-in" style="display:none;">
           Logged in as <strong>${c.user}</strong> |
           <a href="${url(controller='account', action='index')}">My Account</a>
           | <a href="${url('/logout_openid')}">Logout</a>
-        </p>
+        </div>
         </py:when>
         <py:otherwise>
-          <p>
-					<a href="${url(controller='account',action='login', id=None)}">Login with <img width="16" height="16" alt="None" src="http://m.okfn.org/images/icons/openid.png"/> OpenID</a>
-          </p>
+        <div class="guest">
+					<a href="${url(controller='account',action='login', id=None)}">Login with <img width="16" height="16" alt="None" src="http://assets.okfn.org/images/icons/openid.png"/> OpenID</a>
+        </div>
         </py:otherwise>
         </py:choose>
-        <!--</topbar>-->
-      </div><!-- /top-bar -->
-      <div id="logo">
-        <h1>
-          <a href="${url('home')}" title="${c.site_title} Home">${c.site_title}</a>
-          <a href="http://idea.ed.ac.uk/">
-              <img src="/idealab.png"
-                   alt="IDEALab Edinburgh Logo"
-                   style="height: 50px; float: right; border: none; margin-top: -13px;" />
-          </a>
-          <a href="http://okfn.org/">
-              <img src="/okflogo.png"
-                   alt="Open Knowledge Foundation Logo"
-                   style="height: 55px; float: right; border: none; margin-top: -13px;" />
-          </a>
-        </h1>
       </div>
-    </div><!-- /top-inner -->
-     
-  <div id="navbar">
-    <h3 class="hidden">Sections:</h3>
-    <ul id="navigation">
-      <li><a href="${url('home')}">Home</a></li>
-      <!-- <li><a href="${url('import')}">Import</a></li> -->
-      <!-- <li><a href="${url('search')}">Search</a></li> -->
-      <li><a href="${url('sparql')}">SPARQL</a></li>
-      <!-- <li><a href="${url('add')}">Add</a></li> -->
-      <!-- <li><a href="${url('isbn')}">ISBN search</a></li> -->
-      <!-- <li><a href="${url('changesets')}">Changesets</a></li> -->
-      <py:if test="c.deliverance_enabled">
-      <li><a href="http://blog.bibliographica.org/">Blog</a></li>
-      <li><a href="${url('about')}">About</a></li>
-      <li><a href="${url('get-involved')}">Get Involved</a></li>
-      </py:if>
-      <navlinks>
-      </navlinks>
-    </ul>
-    <h3 class="hidden">In this section:</h3>
-    <ul id="subnav">
-      <subnav>
-      </subnav>
-    </ul>
-  </div>
-  </div><!-- /top -->
+    </div><!-- /login-and-search -->
+
+    <div id="access" role="navigation">
+      <div class="skip-link screen-reader-text">
+        <a href="#content" title="Skip to content">Skip to content</a>
+      </div> 
+      <div class="menu">
+        <ul>
+          <li><a href="${url('home')}">Home</a></li>
+          <!-- <li><a href="${url('import')}">Import</a></li> -->
+          <!-- <li><a href="${url('search')}">Search</a></li> -->
+          <li><a href="${url('sparql')}">SPARQL</a></li>
+          <!-- <li><a href="${url('add')}">Add</a></li> -->
+          <!-- <li><a href="${url('isbn')}">ISBN search</a></li> -->
+          <!-- <li><a href="${url('changesets')}">Changesets</a></li> -->
+          <py:if test="c.deliverance_enabled">
+          <li><a href="http://blog.bibliographica.org/">Blog</a></li>
+          <li><a href="${url('about')}">About</a></li>
+          <li><a href="${url('get-involved')}">Get Involved</a></li>
+          </py:if>
+        </ul>
+      </div> <!-- .menu -->
+    </div> <!-- #access -->
+
+  </div><!-- #masthead -->
+  </div><!-- #header -->  
+
+  <div id="main"> 
+    <div id="container"> 
+      <div id="content" role="main"> 
+
+        <div class="page type-page hentry">
+          <div class="entry-content">
+            <py:if test="defined('content')">
+            ${content()}
+            </py:if>
+            <content>
+                <p>Master content template placeholder &hellip; please replace me.</p>
+            </content>
+          </div><!-- .entry-content -->
+        </div>
+
+        <div id="comments">
+        </div><!-- #comments -->
+
+      </div> <!-- #content -->
+    </div> <!-- #container -->
+
+    <div id="primary" class="widget-area" role="complementary">
+      <ul class="xoxo">
+        <py:if test="defined('primary_sidebar_extras')">
+          ${primary_sidebar_extras()}
+        </py:if>
+      </ul>
+    </div><!-- #primary .widget-area -->
+
+  </div><!-- #main -->
   
-  <div id="main">
-    <div id="content">
-    <content>
-    </content>
-    </div>
+<div id="footer" role="contentinfo"> 
+  <div id="colophon">
+    <div id="footer-widget-area" role="complementary">
 
-    <div id="footer">
-      <p>
-        <a href="http://validator.w3.org/check/referer" title="Valid XHTML 1.1">XHTML</a>
-        | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
-        | <a href="http://openbiblio.net/about/bibliographica/">Project Home Page</a>
-        | <a href="http://www.okfn.org/contact/">Contact Us</a>
-        | <a href="http://www.okfn.org/privacy-policy/">Privacy Policy</a>
-        | <a href="http://openbiblio.net/">Powered by OpenBiblio</a> v${c.version}
-      </p>
-      <p>
-        <img style="height: 18px; margin-bottom: -4px;" src="http://m.okfn.org/gfx/logo/okf_logo_white_and_green.png" /> An <a href="http://www.okfn.org/">Open Knowledge Foundation</a> Project
-      </p>
-      <p>
-        (c) Open Knowledge Foundation
-        | Most material available under an <a rel="license" href="http://www.opendefinition.org/">open license</a>
-        | <a href="http://www.opendefinition.org/1.0/"><img
-            style="border: none; margin-bottom: -4px;"
-            src="http://m.okfn.org/images/ok_buttons/ok_90x15_blue.png"
-            alt="This Content and Data is Open" /></a>
-      </p>
-    </div><!-- /footer -->
+      <div id="first" class="widget-area">
+        <ul class="xoxo">
+          <li class="widget-container widget_text">
+          <h3 class="widget-title">About</h3>
+          <div class="textwidget">
+            <ul>
+              <li>
+                <a href="http://okfn.org/projects/openbiblio/">Project Home Page</a>
+              </li>
+              <li>
+                <a href="http://okfn.org/contact/">Contact Us</a>
+              </li>
+              <li>
+                <a href="http://okfn.org/ip-policy/">IP Policy</a>
+              </li>
+              <li>
+                <a href="http://okfn.org/privacy-policy/">Privacy Policy</a>
+              </li>
+            </ul>
+          </div>
+          </li>
+        </ul>
+      </div><!-- #first .widget-area -->
 
-    <!--[if IE]>
-    <hr class="main" />
-    <![endif]-->
-    
-  </div>
-    
-  <div id="primary" class="sidebar">
-    <py:if test="defined('primary_sidebar_extras')">
-      ${primary_sidebar_extras()}
-    </py:if>
-    
-    <!-- OKFN-specific content, elided
-    <div class="box">
-      <h3>Get in Touch</h3>
-      <p>Have a question, found a bug or just want to chat?
-        Please <a
-        href="http://www.okfn.org/contact/">get in
-        touch</a>.
-      </p>
-    </div>
-    -->
-  </div><!-- /primary -->
+      <div id="fourth" class="widget-area">
+        <ul class="xoxo">
+          <li class="widget-container widget_text">
+          <h3 class="widget-title">Credits</h3>
+          <div class="textwidget">
+            <ul>
+              <li i18n:msg="">
+                <img src="http://assets.okfn.org/images/logo/okf_logo_white_and_green_tiny.png" id="footer-okf-logo" />
+                An
+                <a href="http://www.okfn.org/">Open Knowledge Foundation</a> Project
+              </li>
+              <li>
+                &copy; <a href="http://www.okfn.org/">Open Knowledge Foundation</a>
+              </li>
+              <li>
+                <a href="http://opendefinition.org/okd/">
+                <img alt="This Content and Data is Open" src="http://assets.okfn.org/images/ok_buttons/oc_80x15_blue.png" style="border: none ; margin-bottom: -4px;"/>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.opendefinition.org/okd/">
+                <img alt="This Content and Data is Open" src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" style="border: none ; margin-bottom: -4px;"/>
+                </a>
+              </li>
+            </ul>
+          </div>
+          </li>
+        </ul>
+      </div><!-- #fourth .widget-area -->
 
-</div><!-- /airlock -->
+    </div><!-- #footer-widget-area -->
+
+    <div id="site-info">
+      <a href="url('/')" title="${c.site_title}" rel="home">
+        ${c.site_title}</a>
+    </div><!-- #site-info -->
+
+    <div id="site-generator">
+      <a href="http://okfn.org/projects/openbiblio/"
+        title="" rel="generator">
+        Powered by OpenBiblio 
+        <span i18n:msg="version">
+          v${c.__version__}
+        </span>
+      </a>
+    </div><!-- #site-generator -->
+  </div><!-- #colophon -->
+</div><!-- #footer --> 
+
+</div><!-- #wrapper -->
+
+<!--! No need to load GA in development -->
+<py:if test="not config['debug']">
+  <!-- Google Analytics -->
+  <script src='http://www.google-analytics.com/ga.js' type='text/javascript'></script>
+  <script type="text/javascript">
+  try {
+  var pageTracker = _gat._getTracker("UA-8271754-2");
+  pageTracker._setDomainName(".ckan.net");
+  pageTracker._trackPageview();
+  } catch(err) {}
+  </script>
+  <!-- /Google Analytics -->
+</py:if>
+${getattr(c, 'template_footer_end', '')}
 </body>
 </html>
+

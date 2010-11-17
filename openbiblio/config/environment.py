@@ -46,6 +46,7 @@ def load_environment(global_conf, app_conf):
     # CONFIGURATIOr OPTIONS HERE (note: all config options will override
     # any Pylons config options)
     openbiblio.handler = init_handler(config)
+    config['pylons.strict_tmpl_context'] = False
 
     return config
 

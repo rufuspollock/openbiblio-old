@@ -1,10 +1,27 @@
-/* ===================== */
-/* Fixes to KForge theme */
-/* ===================== */
+#header h1 {
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
 
-#top { margin-top: 0.4em; }
-/* mess with standard kforge theme to remove second submenu for time being */
-#subnav { background: transparent; height: 1px; }
-#subnav * { display: none; }
-#main { margin-top: 0.5em; }
-#primary { margin-top: 1.2em; }
+#site-description {
+  clear:left;
+  float:left;
+  font-size:15px;
+  font-style:italic;
+  letter-spacing:normal;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 15px;
+  text-transform:none;
+  width:auto;
+}
+
+#login-and-search {
+  display: none;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+#main {
+  padding-top: 5px;
+}
