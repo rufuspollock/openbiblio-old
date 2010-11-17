@@ -1,13 +1,6 @@
-<form method="get" action="${url('search')}">
+<form method="get" action="${url('search')}" class="search-form">
   ${h.text('q', size=40, value=c.q)}
   ${h.submit('search', 'Search &raquo;')}
-  <select name="limit">
-      <option name="limit" value="20">limit to 20 results</option>
-      <option name="limit" value="50">limit to 50 results</option>
-      <option name="limit" value="100">limit to 100 results</option>
-      <option name="limit" value="250">limit to 250 results</option>
-      <option name="limit" value="500">limit to 500 results</option>
-  </select>
-  <p class="desc">Search by name, (e.g. <em>Dickens</em>), 
+  <p class="hints">Search by name, (e.g. <em>Dickens</em>), 
         title, (e.g. <em>War and Peace</em>), etc.</p>
 </form>

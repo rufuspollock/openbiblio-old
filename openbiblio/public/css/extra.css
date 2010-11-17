@@ -22,6 +22,96 @@
   margin-bottom: 10px;
 }
 
-#main {
-  padding-top: 5px;
+.entry-content input {
+  margin-bottom: 5px;
+}
+
+.entry-content, .entry-summary {
+  padding-top: 0px;
+}
+
+.hints {
+  font-size: 80%;
+}
+
+/* ===========================
+ * Footer
+ */
+
+#footer {
+  border-top: 1px solid;
+  margin: 1em auto 0 auto;
+  overflow: auto;
+}
+
+#footer ul {
+  margin-top: 0;
+}
+
+#footer-widget-area .widget-area {
+  float: none; 
+  width: 100%;
+  margin: 0;
+}
+
+#footer-widget-area .widget-container {
+  margin-bottom: 0;
+}
+
+#footer-widget-area .widget-container h3 {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#footer-widget-area .widget-container .textwidget {
+  display: inline;
+}
+
+
+#footer-widget-area .widget-container ul {
+  display: inline;
+  margin: 0.3em 0 0 0;
+}
+
+#footer ul li abbr {
+  border-bottom: none;
+}
+
+#footer-widget-area .widget-container ul li {
+  margin: 0 1em 0 0;
+  padding: 0;
+  display: inline-block;
+}
+
+#footer-widget-area #fourth {
+	margin-right: 0;
+}
+
+#site-info {
+}
+
+#site-generator {
+  width: auto;
+}
+
+#site-generator a {
+  background-image: none;
+}
+
+
+.supported-by img {
+  margin-left: 10px;
+  height: 20px;
+}
+
+img#jisc-logo {
+  height: 13px;
+}
+
+img#footer-okf-logo {
+  margin-bottom: -4px;
+}
+
+img.ok-buttons {
+
 }
