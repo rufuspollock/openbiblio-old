@@ -29,7 +29,7 @@ class BaseController(OBaseController):
         # request.body (it gets url-encoded) upon call to request.params
         c.q = c.query = request.GET.get("q", None)
         c.reqpage = numberwang(request.params.get('page', 1),maxn=50)
-        c.limit = numberwang(request.GET.get('limit', '200'), maxn=5000)
+        c.limit = numberwang(request.GET.get('limit', '500'), maxn=5000)
         c.offset = numberwang(request.GET.get('offset', '0'), minn=0, maxn=5000)*c.reqpage
         c.items_per_page = numberwang(request.GET.get('items_per_page', 20))
         c.deliverance_enabled = bool(config.get('deliverance.enabled', ''))

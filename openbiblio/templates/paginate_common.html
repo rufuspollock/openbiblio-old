@@ -4,59 +4,16 @@
   xmlns:xi="http://www.w3.org/2001/XInclude"
   py:strip=""
   >
-      <tr py:def="revision_row(item)">
-        <td>
-          ${
-            h.XML(
-            h.link_to(item.changeset[4:16]+'...'+item.changeset[-8:],
-              h.url_for(
-                controller='changeset',
-                action='index',
-                id=item.changeset)
-              )
-            )
-          }
-        </td>
-        <td style="min-width:12em;">${item.date[:-8].replace('T', ' ')}</td>
-        <td style="min-width:12em;">${item.reason[:24].replace(' ','&nbsp;')}...</td>
-        <td>${item.creator}</td>
-        <td>
-          ${
-            h.XML(
-            h.link_to(item.precedingchange[4:16]+'...'+item.precedingchange[-8:],
-              h.url_for(
-                controller='changeset',
-                action='index',
-                id=item.precedingchange)
-              )
-            )
-          }
-        </td>
-        <td>
-          ${
-            h.XML(
-            h.link_to(item.changed.split('/')[-1],
-              h.url_for(
-                controller='changeset',
-                action='index',
-                id=item.changed)
-              )
-            )
-          }
-        </td>
-      </tr>
       <tr py:def="search_row(item)">
-        <td>
-          ${h.XML(h.link_to(item.document.get_value(1).decode("utf-8") or "Untitled", 
-                  h.url("/graph?uri="+item.document.get_value(0))
-              )
-            )
-          }
-        </td>
-        <!--
-        <td style="min-width:12em;">${item.document.get_value(2).decode("utf-8")}</td>
-        -->
-        <td style="min-width:8em;vertical-align:top">${item.document.get_value(3).decode("utf-8")}</td>
-        <td style="vertical-align:top">(${item.percent}%)</td>
+	<td>
+	  ${h.XML(h.link_to(item.name or item.title or "Unknown",
+	                    h.url(item.uri.encode("ascii"))))}
+          <py:if test="item.series">
+	    <br /><span class="series_title">${item.series}</span>
+	  </py:if>
+	  <py:if test="item.description">
+	    <br /><span class="description">${item.description}</span>
+	  </py:if>
+	</td>
       </tr>
 </html>

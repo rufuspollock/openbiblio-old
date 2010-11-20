@@ -1,7 +1,7 @@
 import logging
 
 from pylons import request, url, wsgiapp
-from openbiblio.controllers.sparql import SparqlController
+from openbiblio.lib.base import BaseController, render
 
 log = logging.getLogger(__name__)
 
@@ -29,8 +29,11 @@ WHERE {
 }
 """
 
-class IsbnController(SparqlController):
-    def index(self, isbn=None):
+class IsbnController(BaseController):
+    def index(self, *av, **kw):
+        return self.render("maintenance.html")
+
+    def _index(self, isbn=None):
         if isbn is None:
             q = isbn_query % (" ?isbn", '?isbn') + "LIMIT 10"
         else:
