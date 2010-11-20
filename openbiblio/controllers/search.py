@@ -14,8 +14,7 @@ PREFIX foaf: <ttp://xmlns.com/foaf/0.1/>
 PREFIX dc: <http://purl.org/dc/terms/>
 """
 
-where = u"""
-WHERE { 
+where = """
     {
         ?uri a bibo:Document . 
         { ?uri dc:title ?s . ?s bif:contains '"%(query)s"' } UNION
@@ -23,7 +22,11 @@ WHERE {
     } UNION {
         ?uri a foaf:Agent .
         ?uri foaf:name ?s . ?s bif:contains '"%(query)s"'
-    } .
+    }"""
+
+search = head + """
+SELECT DISTINCT ?uri ?title ?name ?series_title ?description
+WHERE {""" + where + """ .
     OPTIONAL { ?uri dc:title ?title }
     OPTIONAL { ?uri dc:description ?description }
     OPTIONAL {
@@ -32,16 +35,13 @@ WHERE {
         ?series dc:title ?series_title
     }
     OPTIONAL { ?uri foaf:name ?name }
-} OFFSET %(offset)s LIMIT %(limit)s
+} ORDER BY ?uri OFFSET %(offset)s LIMIT %(limit)s
 """
 
-search = head + """
-SELECT DISTINCT ?uri ?title ?name ?series_title ?description
-""" + where
-
 count = head + """
-SELECT COUNT (DISTINCT ?uri)
-""" + where
+SELECT COUNT (?uri)
+WHERE {""" + where + "}"
+
 
 class SearchController(BaseController):
     
@@ -52,6 +52,7 @@ class SearchController(BaseController):
         c.page = Page(list(c.results), 
                       page=c.reqpage if hasattr(c, 'reqpage') else 1,
                       item_count=c.item_count,
+                      presliced_list=True,
                       q=c.query)
         return self.render("search_paginated.html")
    
@@ -61,11 +62,22 @@ class SearchController(BaseController):
         cursor = self.handler.rdflib.store.cursor()
 
         query = count % vars
+        #print query
         for c.item_count, in cursor.execute(query): pass
+        #print "XXX", c.item_count
 
         query = search % vars
-        c.results = [dict(zip(("uri", "title", "name", "series", "description"), x)) 
-                     for x in cursor.execute(query)]
+        #print query
+        def _rdict(row):
+            d = dict(zip(("uri", "title", "name", "series", "description"), row))
+            if d["title"]:
+                d["label"] = d["title"]
+            elif d["name"]:
+                d["label"] = d["name"]
+            else:
+                d["label"] = "Unknown"
+            return d
+        c.results = [_rdict(x) for x in cursor.execute(query)]
 
         cursor.close()
 
