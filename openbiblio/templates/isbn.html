@@ -1,0 +1,18 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  >
+
+  <py:def function="page_title">ISBN Lookup</py:def> 
+
+  <div py:match="content">
+    <h2>ISBN Lookup</h2>
+    <p>
+      By appending an ISBN to this URI you will be able to look
+      up some simple details about a book. The results will be
+      returned in JSON format. For example, see
+      <a href="http://bnb.bibliographica.org/isbn/0241105161">0241105161</a>.
+    </p>
+  </div>
+
+  <xi:include href="base.html" />
+</html>

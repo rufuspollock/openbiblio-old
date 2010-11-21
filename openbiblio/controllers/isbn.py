@@ -2,44 +2,51 @@ import logging
 
 from pylons import request, url, wsgiapp
 from openbiblio.lib.base import BaseController, render
+try:
+    from json import dumps
+except ImportError:
+    from simplejson import dumps
 
 log = logging.getLogger(__name__)
 
-isbn_query = """
+isbn_query = u"""
+SPARQL
+PREFIX bibo: <http://purl.org/ontology/bibo/>
 PREFIX dc: <http://purl.org/dc/terms/>
-PREFIX obp: <http://purl.org/NET/obp/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT DISTINCT ?book ?title ?authorname ?pubname ?date%s
-WHERE {
-    ?book obp:isbn %s .
-    ?book obp:work ?work .
-    ?work dc:title ?title .
-    OPTIONAL {
-        ?book dc:date ?date
-    } .
-    OPTIONAL {
-        ?book dc:publisher ?publisher .
-        ?publisher foaf:name ?pubname
-    } .
-    OPTIONAL {
-        ?work dc:contributor ?author .
-        ?author foaf:name ?authorname
-    }
+SELECT DISTINCT ?doc ?title ?description ?contributor_name ?issued ?publisher_name
+WHERE { 
+  ?doc a bibo:Document . 
+  ?doc bibo:isbn <urn:isbn:%(isbn)s> .
+  ?doc dc:title ?title .
+  OPTIONAL { ?doc dc:description ?description } .
+  OPTIONAL { ?doc dc:issued ?issued } .
+  OPTIONAL { ?doc dc:publisher ?publisher . ?publisher skos:notation ?publisher_name }
+  OPTIONAL { ?doc dc:contributor ?contributor . ?contributor skos:notation ?contributor_name }
 }
 """
 
 class IsbnController(BaseController):
-    def index(self, *av, **kw):
-        return self.render("maintenance.html")
 
-    def _index(self, isbn=None):
+    def index(self, isbn=None):
         if isbn is None:
-            q = isbn_query % (" ?isbn", '?isbn') + "LIMIT 10"
-        else:
-	    if isbn.endswith(".json"):
-                request.GET["format"] = "application/sparql-results+json"
-                isbn = isbn[:-5]
-            q = isbn_query % ("", '"%s"' % isbn.replace("-", "").replace(" ", ""))
-        request.GET["query"] = q
-        return super(IsbnController, self).index()
+            return self.render("isbn.html")
+
+        isbn = isbn.replace("-", "").replace(" ", "")
+        q = isbn_query % { "isbn": isbn }
+
+        cursor = self.handler.rdflib.store.cursor()
+        
+        results = {}
+        for doc, title, description, cname, issued, pubname in cursor.execute(q):
+            rec = results.setdefault(doc, {})
+            rec["uri"] = doc
+            if title: rec["title"] = title
+            if description: rec["description"] = description
+            if cname:
+                clist = rec.setdefault("contributors", [])
+                clist.append({ "name": cname })
+            if issued: rec["issued"] = issued
+            if pubname: rec["publisher"] = { "name": pubname }
+
+        return dumps(results.values())
