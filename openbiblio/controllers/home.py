@@ -10,16 +10,13 @@ log = logging.getLogger(__name__)
 
 class HomeController(BaseController):
     def index(self):
-        q = "SELECT COUNT(?d) WHERE { ?d a bibo:Document }"
-        for c.work_total, in self.handler.query(q): pass
-#        q = """
-#            SELECT DISTINCT COUNT(?p)
-#            WHERE {
-#                            ?d a bibo:Document .
-#                            ?d dc:contributor ?p 
-#            }
-#        """
-#        for c.person_total, in self.handler.query(q): pass
+        cursor = self.handler.rdflib.store.cursor()
+        q = """
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+SELECT COUNT(?d) WHERE { ?d a bibo:Document }
+"""
+        for c.work_total, in self.handler.rdflib.query(q, cursor): pass
+        cursor.close()
         return render('home/index.html')
 
     def about(self):
