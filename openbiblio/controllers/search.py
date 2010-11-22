@@ -57,28 +57,31 @@ class SearchController(BaseController):
         return self.render("search_paginated.html")
    
     def index(self):
-        vars = { "query": c.query, "offset": c.offset, "limit": c.items_per_page }
+        if c.query:
+            vars = { "query": c.query, "offset": c.offset, "limit": c.items_per_page }
 
-        cursor = self.handler.rdflib.store.cursor()
+            cursor = self.handler.rdflib.store.cursor()
 
-        query = count % vars
+            query = count % vars
         #print query
-        for c.item_count, in cursor.execute(query): pass
+            for c.item_count, in cursor.execute(query): pass
         #print "XXX", c.item_count
 
-        query = search % vars
+            query = search % vars
         #print query
-        def _rdict(row):
-            d = dict(zip(("uri", "title", "name", "series", "description"), row))
-            if d["title"]:
-                d["label"] = d["title"]
-            elif d["name"]:
-                d["label"] = d["name"]
-            else:
-                d["label"] = "Unknown"
-            return d
-        c.results = [_rdict(x) for x in cursor.execute(query)]
+            def _rdict(row):
+                d = dict(zip(("uri", "title", "name", "series", "description"), row))
+                if d["title"]:
+                    d["label"] = d["title"]
+                elif d["name"]:
+                    d["label"] = d["name"]
+                else:
+                    d["label"] = "Unknown"
+                return d
+            c.results = [_rdict(x) for x in cursor.execute(query)]
+            cursor.close()
+        else:
+            c.results, c.item_count = [], 0
 
-        cursor.close()
 
         return self._render()
