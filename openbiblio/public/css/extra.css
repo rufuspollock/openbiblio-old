@@ -115,3 +115,7 @@ img#footer-okf-logo {
 img.ok-buttons {
 
 }
+
+.hidden {
+  display: none !IMPORTANT;
+}
