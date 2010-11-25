@@ -34,6 +34,7 @@ class GraphController(base.BaseController, _GraphController):
         content_type, format = self._accept(uri)
         graph = self.handler.get(uri)
         if len(graph) == 0:
+            graph.rollback()
             cursor = self.handler.rdflib.store.cursor()
             cursor.execute("SET result_timeout = 10000")
             q = construct_graph % { "agent" : uri.n3() }

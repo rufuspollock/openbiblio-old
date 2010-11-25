@@ -49,4 +49,6 @@ class IsbnController(BaseController):
             if issued: rec["issued"] = issued
             if pubname: rec["publisher"] = { "name": pubname }
 
+        cursor.close()
+
         return dumps(results.values())
