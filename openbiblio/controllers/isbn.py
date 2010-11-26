@@ -17,7 +17,7 @@ PREFIX dc: <http://purl.org/dc/terms/>
 SELECT DISTINCT ?doc ?title ?description ?contributor_name ?issued ?publisher_name
 WHERE { 
   ?doc a bibo:Document . 
-  ?doc bibo:isbn <urn:isbn:%(isbn)s> .
+  ?doc bibo:isbn '%(isbn)s' .
   ?doc dc:title ?title .
   OPTIONAL { ?doc dc:description ?description } .
   OPTIONAL { ?doc dc:issued ?issued } .
@@ -32,7 +32,7 @@ class IsbnController(BaseController):
         if isbn is None:
             return self.render("isbn.html")
 
-        isbn = isbn.replace("-", "").replace(" ", "")
+        isbn = isbn.replace("-", "").replace(" ", "").replace('"', "").replace("'", "")
         q = isbn_query % { "isbn": isbn }
 
         cursor = self.handler.rdflib.store.cursor()

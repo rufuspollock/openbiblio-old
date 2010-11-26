@@ -50,4 +50,6 @@ class GraphController(base.BaseController, _GraphController):
             data = graph.serialize(format=format)
             response.content_type = str(content_type)
         self._set_location(uri, format)
+        graph.rollback()
+#        log.warn("XXX cursor: %s" % self.handler.rdflib.store._cursor)
         return data
