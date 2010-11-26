@@ -58,6 +58,7 @@ class SearchController(BaseController):
    
     def index(self):
         if c.query:
+            c.query = c.query.replace("'", "").replace('"', "")
             vars = { "query": c.query, "offset": c.offset, "limit": c.items_per_page }
 
             cursor = self.handler.rdflib.store.cursor()
