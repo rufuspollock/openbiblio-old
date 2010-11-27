@@ -7,7 +7,9 @@
       <tr py:def="search_row(item)">
 	<td>
 	  ${h.XML(h.link_to(item.label.decode("utf-8"), h.url(item.uri.encode("ascii"))))}
-	  
+	  <py:if test="item.name">
+            <br /><span class="author_name">by ${item.name.decode("utf-8")}</span>
+          </py:if>
           <py:if test="item.series">
 	    <br /><span class="series_title">${item.series.decode("utf-8")}</span>
 	  </py:if>

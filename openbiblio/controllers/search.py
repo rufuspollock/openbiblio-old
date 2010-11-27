@@ -8,38 +8,29 @@ from pylons import tmpl_context as c, request, session
 from openbiblio.lib.helpers import Page, numberwang
 from openbiblio.lib.base import BaseController, render
 
-head = u"""
-SPARQL PREFIX bibo: <http://purl.org/ontology/bibo/>
-PREFIX foaf: <ttp://xmlns.com/foaf/0.1/>
-PREFIX dc: <http://purl.org/dc/terms/>
-"""
+where = u"""
+   ?uri a bibo:Document .
+    { ?uri dcterms:title ?s . ?s bif:contains '"%(query)s"' } UNION
+    { ?uri dcterms:description ?s . ?s bif:contains '"%(query)s"' } UNION
+    { ?uri dcterms:contributor ?author .
+      ?author foaf:name ?s . ?s bif:contains '"%(query)s"'  }"""
 
-where = """
-    {
-        ?uri a bibo:Document . 
-        { ?uri dc:title ?s . ?s bif:contains '"%(query)s"' } UNION
-        { ?uri dc:description ?s . ?s bif:contains '"%(query)s"' }
-    } UNION {
-        ?uri a foaf:Agent .
-        ?uri foaf:name ?s . ?s bif:contains '"%(query)s"'
-    }"""
-
-search = head + """
+search = u"""
 SELECT DISTINCT ?uri ?title ?name ?series_title ?description
 WHERE {""" + where + """ .
-    OPTIONAL { ?uri dc:title ?title }
-    OPTIONAL { ?uri dc:description ?description }
+    OPTIONAL { ?uri dcterms:title ?title }
+    OPTIONAL { ?uri dcterms:description ?description }
     OPTIONAL {
-        ?uri dc:isPartOf ?series .
+        ?uri dcterms:isPartOf ?series .
         ?series a bibo:Series .
-        ?series dc:title ?series_title
+        ?series dcterms:title ?series_title
     }
-    OPTIONAL { ?uri foaf:name ?name }
+    OPTIONAL { ?uri dcterms:contributor ?author . ?author foaf:name ?name }
 } ORDER BY ?uri OFFSET %(offset)s LIMIT %(limit)s
 """
 
-count = head + """
-SELECT COUNT (?uri)
+count = u"""
+SELECT COUNT (DISTINCT ?uri)
 WHERE {""" + where + "}"
 
 
@@ -58,14 +49,14 @@ class SearchController(BaseController):
    
     def index(self):
         if c.query:
-            c.query = c.query.replace("'", "").replace('"', "")
+            c.query = c.query.replace(u"'", u"").replace(u'"', u"")
             vars = { "query": c.query, "offset": c.offset, "limit": c.items_per_page }
 
             cursor = self.handler.rdflib.store.cursor()
 
             query = count % vars
         #print query
-            for c.item_count, in cursor.execute(query): pass
+            for c.item_count, in cursor.execute(u"SPARQL " + query): pass
         #print "XXX", c.item_count
 
             query = search % vars
@@ -79,7 +70,7 @@ class SearchController(BaseController):
                 else:
                     d["label"] = "Unknown"
                 return d
-            c.results = [_rdict(x) for x in cursor.execute(query)]
+            c.results = [_rdict(x) for x in cursor.execute(u"SPARQL " + query)]
             cursor.close()
         else:
             c.results, c.item_count = [], 0
