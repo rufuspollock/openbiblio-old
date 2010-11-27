@@ -26,7 +26,7 @@
   <div id="masthead">
     <div id="branding" role="banner">
        <h1 id="site-title">
-       <a href="${url('home')}" title="${c.site_title} Home">
+       <a href="/" title="${c.site_title} Home">
       <py:if test="c.site_logo">
             <img src="${c.site_logo}" alt="${c.site_title} Logo" title="${c.site_title} Logo" style="display: inline;" />
           </py:if>
@@ -40,7 +40,7 @@
 
     <div id="login-and-search">
       <div class="search-form">
-        <form action="${url('search')}" method="GET">
+        <form action="/search" method="GET">
           <input type="search" class="search" name="q" value="" autocomplete="off" results="5" placeholder="Search..."/>
         </form>
       </div>
@@ -69,17 +69,17 @@
       </div> 
       <div class="menu">
         <ul>
-          <li><a href="${url('home')}">Home</a></li>
+          <li><a href="/">Home</a></li>
           <!-- <li><a href="${url('import')}">Import</a></li> -->
-          <li><a href="${url('search')}">Search</a></li>
-          <li><a href="${url('sparql')}">SPARQL</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/sparql">SPARQL</a></li>
           <!-- <li><a href="${url('add')}">Add</a></li> -->
-          <li><a href="${url('isbn')}">ISBN search</a></li>
+          <li><a href="/isbn">ISBN search</a></li>
           <!-- <li><a href="${url('changesets')}">Changesets</a></li> -->
           <py:if test="c.deliverance_enabled">
           <li><a href="http://blog.bibliographica.org/">Blog</a></li>
-          <li><a href="${url('about')}">About</a></li>
-          <li><a href="${url('get-involved')}">Get Involved</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/get-involved">Get Involved</a></li>
           </py:if>
         </ul>
       </div> <!-- .menu -->
@@ -200,7 +200,7 @@
     </div><!-- #footer-widget-area -->
 
     <div id="site-info">
-      <a href="url('/')" title="${c.site_title}" rel="home">
+      <a href="/" title="${c.site_title}" rel="home">
         ${c.site_title}</a>
     </div><!-- #site-info -->
 
