@@ -1,72 +1,40 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:i18n="http://genshi.edgewall.org/i18n"
-  xmlns:py="http://genshi.edgewall.org/"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  >
-
+<html>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:i18n="http://genshi.edgewall.org/i18n">
 <head>
-  <title>${page_title()} - ${c.site_title}</title>
+  <title>Home - Bibliographica</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="shortcut icon" href="http://assets.okfn.org/images/logo/favicon.ico" type="image/x-icon" />
-
   <link rel="stylesheet" href="/css/master.css" type="text/css" media="screen, print" />
-
-  <py:if test="defined('optional_head')">
-    ${optional_head()}
-  </py:if>
 </head>
-
-<body class="${value_of('body_class', default='')}">
-
+<body class="">
 <div id="wrapper" class="hfeed">
   <div id="header">
   <div id="masthead">
     <div id="branding" role="banner">
        <h1 id="site-title">
-       <a href="/" title="${c.site_title} Home">
-      <py:if test="c.site_logo">
-            <img src="${c.site_logo}" alt="${c.site_title} Logo" title="${c.site_title} Logo" style="display: inline;" />
-          </py:if>
-          <py:if test="not c.site_logo">
-            ${c.site_title}
-          </py:if>
+       <a href="/" title="Bibliographica Home">
+            Bibliographica
         </a>
       </h1>
-      <div id="site-description">${getattr(c, 'site_description', '')}</div>
+      <div id="site-description"></div>
     </div> <!-- /branding -->
-
     <div id="login-and-search">
       <div class="search-form">
         <form action="/search" method="GET">
-          <input type="search" class="search" name="q" value="" autocomplete="off" results="5" placeholder="Search..."/>
+          <input type="search" class="search" name="q" value="" autocomplete="off" results="5" placeholder="Search..." />
         </form>
       </div>
-
       <div class="user-nav">
-        <py:choose>
-        <py:when test="c.user">
-        <div class="logged-in" style="display:none;">
-          Logged in as <strong>${c.user}</strong> |
-          <a href="${url(controller='account', action='index')}">My Account</a>
-          | <a href="${url('/logout_openid')}">Logout</a>
-        </div>
-        </py:when>
-        <py:otherwise>
         <div class="guest">
-					<a href="${url(controller='account',action='login', id=None)}">Login with <img width="16" height="16" alt="None" src="http://assets.okfn.org/images/icons/openid.png"/> OpenID</a>
+					<a href="/account/login?id=None">Login with <img width="16" height="16" alt="None" src="http://assets.okfn.org/images/icons/openid.png" /> OpenID</a>
         </div>
-        </py:otherwise>
-        </py:choose>
       </div>
     </div><!-- /login-and-search -->
-
     <div id="access" role="navigation">
       <div class="skip-link screen-reader-text">
         <a href="#content" title="Skip to content">Skip to content</a>
-      </div> 
+      </div>
       <div class="menu">
         <ul>
           <li><a href="/">Home</a></li>
@@ -76,62 +44,78 @@
           <!-- <li><a href="${url('add')}">Add</a></li> -->
           <li><a href="/isbn">ISBN search</a></li>
           <!-- <li><a href="${url('changesets')}">Changesets</a></li> -->
-          <py:if test="c.deliverance_enabled">
-          <li><a href="http://blog.bibliographica.org/">Blog</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/get-involved">Get Involved</a></li>
-          </py:if>
         </ul>
       </div> <!-- .menu -->
     </div> <!-- #access -->
-
   </div><!-- #masthead -->
-  </div><!-- #header -->  
-
-  <div id="main"> 
-    <div id="container"> 
-      <div id="content" role="main"> 
-
+  </div><!-- #header -->
+  <div id="main">
+    <div id="container">
+      <div id="content" role="main">
         <div class="page type-page hentry">
           <div class="entry-content">
-            <py:if test="defined('content')">
-            ${content()}
-            </py:if>
-            <content>
-                <p>Master content template placeholder &hellip; please replace me.</p>
-            </content>
+            <div>
+<h1>Terms and Conditions</h1>
+<p>Bibliographica contains data from various sources. Where
+particular providers of data have requested that their terms
+and conditions be displayed, they are reproduced below.</p>
+<ul>
+  <li><a href="#bl">British Library</a></li>
+</ul>
+<br />
+<hr />
+<br />
+<h2 id="bl">British Library</h2>
+<p><b>Use of Data:</b> This data is being made available under a
+<a href="http://creativecommons.org/publicdomain/zero/1.0/">Creative
+Commons CC0 1.0 Universal Public Domain Dedication</a> licence. This means
+that the British Library Board makes no copyright, related or
+neighbouring rights claims to the data and does not apply any
+restrictions on subsequent use and reuse of the data. The British
+Library accepts no liability for damages from any use of the supplied
+data. For more detail please see the terms of the licence.</p>
+<p>Support: The British Library is committed to providing high quality
+services and accurate data. If you have any queries or identify any
+problems with the data please contact 
+<a href="mailto:metadata@bl.uk">metadata@bl.uk</a></p>
+<p><b>Share knowledge:</b> We are also very interested to hear the ways in which
+you have used this data so we can understand more fully the benefits
+of sharing it and improve our services. Please contact
+<a href="mailto:metadata@bl.uk">metadata@bl.uk</a>
+if you wish to share your experiences with us and those that are using
+this service.</p>
+<p><b>Give Credit Where Credit is Due:</b> The British Library has a
+responsibility to maintain its bibliographic data on the nation's
+behalf. Please credit all use of this data to the British Library and
+link back to www.bl.uk/bibliographic/datafree.html in order that this
+information can be shared and developed with today's Internet users as
+well as future generations.</p>
+<blockquote>
+<b>NOTE:</b>
+British Library data from the British National Bibliography is identified
+by URIs that begin with <code>http://bnb.bibliographica.org/</code>.
+</blockquote>
           </div><!-- .entry-content -->
         </div>
-
         <div id="comments">
         </div><!-- #comments -->
-
       </div> <!-- #content -->
     </div> <!-- #container -->
-
     <div id="primary" class="widget-area" role="complementary">
       <ul class="xoxo">
         <li class="widget-container widget_text">
           <h3 class="widget-title">About</h3>
           <div class="textwidget">
-            The ${c.site_title} service is an <strong><a
-                href="http://opendefinition.org/">open</a> catalogue of cultural
-              works</strong>. <a
-              href="http://openbiblio.net/p/bibliographica/">Find out more &raquo;</a>.
+            The Bibliographica service is an <strong><a href="http://opendefinition.org/">open</a> catalogue of cultural
+              works</strong>. <a href="http://openbiblio.net/p/bibliographica/">Find out more »</a>.
           </div>
         </li>
-        <py:if test="defined('primary_sidebar_extras')">
-          ${primary_sidebar_extras()}
-        </py:if>
       </ul>
     </div><!-- #primary .widget-area -->
-
   </div><!-- #main -->
-  
-<div id="footer" role="contentinfo"> 
+<div id="footer" role="contentinfo">
   <div id="colophon">
     <div id="footer-widget-area" role="complementary">
-
       <div id="first" class="widget-area">
         <ul class="xoxo">
           <li class="widget-container widget_text">
@@ -150,15 +134,11 @@
               <li>
                 <a href="http://okfn.org/privacy-policy/">Privacy Policy</a>
               </li>
-              <li>
-                <a href="/terms.html">Terms and Conditions</a>
-              </li>
             </ul>
           </div>
           </li>
         </ul>
       </div><!-- #first .widget-area -->
-
       <div id="fourth" class="widget-area">
         <ul class="xoxo">
           <li class="widget-container widget_text">
@@ -173,15 +153,10 @@
               <li class="supported-by">
                 Supported by
                 <a href="http://idea.ed.ac.uk/">
-                  <img src="/idealab.png"
-                     alt="IDEALab Edinburgh Logo"
-                     />
+                  <img src="/idealab.png" alt="IDEALab Edinburgh Logo" />
                 </a>
                 <a href="http://okfn.org/">
-                  <img src="http://openbiblio.net/wp-content/uploads/2010/07/JISCcolour15.gif"
-                     alt="JISC Logo"
-                     id="jisc-logo"
-                     />
+                  <img src="http://openbiblio.net/wp-content/uploads/2010/07/JISCcolour15.gif" alt="JISC Logo" id="jisc-logo" />
                 </a>
               </li>
               <li>
@@ -199,29 +174,22 @@
           </li>
         </ul>
       </div><!-- #fourth .widget-area -->
-
     </div><!-- #footer-widget-area -->
-
     <div id="site-info">
-      <a href="/" title="${c.site_title}" rel="home">
-        ${c.site_title}</a>
+      <a href="/" title="Bibliographica" rel="home">
+        Bibliographica</a>
     </div><!-- #site-info -->
-
     <div id="site-generator">
-      <a href="http://okfn.org/projects/openbiblio/"
-        title="" rel="generator">
-        Powered by OpenBiblio 
+      <a href="http://okfn.org/projects/openbiblio/" title="" rel="generator">
+        Powered by OpenBiblio
         <span i18n:msg="version">
-          v${c.__version__}
+          v
         </span>
       </a>
     </div><!-- #site-generator -->
   </div><!-- #colophon -->
-</div><!-- #footer --> 
-
+</div><!-- #footer -->
 </div><!-- #wrapper -->
-
-${getattr(c, 'template_footer_end', '')}
 </body>
 </html>
-
+</html>
