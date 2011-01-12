@@ -41,28 +41,26 @@ app_instance_uuid = ${app_instance_uuid}
 ## Open biblio specific
 ## ==============================================
 
+## Site title (to use throughout site e.g. in <title></title>
+site_title = Bibliographica
+
 # repoze.who config
 who.config_file = %(here)s/who.ini
 who.log_level = warning
 who.log_file = %(cache_dir)s/who_log.ini
 
-pdw_archive_20090520 = http://www.archive.org/download/publicdomainworks.net/pdw-dump.20090520.json.tgz
-talis_openlibrary = http://www.archive.org/download/talis_openlibrary_contribution/talis-openlibrary-contribution.mrc
-openlibrary_authors = http://openlibrary.org/static/jsondump/authors.json.gz
-openlibrary_editions = http://openlibrary.org/static/jsondump/editions.json.gz
-gutenberg_marc = http://www.cucat.org/library/pgmarc.mrc.zip
-
-ordf.readers = pairtree
-ordf.writers = pairtree,rdflib
-#ordf.writers = pairtree,fourstore
-#ordf.writers = pairtree,xapian
-#ordf.writers = pairtree,fourstore,xapian
-fourstore.args = biblio,soft_limit=-1
-pairtree.args = %(cache_dir)s/pairtree
-xapian.args = 127.0.0.1:44332
+ordf.readers = rdflib
+ordf.writers = rdflib
+# rdflib.store = Virtuoso
+# rdflib.args = DSN=VOS;UID=dba;PWD=dba;WideAsUTF16=Y
 rdflib.args = %(cache_dir)s/rdflib_sleepycat
 rdflib.store = Sleepycat
 
+ontosrv.aliases = http://localhost:5000
+ontosrv.base = http://bnb.bibliographica.org/
+ontosrv.default_lens = http://bibliographica.org/lens/bibo
+
+# prov_agent = 
 
 ## deliverance proxying
 ## set to any value to enable
