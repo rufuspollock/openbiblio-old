@@ -1,20 +1,13 @@
 setuptools
 mercurial
-# routes 1.12 is weird ...
-Routes<=1.11.99
 Pylons==1.0
 Genshi>=0.5
 # run off HEAD
--e hg+http://knowledgeforge.net/okfn/swiss#egg=swiss
+-e hg+http://bitbucket.org//okfn/datautil#egg=datautil
 pymarc
 -e hg+http://knowledgeforge.net/pdw/ordf#egg=ordf
--e git+http://github.com/benosteen/pairtree.git#egg=Pairtree
 ## install openbiblio
 ## Assume for the present we install from local checkout
 # -e https://knowledgeforge.net/pdw/openbiblio
+-e .
 
-## for deliverance
-lxml
-deliverance>=0.3a
-paste
-webob
