@@ -36,6 +36,17 @@ def make_map(config):
     map.connect("isbn", "/isbn/{isbn}", controller="isbn", action="index")
     map.connect("isbn", "/isbn", controller="isbn", action="index")
 
+    map.connect("collection", "/collection/search", controller="collection",
+            action="search")
+    map.connect("collection", "/collection/", controller="collection",
+            action="create",
+            conditions=dict(method=['POST']))
+    map.connect("collection", "/collection/{collection}", controller="collection",
+            action="update",
+            conditions=dict(method=['POST']))
+    map.connect("collection", "/collection/{collection}", controller="collection", action="index")
+    map.connect("collection", "/collection", controller="collection", action="index")
+
     # map.connect("changeset", "/changeset/{changeset}", 
     #             controller="changeset", action="view")
     map.connect("changesets", "/changeset", 
