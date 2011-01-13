@@ -1,9 +1,9 @@
 import logging
 import uuid
 try:
-    from json import dumps
+    import json
 except ImportError:
-    from simplejson import dumps
+    import simplejson as json
 
 from pylons import request, url, wsgiapp
 from pylons.decorators import jsonify
@@ -29,26 +29,34 @@ WHERE {
 }
 """
 
-class CollectionController(BaseController):
+DATANS = 'http://bibliographica.org/collection/'
 
+class CollectionController(BaseController):
+    @jsonify
     def index(self, collection=None):
         if collection is None:
-            # return self.render("collection.html")
             return 'Collection API'
+        else:
+            uri = DATANS + collection
+            collection = get_collection(uri)
+            return collection
+
+    def _request_json(self):
+        return json.loads(dict(request.params).keys()[0])
 
     @jsonify
     def create(self):
         if not c.user:
             abort(401)
-        values = {}
+        values = self._request_json()
         collection_uri = create_collection(c.user, values)
         return {'uri': collection_uri}
 
+    @jsonify
     def update(self, collection):
         uri = self._uri()
         graph = self.handler.get(uri)
         ctx = handler.context(getuser(), "Initial Data")
-
 
     @jsonify
     def search(self):
@@ -89,6 +97,7 @@ bb:Collection a owl:Class;
     rdfs:label "%(title)s";
     dc:title "%(title)s";
     bb:user "%(user)s".
+
 '''
 from ordf.graph import Graph
 from ordf.term import URIRef
@@ -96,21 +105,49 @@ def create_collection(user, object_dict={}):
     id_ = str(uuid.uuid4())
     collection_uri = 'http://bibliographica.org/collection/' +  id_
     defaults = {
-        'title': '',
+        'title': 'Untitled',
         'collection_uri': collection_uri,
-        'user': user
+        'user': user,
+        'works': []
         }
     values = dict(defaults)
     values.update(object_dict)
     ident = URIRef(collection_uri)
     data = Graph(identifier=ident)
     ourdata = collection_n3 % values
+    for work in values['works']:
+        membership = '<%s> rdfs:member <%s> .\n' % (work, ident)
+        ourdata += membership
     data.parse(data=ourdata, format='n3')
     ctx = handler.context(user, "Creating collection: %s" % collection_uri)
     ctx.add(data)
     ctx.commit()
     return collection_uri
 
-def find_collection():
-    pass
+get_collection_query = u"""
+SPARQL
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX bb: <http://bibliographica.org/onto#>
+PREFIX dc: <http://purl.org/dc/terms/>
+PREFIX data: <http://bibliographica.org/collection/>
+
+SELECT DISTINCT ?title ?description ?user_name
+WHERE { 
+  %(uri)s bb:user ?user_name .
+  OPTIONAL { %(uri)s dc:title ?title } .
+  OPTIONAL {  %(uri)s dc:description ?description }
+}
+"""
+def get_collection(collection_uri):
+    q = get_collection_query % ( {'uri': '<%s>' % collection_uri} )
+    cursor = handler.rdflib.store.cursor()
+    rec = {
+        'uri': collection_uri
+        }
+    for title, description, username in cursor.execute(q):
+        rec['user'] = username
+        if title: rec["title"] = title
+        if description: rec["description"] = description
+    cursor.close()
+    return rec
 
