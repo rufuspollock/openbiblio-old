@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <title>Bibliographica API Demo</title>
+  <link rel="stylesheet" href="http://pygments.org/media/pygments_style.css"> 
+  <script src=" https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/vendor/sparql.js"></script>
+
+<script type="text/javascript">
+
+// run a free text query on Bibliographica
+function runQuery(term) {
+  // use third party js sparql library -  see ../js/vendor/sparql.js
+  var sparqler = new SPARQL.Service("http://bibliographica.org/sparql");
+
+  // set up some prefixes -- if you are not familiar with SPARQL and prefixes
+  // have a quick Google
+  sparqler.setPrefix("dc", "http://purl.org/dc/terms/");
+  sparqler.setPrefix("bibo", "http://purl.org/ontology/bibo/");
+  sparqler.setPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+
+  // The actual SPARQL query we'll run
+  var sparql = "SELECT DISTINCT ?book ?title ?name " +
+  "WHERE { " +
+  "    ?book a bibo:Book . " +
+  "    ?book dc:title ?title . ?title bif:contains \"" + term + "\" . " +
+  "    OPTIONAL { " +
+  "        ?book dc:contributor ?author . ?author foaf:name ?name " +
+  "    } " +
+  "} GROUP BY ?book LIMIT 10";
+
+  // Create the query
+  var query = sparqler.createQuery();
+
+  // And run it (asynchronous so we need callbacks for the json results)
+  query.query(sparql, {
+    // we get json back from the query
+    success: function(json) {
+      console.log(json);
+      // get the actual results
+      // we'll have items corresponding to the ?book, ?title, ?name and ?location
+      var resultElement = $('#results')
+      // Clear out the element
+      resultElement.html('');
+      // iterate through our results and add them to the result list element
+      // in the page
+      var results = json.results.bindings;
+      for (var index in results) {
+        result = results[index];
+        var li = $('<li></li>');
+        var text = '<strong>' + result.title.value + '</strong> by <em>' + result.name.value + '</em>';
+        li.append(text);
+        resultElement.append(li);
+      }
+    },
+    failure: function() {
+      alert ("*sob* something went wrong");
+    }
+  });
+}
+
+jQuery('document').ready(function($) {
+  $('#queryform').submit(function(e) {
+    e.preventDefault();
+    var textQuery = $(this).find('input.search').val();
+    runQuery(textQuery);
+  });
+});
+</script>
+</head>
+
+<body>
+  <h1>Using the Bibliographica SPARQL API from Javascript</h1>
+
+  <form id="queryform">
+    <input type="search" class="search" name="q" value="Edinburgh" autocomplete="off" results="5" placeholder="Search..."/>
+    <input type="submit" value="Search" />
+  </form>
+  <p>Enter a term and retrieve results from the Bibliographica SPARQL API using javascript.</p>
+
+  <h3>
+    Results
+  </h3>
+  <ul id="results">
+  </ul>
+
+  <h2>How this works</h2>
+  <p>Here's the key piece of javascript (for full details, including snippet of
+  jquery to bind the search form event, look at the html source of this
+  page).</p>
+
+<!-- output from pygments.org -->
+<div class="syntax"><pre><span class="kd">function</span> <span class="nx">runQuery</span><span class="p">(</span><span class="nx">term</span><span class="p">)</span> <span class="p">{</span> 
+  <span class="c1">// use third party js sparql library -  see ../js/vendor/sparql.js</span> 
+  <span class="kd">var</span> <span class="nx">sparqler</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SPARQL</span><span class="p">.</span><span class="nx">Service</span><span class="p">(</span><span class="s2">&quot;http://bibliographica.org/sparql&quot;</span><span class="p">);</span> 
+ 
+  <span class="c1">// set up some prefixes -- if you are not familiar with SPARQL and prefixes</span> 
+  <span class="c1">// have a quick Google</span> 
+  <span class="nx">sparqler</span><span class="p">.</span><span class="nx">setPrefix</span><span class="p">(</span><span class="s2">&quot;dc&quot;</span><span class="p">,</span> <span class="s2">&quot;http://purl.org/dc/terms/&quot;</span><span class="p">);</span> 
+  <span class="nx">sparqler</span><span class="p">.</span><span class="nx">setPrefix</span><span class="p">(</span><span class="s2">&quot;bibo&quot;</span><span class="p">,</span> <span class="s2">&quot;http://purl.org/ontology/bibo/&quot;</span><span class="p">);</span> 
+  <span class="nx">sparqler</span><span class="p">.</span><span class="nx">setPrefix</span><span class="p">(</span><span class="s2">&quot;foaf&quot;</span><span class="p">,</span> <span class="s2">&quot;http://xmlns.com/foaf/0.1/&quot;</span><span class="p">);</span> 
+ 
+  <span class="c1">// The actual SPARQL query we&#39;ll run</span> 
+  <span class="kd">var</span> <span class="nx">sparql</span> <span class="o">=</span> <span class="s2">&quot;SELECT DISTINCT ?book ?title ?name &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;WHERE { &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;    ?book a bibo:Book . &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;    ?book dc:title ?title . ?title bif:contains \&quot;&quot;</span> <span class="o">+</span> <span class="nx">term</span> <span class="o">+</span> <span class="s2">&quot;\&quot; . &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;    OPTIONAL { &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;        ?book dc:contributor ?author . ?author foaf:name ?name &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;    } &quot;</span> <span class="o">+</span> 
+  <span class="s2">&quot;} GROUP BY ?book LIMIT 10&quot;</span><span class="p">;</span> 
+      
+  <span class="c1">// Create the query</span> 
+  <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="nx">sparqler</span><span class="p">.</span><span class="nx">createQuery</span><span class="p">();</span> 
+ 
+  <span class="c1">// And run it (asynchronous so we need callbacks for the json results)</span> 
+  <span class="nx">query</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="nx">sparql</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="c1">// we get json back from the query</span> 
+    <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span> 
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span> 
+      <span class="c1">// get the actual results</span> 
+      <span class="c1">// we&#39;ll have items corresponding to the ?book, ?title, ?name and ?location     </span> 
+      <span class="kd">var</span> <span class="nx">resultElement</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#results&#39;</span><span class="p">)</span> 
+      <span class="c1">// Clear out the element</span> 
+      <span class="nx">resultElement</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span> 
+      <span class="c1">// iterate through our results and add them to the result list element</span> 
+      <span class="c1">// in the page</span> 
+      <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">bindings</span><span class="p">;</span> 
+      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">index</span> <span class="k">in</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">results</span><span class="p">[</span><span class="nx">index</span><span class="p">];</span> 
+        <span class="kd">var</span> <span class="nx">li</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li&gt;&lt;/li&gt;&#39;</span><span class="p">);</span> 
+        <span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s1">&#39;&lt;strong&gt;&#39;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&lt;/strong&gt; by &lt;em&gt;&#39;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&lt;/em&gt;&#39;</span><span class="p">;</span> 
+        <span class="nx">li</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span> 
+        <span class="nx">resultElement</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">li</span><span class="p">);</span> 
+      <span class="p">}</span> 
+    <span class="p">},</span> 
+    <span class="nx">failure</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+      <span class="nx">alert</span> <span class="p">(</span><span class="s2">&quot;*sob* something went wrong&quot;</span><span class="p">);</span> 
+    <span class="p">}</span> 
+  <span class="p">});</span> 
+<span class="p">}</span> 
+</pre></div> 
+
+</body>
+</html>
