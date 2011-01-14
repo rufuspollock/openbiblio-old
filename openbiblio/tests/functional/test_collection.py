@@ -121,6 +121,31 @@ class TestCollectionController(TestController):
         data = response.json
         assert data['title'] == title, data
 
-    def _test_update(self):
-        pass
+    def test_update(self):
+        ouruser = 'http://test.org/me-update'
+        collection_uri = collection.create_collection(ouruser)
+        collid = collection_uri.split('/')[-1]
+
+        oururl = url(controller='collection', action='update',
+                collection=collid)
+        response = self.app.post(oururl, params={}, status=[401,302])
+
+        title = 'mynewtitle'
+        values = json.dumps({ 'title': title }) 
+        response = self.app.post(oururl, values,
+                extra_environ=dict(
+                    REMOTE_USER=ouruser
+                )
+            )
+        data = response.json
+        assert data['status'] == 'ok', data
+
+        graph = handler.get(collection_uri)
+        assert graph, collection_uri
+        pprint.pprint([(s,p,o) for s,p,o in graph])
+        match = list(graph.triples((URIRef(collection_uri),None,ouruser)))
+        assert match
+        dctitle = URIRef('http://purl.org/dc/terms/title')
+        title_triple = (URIRef(collection_uri),dctitle,title)
+        assert title_triple in graph
 

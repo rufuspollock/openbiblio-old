@@ -49,14 +49,19 @@ class CollectionController(BaseController):
         if not c.user:
             abort(401)
         values = self._request_json()
-        collection_uri = create_collection(c.user, values)
-        return {'uri': collection_uri}
+        uri = create_collection(c.user, values)
+        return {'uri': uri}
 
     @jsonify
     def update(self, collection):
-        uri = self._uri()
-        graph = self.handler.get(uri)
-        ctx = handler.context(getuser(), "Initial Data")
+        if not c.user:
+            abort(401)
+        uri = DATANS + collection
+        newdata = self._request_json()
+        values = get_collection(uri)
+        values.update(newdata)
+        collection = create_collection(uri, values)
+        return {'status': 'ok'}
 
     @jsonify
     def search(self):
@@ -93,7 +98,7 @@ collection_n3 = '''
 bb:Collection a owl:Class;
     rdfs:label "A collection".
 
-<%(collection_uri)s> a bb:Collection;
+<%(uri)s> a bb:Collection;
     rdfs:label "%(title)s";
     dc:title "%(title)s";
     bb:user "%(user)s".
@@ -102,27 +107,26 @@ bb:Collection a owl:Class;
 from ordf.graph import Graph
 from ordf.term import URIRef
 def create_collection(user, object_dict={}):
-    id_ = str(uuid.uuid4())
-    collection_uri = 'http://bibliographica.org/collection/' +  id_
     defaults = {
+        'uri': 'http://bibliographica.org/collection/' + str(uuid.uuid4()),
         'title': 'Untitled',
-        'collection_uri': collection_uri,
         'user': user,
         'works': []
         }
     values = dict(defaults)
     values.update(object_dict)
-    ident = URIRef(collection_uri)
+    uri = values['uri']
+    ident = URIRef(uri)
     data = Graph(identifier=ident)
     ourdata = collection_n3 % values
     for work in values['works']:
         membership = '<%s> rdfs:member <%s> .\n' % (work, ident)
         ourdata += membership
     data.parse(data=ourdata, format='n3')
-    ctx = handler.context(user, "Creating collection: %s" % collection_uri)
+    ctx = handler.context(user, "Creating collection: %s" % uri)
     ctx.add(data)
     ctx.commit()
-    return collection_uri
+    return uri
 
 get_collection_query = u"""
 SPARQL
