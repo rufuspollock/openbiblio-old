@@ -34,15 +34,14 @@ class Fixtures(Command):
     usage = "config.ini"
     parser = Command.standard_parser(verbose=False)
     done = False
+    obproot = os.path.dirname(os.path.dirname(__file__))
+    testdata = os.path.join(obproot, "tests", "data")
 
     @classmethod
     def data(cls):
-        obproot = os.path.dirname(os.path.dirname(__file__))
-        testdata = os.path.join(obproot, "tests", "data")
-
         ident = URIRef("http://bibliographica.org/test")
         data = Graph(identifier=ident)
-        data.parse(os.path.join(testdata, "fixtures.rdf"))
+        data.parse(os.path.join(cls.testdata, "fixtures.rdf"))
         yield data
 
     @classmethod
@@ -58,6 +57,13 @@ class Fixtures(Command):
             ctx.add(graph)
         ctx.commit()
 
+        ctx = handler.context(getuser(), "Bibtex Graph data")
+        ident = URIRef("http://bnb.bibliographica.org/entry/GB9361575")
+        data = Graph(identifier=ident)
+        data.parse(os.path.join(cls.testdata, "GB9361575.rdf"))
+        ctx.add(data)
+        ctx.commit()
+        
         cls.done = True
 
     @classmethod

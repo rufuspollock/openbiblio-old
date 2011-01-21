@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:_50="http://iflastandards.info/ns/isbd/elements/"
+   xmlns:_51="http://open.vocab.org/terms/"
+   xmlns:bibo="http://purl.org/ontology/bibo/"
+   xmlns:bio="http://purl.org/vocab/bio/0.1/"
+   xmlns:dc="http://purl.org/dc/terms/"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+  <rdf:Description rdf:nodeID="b13853001">
+    <rdfs:label>English fiction</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852997">
+    <rdfs:label>London</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852996">
+    <skos:notation>Lee, Gentry.</skos:notation>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <foaf:name>Lee, Gentry.</foaf:name>
+    <owl:sameAs rdf:resource="http://bibliographica.org/entity/dd24e55a8cc1afe1ed7b171e447a72f5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bnb.bibliographica.org/entry/GB9361575.n3">
+    <foaf:primaryTopic rdf:resource="http://bnb.bibliographica.org/entry/GB9361575"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852999">
+    <rdf:value rdf:datatype="http://purl.org/dc/terms/ISO639-2">eng</rdf:value>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852995">
+    <bio:date rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2008</bio:date>
+    <rdf:type rdf:resource="http://purl.org/vocab/bio/0.1/Death"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852998">
+    <skos:notation>Gollancz</skos:notation>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <foaf:name>Gollancz</foaf:name>
+    <owl:sameAs rdf:resource="http://bibliographica.org/entity/8d57034d3e8f33deb57cc7dee1b37664"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bnb.bibliographica.org/entry/GB9361575.nt">
+    <foaf:primaryTopic rdf:resource="http://bnb.bibliographica.org/entry/GB9361575"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bnb.bibliographica.org/entry/GB9361575">
+    <bibo:identifier>GB9361575</bibo:identifier>
+    <dc:source rdf:resource="http://bnb.bibliographica.org/dataset/BNBrdfdc08.xml#41030"/>
+    <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1993</dc:issued>
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Book"/>
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <foaf:isPrimaryTopicOf rdf:resource="http://bnb.bibliographica.org/entry/GB9361575.html"/>
+    <foaf:isPrimaryTopicOf rdf:resource="http://bnb.bibliographica.org/entry/GB9361575.rdf"/>
+    <foaf:isPrimaryTopicOf rdf:resource="http://bnb.bibliographica.org/entry/GB9361575.n3"/>
+    <foaf:isPrimaryTopicOf rdf:resource="http://bnb.bibliographica.org/entry/GB9361575.nt"/>
+    <dc:publisher rdf:nodeID="b13852998"/>
+    <bibo:isbn>0575055774</bibo:isbn>
+    <_51:blid>010078938</_51:blid>
+    <dc:subject rdf:nodeID="b13853002"/>
+    <dc:subject rdf:nodeID="b13853001"/>
+    <dc:title>Rama revealed</dc:title>
+    <rdfs:seeAlso rdf:resource="http://www4.wiwiss.fu-berlin.de/bookmashup/books/0575055774"/>
+    <rdfs:seeAlso rdf:resource="http://purl.org/NET/book/isbn/0575055774#book"/>
+    <_50:hasPlaceOfPublicationProductionDistribution rdf:nodeID="b13852997"/>
+    <dc:contributor rdf:nodeID="b13852996"/>
+    <dc:contributor rdf:nodeID="b13852993"/>
+    <dc:language rdf:nodeID="b13852999"/>
+    <dc:extent rdf:nodeID="b13853000"/>
+    <dc:isPartOf rdf:resource="http://bnb.bibliographica.org/dataset"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bnb.bibliographica.org/entry/GB9361575.html">
+    <foaf:primaryTopic rdf:resource="http://bnb.bibliographica.org/entry/GB9361575"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13853002">
+    <skos:notation rdf:datatype="ddc:Notation">823.914</skos:notation>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <skos:inScheme rdf:resource="http://dewey.info/scheme/e20"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13853000">
+    <rdfs:label>477p</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://bnb.bibliographica.org/entry/GB9361575.rdf">
+    <foaf:primaryTopic rdf:resource="http://bnb.bibliographica.org/entry/GB9361575"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852994">
+    <bio:date rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1917</bio:date>
+    <rdf:type rdf:resource="http://purl.org/vocab/bio/0.1/Birth"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="b13852993">
+    <skos:notation>Clarke, Arthur C. (Arthur Charles), 1917-2008.</skos:notation>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <bio:event rdf:nodeID="b13852995"/>
+    <bio:event rdf:nodeID="b13852994"/>
+    <foaf:name>Clarke, Arthur C. (Arthur Charles)</foaf:name>
+    <owl:sameAs rdf:resource="http://bibliographica.org/entity/cc173131fa0d998642762e937b81e7a8"/>
+  </rdf:Description>
+</rdf:RDF>
