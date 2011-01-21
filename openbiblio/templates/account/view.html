@@ -6,15 +6,11 @@
   <div py:match="content">
     <h2>User Account - ${c.user}</h2>
     <py:if test="c.is_myself">
-      <h3>My Account</h3>
       <p>You are logged in. <a href="${url(controller='account',
         action='logout')}">Log out</a></p>
 
       <p>Your API Key: Coming soon!</p>
     </py:if>
-
-    <h3>Recent changes</h3>
-    <p>Coming soon!</p>
   </div>
 
   <xi:include href="../base.html" />
