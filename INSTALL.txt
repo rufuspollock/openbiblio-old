@@ -1,78 +1,105 @@
-= Get open biblio and setup virtualenv =
+====================================================
+Installation of Bibliographica with Virtuoso backend
+====================================================
 
-$ hg clone https://knowledgeforge.net/pdw/openbiblio
-$ cd openbiblio/
-$ virtualenv .
-$ source bin/activate
+Initial Steps:
+--------------
 
-= Install requirements (pip-requirements.txt doesn't work) =
+Get open biblio and setup virtualenv::
 
-$ pip install setuptools
-$ pip install mercurial
-$ pip install Routes
-$ pip install Pylons
-$ pip install Genshi
-$ pip install -e hg+http://knowledgeforge.net/okfn/swiss#egg=swiss
-$ pip install pymarc
-$ pip install -e hg+http://knowledgeforge.net/pdw/ordf#egg=ordf
-$ pip install -e git+http://github.com/benosteen/pairtree.git#egg=Pairtree
-$ pip install lxml
-$ pip install deliverance>=0.3a
-$ pip install paste
-$ pip install webob
+    $ hg clone https://bitbucket.org/okfn/openbiblio
+    $ cd openbiblio/
+    $ virtualenv .
+    $ source bin/activate
 
-= install ontosrv =
-$ hg clone http://ordf.org/src/ontosrv
-$ cd ontosrv/
-$ python setup.py develop
-$ paster make-config ontosrv development.ini
+Install requirements
+--------------------
 
-= Create ini files and extra dirs for openbiblio =
+Create ini files for openbiblio and configure::
 
-$ cd ../
-$ python setup.py develop
-$ mkdir /data/vhost/openbiblio/data
-$ mkdir /data/vhost/openbiblio/data/pairtree
+    $ cd ../
+    $ python setup.py develop
+    $ paster make-config openbiblio development.ini
 
-$ paster make-config openbiblio development.ini
+Check that the information within development.ini makes sense - you may need to comment out the 
+Sleepycat RDF back end and uncomment the Virtuoso backend lines.
 
-[OVERWRITE developent.ini WITH VERSION THAT WORKS FROM LIVE SERVER THEN EDIT]
+Install virtuoso
+----------------
 
-= Install virtuoso =
+OSX macports::
 
-OSX macports: $ sudo port install virtuoso
+    $ sudo port install virtuoso
 
 - OR -
 
-Ubuntu/debian: $ apt-get install virtuoso
+Ubuntu/debian::
 
-$ pip install virtuoso
-$ touch ~/.odbc.ini
+    $ apt-get install virtuoso-opensource
 
-Edit the above file so it looks like https://gist.github.com/766481
+It should ask for a password for the 'DBA' for the instance.
 
-= Create indexes in virtuoso (Optional?) =
-$ isql
+Once this has installed, you can check to see if the instance is working by logging into 
+http://localhost:8890/conductor/ and seeing if you can access the options provided.
+
+Install ODBC packages to be able to talk to Virtuoso programatically
+--------------------------------------------------------------------
+
+Ubuntu/debian::
+
+    $ apt-get install unixodbc-dev
+    $ apt-get install libvirtodbc0
+
+Install python client library (requires special pyodbc and gcc)::
+
+    $ pip install http://eris.okfn.org/ww/2010/10/pyodbc-spasql/pyodbc-2.1.8-virtuoso.tar.gz
+    $ pip install virtuoso
+
+Configure ODBC::
+
+    ~/.odbc.ini
+
+Edit the above file so it looks like::
+
+    [VOS]
+    Description     = Virtuoso
+    Driver          = /usr/lib/odbc/virtodbc.so
+    Servername      = localhost
+    Port            = 1111
+    UserName        = dba
+
 
 Then run the following scrips:
 https://bitbucket.org/okfn/jiscobib/src/tip/sql/virtuoso-fts.sql
 http://eris.okfn.org/ww/virtuoso_config.sql
 
-= Configure virtuoso =
-Locate virtuoso.ini On OSX/Macports it is at /opt/local/var/lib/virtuoso/db/virtuoso.ini
+Configure virtuoso
+------------------
 
-$ vim virtuoso.ini
+Locate virtuoso.ini On OSX/Macports it is at /opt/local/var/lib/virtuoso/db/virtuoso.ini::
 
-Then comment out everything under [Plugins]
+    $ vim virtuoso.ini
 
-$ mkdir ~/virtuoso
+Then comment out everything under [Plugins]::
 
-= Final setup for openbiblio =
-paster setup-app development.ini
+    $ mkdir ~/virtuoso
 
+Final setup for openbiblio
+--------------------------
 
-= Add some data =
-$ ordf -c development.ini -s --noprov --nocs http://bnb.bibliographica.org/entry/GB5001806
+[not sure I needed this or did this... Ben]::
 
+    paster setup-app development.ini
 
-[AT THIS POINT IT WILL FAIL BECAUSE IT CANT CONNECT TO VIRTUOSO]
+Add some data!
+--------------
+
+From within the python virtualenv, run the following command to pull in data from a remote URL and
+add it as a graph::
+
+    $ ordf -c development.ini -s --noprov --nocs http://bnb.bibliographica.org/entry/GB5001806
+
+Create indexes in virtuoso (Optional)
+-------------------------------------
+
+    $ isql
