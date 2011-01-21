@@ -35,7 +35,7 @@ class IsbnController(BaseController):
         isbn = isbn.replace("-", "").replace(" ", "").replace('"', "").replace("'", "")
         q = isbn_query % { "isbn": isbn }
 
-        cursor = self.handler.rdflib.store.cursor()
+        cursor = handler.rdflib.store.cursor()
         
         results = {}
         for doc, title, description, cname, issued, pubname in cursor.execute(q):

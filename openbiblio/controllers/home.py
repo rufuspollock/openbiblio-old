@@ -5,17 +5,19 @@ from pylons.controllers.util import abort
 
 from openbiblio.lib import namespace
 from openbiblio.lib.base import BaseController, render
+from openbiblio import handler
+
 log = logging.getLogger(__name__)
 
 
 class HomeController(BaseController):
     def index(self):
-        cursor = self.handler.rdflib.store.cursor()
+        cursor = handler.rdflib.store.cursor()
         q = """
 PREFIX bibo: <http://purl.org/ontology/bibo/>
 SELECT COUNT(?d) WHERE { ?d a bibo:Document }
 """
-        for c.work_total, in self.handler.rdflib.query(q, cursor): pass
+        for c.work_total, in handler.rdflib.query(q, cursor): pass
         cursor.close()
         return render('home/index.html')
 

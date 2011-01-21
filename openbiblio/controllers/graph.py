@@ -32,13 +32,13 @@ class GraphController(base.BaseController, _GraphController):
     def _get_graph(self):
         uri = self._uri()
         content_type, format = self._accept(uri)
-        graph = self.handler.get(uri)
+        graph = handler.get(uri)
         if len(graph) == 0:
             graph.rollback()
-            cursor = self.handler.rdflib.store.cursor()
+            cursor = handler.rdflib.store.cursor()
             cursor.execute("SET result_timeout = 10000")
             q = construct_graph % { "agent" : uri.n3() }
-            graph = self.handler.rdflib.store.sparql_query(q, cursor=cursor)
+            graph = handler.rdflib.store.sparql_query(q, cursor=cursor)
             graph = Graph(graph.store, identifier=graph.identifier) # ordf extensions
             cursor.close()
             if len(graph) == 0:
@@ -50,5 +50,5 @@ class GraphController(base.BaseController, _GraphController):
             data = graph.serialize(format=format)
             response.content_type = str(content_type)
         graph.rollback()
-#        log.warn("XXX cursor: %s" % self.handler.rdflib.store._cursor)
+#        log.warn("XXX cursor: %s" % handler.rdflib.store._cursor)
         return data

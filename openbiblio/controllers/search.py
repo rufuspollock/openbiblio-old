@@ -52,7 +52,7 @@ class SearchController(BaseController):
             c.query = c.query.replace(u"'", u"").replace(u'"', u"")
             vars = { "query": c.query, "offset": c.offset, "limit": c.items_per_page }
 
-            cursor = self.handler.rdflib.store.cursor()
+            cursor = handler.rdflib.store.cursor()
 
             query = count % vars
         #print query
