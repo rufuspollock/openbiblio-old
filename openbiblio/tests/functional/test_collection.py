@@ -52,7 +52,8 @@ class TestCollectionController(TestController):
 
     def test_index(self):
         response = self.app.get(url(controller='collection', action='index'))
-        assert 'Collection API' in response
+        assert 'Collections API' in response
+        assert 'doc_url' in response
     
     # ouruser = 'http://test.org/' + str(uuid.uuid4())
     ouruser = 'http://test.org/me'

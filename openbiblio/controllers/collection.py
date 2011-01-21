@@ -1,3 +1,7 @@
+'''Collections API.
+
+Create, view, search and update Collections (i.e. lists of works).
+'''
 import logging
 import uuid
 try:
@@ -35,7 +39,10 @@ class CollectionController(BaseController):
     @jsonify
     def index(self, collection=None):
         if collection is None:
-            return 'Collection API'
+            return {
+                'doc': __doc__,
+                'doc_url': None
+                }
         else:
             uri = DATANS + collection
             collection = get_collection(uri)
