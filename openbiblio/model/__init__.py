@@ -1,6 +1,10 @@
+from account import Account
+
+
 store = None
 ptree = None
 handler = None
+
 
 ## kludge to get rdflib plugin infrastructure to find
 ## the FourStore if we have it
