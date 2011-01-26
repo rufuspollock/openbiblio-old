@@ -1,50 +1,46 @@
 from ordf.namespace import FOAF
-from ordf.term import URIRef
+from ordf.term import URIRef, Node
 from ordf.vocab.owl import AnnotatibleTerms, predicate
 from ordf.graph import Graph
 
 from openbiblio import handler
 
+def _uri(x):
+    if not isinstance(x, URIRef):
+        if isinstance(x, Node):
+            raise TypeError(x, type(x), "must be either basestring or URIRef")
+        x = URIRef(x)
+    return x
 
 class DomainObject(object):
     @classmethod
-    def _uri(self, uri):
-        if isinstance(uri, basestring):
-            return URIRef(uri)
-        else:
-            return uri
-
-    @classmethod
-    def create(self, uri):
+    def create(cls, uri):
         '''Create an object with uri `uri` and associated to a graph identified
         by same uri'''
-        uri = self._uri(uri)
+        uri = _uri(uri)
         graph = Graph(identifier=uri)
-        out = self(uri, graph=graph)
+        out = cls(uri, graph=graph)
         return out
-    
-    def save(self, user, message=''):
-        ctx = handler.context(user, message)
-        ctx.add(self.graph)
-        ctx.commit()
 
     @classmethod
-    def get(self, uri):
-        uri = self._uri(uri)
+    def get(cls, uri):
+        uri = _uri(uri)
         graph = handler.get(uri)
-        obj = self(uri, graph=graph)
+        obj = cls(uri, graph=graph)
         return obj
 
     @classmethod
     def purge(self, uri):
-        uri = self._uri(uri)
-        graph = handler.get(uri)
-        if graph:
-            # this does not work!
-            # graph.remove((None, None, None))
-            handler.rdflib.store.remove((None, None, None), graph)
-        handler.rdflib.store.commit()
+        uri = _uri(uri)
+        handler.remove(Graph(identifier=uri))
     
+    def save(self, user, message=''):
+        if not isinstance(self.graph.identifier, URIRef):
+            raise TypeError(self.graph.identifier, type(self.graph.identifier), "graph identifier must be URIRef")
+        ctx = handler.context(user, message)
+        ctx.add(self.graph)
+        ctx.commit()
+
     # Hand creating sparql is not going to scale!
     # ww recommended alternative requires another dependency (telescope)
     # http://packages.python.org/ordf/odm.html#queries-and-filters
