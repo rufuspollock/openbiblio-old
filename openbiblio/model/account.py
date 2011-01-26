@@ -40,8 +40,10 @@ class DomainObject(object):
         uri = self._uri(uri)
         graph = handler.get(uri)
         if graph:
-            graph.remove((None, None, None))
-
+            # this does not work!
+            # graph.remove((None, None, None))
+            handler.rdflib.store.remove((None, None, None), graph)
+        handler.rdflib.store.commit()
     
     # Hand creating sparql is not going to scale!
     # ww recommended alternative requires another dependency (telescope)
