@@ -46,7 +46,7 @@
         <py:when test="c.user">
         <div class="logged-in">
           Logged in as <strong>${c.user}</strong> |
-          <a href="${url(controller='account', action='view', id=h.quote_plus(c.user))}">My Account</a>
+          <a href="${url(controller='account', action='view', username=h.quote_plus(c.user))}">My Account</a>
           | <a href="${url('/logout_openid')}">Logout</a>
         </div>
         </py:when>

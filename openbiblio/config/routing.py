@@ -55,7 +55,7 @@ def make_map(config):
     map.connect('/account', controller='account', action='index')
     map.connect('/account/login', controller='account', action='login')
     map.connect('/account/logout', controller='account', action='logout')
-    map.connect('/account/{id}', controller='account', action='view')
+    map.connect('/account/{username}', controller='account', action='view')
 
     # for the time being catch everything but soon we will be more specific
     # e.g. restrict to work|person|entity ...
