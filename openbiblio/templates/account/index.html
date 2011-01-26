@@ -1,0 +1,16 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+  <py:def function="page_title">User Accounts - List</py:def>
+
+  <div py:match="content">
+    <h2>Users</h2>
+    <ul>
+      <li py:for="account in c.accounts">
+      <a href="${h.quote_plus(account.identifier)}">${account.nick} - ${c.name or 'Unknown'}</a>
+      </li>
+    </ul>
+  </div>
+
+  <xi:include href="../base.html" />
+</html>

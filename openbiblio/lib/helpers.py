@@ -11,6 +11,7 @@ from webhelpers import paginate
 from openbiblio.utils import rdf_getstr, render_html
 from routes import url_for, redirect_to
 from pylons import url
+from urllib import quote_plus
 
 from genshi import XML
 from genshi.builder import tag

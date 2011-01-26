@@ -4,18 +4,21 @@ from pylons import url, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from openbiblio.lib.base import BaseController, render
+import openbiblio.model as model
 
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
     def index(self):
-        if not c.user:
-            redirect(url(controller='account', action='login', id=None))
-        else:
-            return self.view(c.user)
+        c.accounts = [ model.Account.get(id_) for id_ in model.Account.find() ]
+        return render('account/index.html')
 
     def view(self, id):
-        c.is_myself = id == c.user
+        c.is_myself = (id == c.user)
+        # HACK: (should have a better way to tell if not really an account)
+        c.account = model.Account.get(c.user)
+        if not c.account.openid:
+            c.account = None
         return render('account/view.html')
 
     def login(self):
