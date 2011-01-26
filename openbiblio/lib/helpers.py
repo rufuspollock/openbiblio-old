@@ -29,15 +29,15 @@ class Page(paginate.Page):
         )
         return super(Page, self).pager(*args, **kwargs)
 
-def numberwang(s, minn=1, maxn=500):
-    """Rough and ready number guard, (see:
-    http://en.wikipedia.org/wiki/Numberwang#Recurring_sketches)
+def to_int(s, minn=1, maxn=None, default=1):
+    """Rough and ready converter to integer (with guard).
     """
-    uv = """Unsupported value: %s is not a integer in the range %s to %s"""
     try:
         n = validators.Int().to_python(s)
     except:
-        abort(400, detail=uv % (s, minn, maxn))
-    if n < minn or n > maxn: 
-        abort(400, detail=uv % (n, minn, maxn))
+        n = default
+    n = max(minn, n) 
+    if maxn:
+        n = min(maxn, n)
     return n
+

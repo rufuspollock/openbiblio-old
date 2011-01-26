@@ -5,7 +5,7 @@ from ordf.pylons.xap import XapianControllerFactory
 from openbiblio.lib import base
 from openbiblio import handler
 from pylons import tmpl_context as c, request, session
-from openbiblio.lib.helpers import Page, numberwang
+from openbiblio.lib.helpers import Page
 from openbiblio.lib.base import BaseController, render
 
 where = u"""
@@ -16,6 +16,11 @@ where = u"""
       ?author foaf:name ?s . ?s bif:contains '"%(query)s"'  }"""
 
 search = u"""
+SPARQL
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX dc: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
 SELECT DISTINCT ?uri ?title ?name ?series_title ?description
 WHERE {""" + where + """ .
     OPTIONAL { ?uri dcterms:title ?title }
@@ -30,6 +35,10 @@ WHERE {""" + where + """ .
 """
 
 count = u"""
+SPARQL
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX dc: <http://purl.org/dc/terms/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 SELECT COUNT (DISTINCT ?uri)
 WHERE {""" + where + "}"
 
@@ -55,12 +64,9 @@ class SearchController(BaseController):
             cursor = handler.rdflib.store.cursor()
 
             query = count % vars
-        #print query
-            for c.item_count, in cursor.execute(u"SPARQL " + query): pass
-        #print "XXX", c.item_count
+            for c.item_count, in cursor.execute(query): pass
 
             query = search % vars
-        #print query
             def _rdict(row):
                 d = dict(zip(("uri", "title", "name", "series", "description"), row))
                 if d["title"]:
@@ -70,7 +76,7 @@ class SearchController(BaseController):
                 else:
                     d["label"] = "Unknown"
                 return d
-            c.results = [_rdict(x) for x in cursor.execute(u"SPARQL " + query)]
+            c.results = [_rdict(x) for x in cursor.execute(query)]
             cursor.close()
         else:
             c.results, c.item_count = [], 0

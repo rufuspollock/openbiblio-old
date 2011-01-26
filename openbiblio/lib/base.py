@@ -8,7 +8,7 @@ from pylons import tmpl_context as c, request, config, response, session
 from pylons.controllers.util import abort
 
 import openbiblio
-from openbiblio.lib.helpers import numberwang
+from openbiblio.lib.helpers import to_int
 from ordf.onto.lib.base import BaseController as OBaseController
 import pkg_resources
 
@@ -28,9 +28,9 @@ class BaseController(OBaseController):
         # WARNING: you must use request.GET as request.params appears to alter
         # request.body (it gets url-encoded) upon call to request.params
         c.q = c.query = request.GET.get("q", None)
-        c.reqpage = numberwang(request.params.get('page', 1),maxn=50)
-        c.limit = numberwang(request.GET.get('limit', '500'), maxn=5000)
-        c.items_per_page = numberwang(request.GET.get('items_per_page', 20))
+        c.reqpage = to_int(request.params.get('page', 1),maxn=50)
+        c.limit = to_int(request.GET.get('limit', '500'), maxn=5000)
+        c.items_per_page = to_int(request.GET.get('items_per_page', 20))
         c.offset = (c.reqpage-1) * c.items_per_page
         c.deliverance_enabled = bool(config.get('deliverance.enabled', ''))
         self._set_user()

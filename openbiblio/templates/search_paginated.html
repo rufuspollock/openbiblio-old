@@ -17,7 +17,7 @@
     </div>
     </py:if>
 
-    <div py:if="c.query">Search results for “${c.query}” ${("(limited to %s results)" % c.limit) if c.limit else "(all results)"}</div>
+    <div py:if="c.query"><strong>${c.item_count} results</strong></div>
     <py:if test="c.page">
     ${c.page.pager()}
 

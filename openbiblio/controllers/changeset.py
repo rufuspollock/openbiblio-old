@@ -3,7 +3,7 @@ import logging
 from pylons import request, url, tmpl_context as c
 from pylons.controllers.util import abort
 from openbiblio.controllers.sparql import SparqlController
-from openbiblio.lib.helpers import Page, numberwang
+from openbiblio.lib.helpers import Page
 
 log = logging.getLogger(__name__)
 
@@ -53,14 +53,6 @@ class ChangesetController(SparqlController):
     
     def page(self):
         """Render the changesets, re-using existing pagination code"""
-        from formencode import validators
-        # try:
-        #     c.reqpage = validators.Int().to_python(
-        #                     request.params.get('page', '1'))
-        # except:
-        #     c.reqpage = 1
-        # Specifying "maxn" forces some consideration of UI issues.
-        c.reqpage = numberwang(request.params.get('page', 1),maxn=50)
         reqformat = request.params.get('format', '')
         if reqformat == 'json':
             request.GET["format"] = "application/sparql-results+json"
