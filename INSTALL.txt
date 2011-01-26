@@ -5,21 +5,25 @@ Installation of Bibliographica with Virtuoso backend
 Initial Steps:
 --------------
 
-Get open biblio and setup virtualenv::
+Get open biblio and setup virtualenv.
 
-    $ hg clone https://bitbucket.org/okfn/openbiblio
-    $ cd openbiblio/
-    $ virtualenv .
-    $ source bin/activate
+.. code-block:: sh
+
+    hg clone https://bitbucket.org/okfn/openbiblio
+    cd openbiblio/
+    virtualenv .
+    source bin/activate
 
 Install requirements
 --------------------
 
-Create ini files for openbiblio and configure::
+Create ini files for openbiblio and configure.
 
-    $ cd ../
-    $ python setup.py develop
-    $ paster make-config openbiblio development.ini
+.. code-block:: sh
+
+    cd ../
+    python setup.py develop
+    paster make-config openbiblio development.ini
 
 Check that the information within development.ini makes sense - you may need to comment out the 
 Sleepycat RDF back end and uncomment the Virtuoso backend lines.
@@ -27,15 +31,19 @@ Sleepycat RDF back end and uncomment the Virtuoso backend lines.
 Install virtuoso
 ----------------
 
-OSX macports::
+OSX macports.
 
-    $ sudo port install virtuoso
+.. code-block:: sh
+
+    sudo port -v install virtuoso
 
 - OR -
 
-Ubuntu/debian::
+Ubuntu/debian
 
-    $ apt-get install virtuoso-opensource
+.. code-block:: sh
+
+    apt-get install virtuoso-opensource
 
 It should ask for a password for the 'DBA' for the instance.
 
@@ -47,19 +55,20 @@ Install ODBC packages to be able to talk to Virtuoso programatically
 
 Ubuntu/debian::
 
-    $ apt-get install unixodbc-dev
-    $ apt-get install libvirtodbc0
+.. code-block:: sh
+
+    apt-get install unixodbc-dev
+    apt-get install libvirtodbc0
 
 Install python client library (requires special pyodbc and gcc)::
 
-    $ pip install http://eris.okfn.org/ww/2010/10/pyodbc-spasql/pyodbc-2.1.8-virtuoso.tar.gz
-    $ pip install virtuoso
+.. code-block:: sh
 
-Configure ODBC::
+    pip install http://eris.okfn.org/ww/2010/10/pyodbc-spasql/pyodbc-2.1.8-virtuoso.tar.gz
+    pip install virtuoso
 
-    ~/.odbc.ini
-
-Edit the above file so it looks like::
+Configure ODBC, editing ``~/.odbc.ini`` or the equivalent file on your system.
+Edit so it looks like::
 
     [VOS]
     Description     = Virtuoso
@@ -69,37 +78,63 @@ Edit the above file so it looks like::
     UserName        = dba
 
 
-Then run the following scrips:
-https://bitbucket.org/okfn/jiscobib/src/tip/sql/virtuoso-fts.sql
-http://eris.okfn.org/ww/virtuoso_config.sql
-
 Configure virtuoso
 ------------------
 
-Locate virtuoso.ini On OSX/Macports it is at /opt/local/var/lib/virtuoso/db/virtuoso.ini::
+Locate ``virtuoso.ini``. On OSX/Macports it is at ``/opt/local/var/lib/virtuoso/db/virtuoso.ini``. 
+Copy it somewhere suitabe, for testing, make a directory to hold the database and put it in there.
+Then comment out everything under the [Plugins] section because we don't want add-on modules
+that are common in a virtuoso installation.
 
-    $ vim virtuoso.ini
+Run virtuoso from the same directory as the ``virtuoso.ini`` file:
 
-Then comment out everything under [Plugins]::
+.. code-block:: sh
 
-    $ mkdir ~/virtuoso
+    virtuoso-t
 
-Final setup for openbiblio
---------------------------
+Create indexes in virtuoso
+-------------------------------------
 
-[not sure I needed this or did this... Ben]::
+.. code-block:: sh
 
-    paster setup-app development.ini
+    curl https://bitbucket.org/okfn/jiscobib/src/tip/sql/virtuoso-fts.sql | isql
+    
+Configure namespaces in virtuoso
+-----------------------------------
+
+.. code-block:: sh
+
+    curl http://eris.okfn.org/ww/virtuoso_config.sql | isql
 
 Add some data!
 --------------
 
 From within the python virtualenv, run the following command to pull in data from a remote URL and
-add it as a graph::
+add it as a graph:
 
-    $ ordf -c development.ini -s --noprov --nocs http://bnb.bibliographica.org/entry/GB5001806
+.. code-block:: sh
 
-Create indexes in virtuoso (Optional)
--------------------------------------
+   ordf -c development.ini -s --noprov --nocs http://bnb.bibliographica.org/entry/GB5001806
 
-    $ isql
+A particularly important bit of data that should be in the triplestore is the Fresnel lens that is used
+by default for rendering the data:
+
+.. code-block:: sh
+
+    ordf -c development.ini -s --noprov --nocs http://bibliographica.org/lens/bibo
+
+Create the disk cache directory for openbiblio
+--------------------------------------
+
+.. code-block:: sh
+
+    mkdir /where/ever/virtualenv/data
+
+Run the development server
+-------------------------------
+
+.. code-block:: sh
+
+    paster serve development.ini
+
+Point a web browser at http://localhost:5000/entry/GB5001806

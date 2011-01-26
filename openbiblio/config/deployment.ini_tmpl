@@ -56,7 +56,7 @@ ordf.writers = rdflib
 rdflib.args = %(cache_dir)s/rdflib_sleepycat
 rdflib.store = Sleepycat
 
-ontosrv.aliases = http://localhost:5000
+ontosrv.aliases = http://localhost:5000/
 ontosrv.base = http://bnb.bibliographica.org/
 ontosrv.default_lens = http://bibliographica.org/lens/bibo
 
