@@ -57,8 +57,9 @@ Ubuntu/debian::
 
 .. code-block:: sh
 
-    apt-get install unixodbc-dev
+    apt-get install libiodbc2-dev
     apt-get install libvirtodbc0
+    ln -s /usr/lib/libiodbc.so /usr/lib/libodbc.so
 
 Install python client library (requires special pyodbc and gcc)::
 
