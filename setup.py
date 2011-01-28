@@ -27,10 +27,7 @@ setup(
     	'swiss',
         'ordf',
         'ontosrv',
-        # ensure openid is 2.2.1, since the latest (2.2.3) which is pulled
-        # in by repoze.who.plugins.openid causes exception on importing the
-        # plugin.
-        'python-openid>=2.2.1', 
+        'python-openid>=2.2.5', 
         'repoze.who>=1.0.0,<1.99.99',
         'repoze.who.plugins.openid',
     ],
