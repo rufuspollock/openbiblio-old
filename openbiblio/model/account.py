@@ -17,7 +17,7 @@ class DomainObject(object):
         return out
 
     @classmethod
-    def get(cls, uri):
+    def get_by_uri(cls, uri):
         uri = u(uri)
         graph = handler.get(uri)
         obj = cls(uri, graph=graph)
@@ -66,23 +66,21 @@ class Account(Class, DomainObject):
         SELECT DISTINCT ?account WHERE {
             ?person foaf:openid %s .
             ?person foaf:account ?account .
-            ?account foaf:accountServiceHomepage <http://bibliographica.org>
         }
         """ % openid.n3()
         for account, in handler.query(q):
-            return handler.get(account)
+            return cls.get_by_uri(account)
 
     @classmethod
     def get_by_name(cls, name):
         name = l(name)
         q = u"""
         SELECT DISTINCT ?account WHERE {
-            ?account foaf:accountServiceHomepage <http://bibliographica.org> .
             ?account foaf:accountName %s
         }
         """ % name.n3()
         for account, in handler.query(q):
-            return handler.get(account)
+            return cls.get_by_uri(account)
 
     @classmethod
     def create(cls, openid, name=None, mbox=None):
@@ -91,7 +89,6 @@ class Account(Class, DomainObject):
         identifier = URIRef("http://bibliographica.org/account/%s" % account_name)
         graph = handler.get(identifier)
         account = cls(identifier=identifier, graph=graph)
-        account.accountServiceHomepage = URIRef("http://bibliographica.org/")
         account.accountName = l(account_name)
         person = Person(graph=graph)
         person.openid = u(openid)
@@ -101,34 +98,37 @@ class Account(Class, DomainObject):
             if not mbox.startswith("mailto:"):
                 mbox = "mailto:" + mbox
             person.mbox = u(mbox)
+        person.account = account
         return account
     
     @property
     def owners(self):
-        for person in self.graph.triples((None, FOAF.account, self.identifier)):
+        for person,p,o in self.graph.triples((None, FOAF.account, self.identifier)):
             yield Person(person, graph=self.graph)
             
+
     @classmethod
     def find(self, limit=20, offset=0):
         ### should really use a lens (upgrade the bibo lens to
         ### understand about accounts and just display the
         ### account graph in here. no need for this find
         ### method...
-        return []
+        sparql_select = '''
+        SELECT DISTINCT ?id
+        WHERE {
+            ?id a %(class_)s
+        } OFFSET %(offset)s LIMIT %(limit)s
+        '''
         params = dict(
-            class_='<%s>' % FOAF.Person,
+            class_='<%s>' % FOAF.OnlineAccount,
             limit=limit,
             offset=offset)
-        query = self.sparql_select % params
-        try:
-            cursor = handler.rdflib.store.cursor()
-            def cvt(qresult):
-                # get a tuple out (id,)
-                return URIRef(qresult[0])
-            results = map(cvt, cursor.execute(query))
-            return results
-        finally:
-            cursor.close()
+        query = sparql_select % params
+        def cvt(qresult):
+            return URIRef(qresult[0])
+        results = map(cvt, handler.query(query))
+        results = [self.get_by_uri(uri) for uri in results]
+        return results
 
 class Person(Class, DomainObject):
     name = predicate(FOAF.name)
