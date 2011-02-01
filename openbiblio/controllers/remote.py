@@ -2,7 +2,10 @@
 RDF Graph Controller - see L{ordf.pylons.graph}. 
 """
 
-from ordf.pylons.graph import GraphControllerFactory
+#from ordf.pylons.graph import GraphControllerFactory
+from ordf.onto.controllers.graph import GraphController as _GraphController
+
+
 from openbiblio.lib import base
 from openbiblio.lib.base import render, request, c, response
 from openbiblio import handler

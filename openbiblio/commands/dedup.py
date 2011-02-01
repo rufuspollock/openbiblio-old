@@ -8,7 +8,7 @@ from traceback import format_exc
 
 from ordf.graph import Graph, ConjunctiveGraph
 from ordf.term import URIRef, BNode, Literal
-from openbiblio.namespace import *
+from ordf.namespace import *
 
 import logging
 import re

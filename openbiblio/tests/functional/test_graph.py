@@ -20,7 +20,7 @@ class TestGraphController(TestController):
         g.parse(data, format="xml")
 
     def test_04_autoneg(self):
-        response = self.app.get(url("/graph", uri=test_graph), headers={"Accept": "text/n3"})
+        response = self.app.get(url("/graph", uri=test_graph+'.n3'), headers={"Accept": "text/n3"})
         data = StringIO(response.body)
         g = Graph()
         g.parse(data, format="n3")

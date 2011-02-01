@@ -1,6 +1,6 @@
 from os import path
 from openbiblio.lib.marc import Parser
-from pprint import pprint
+#from pprint import pprint
 
 TESTFILE = "test.mrc"
 
