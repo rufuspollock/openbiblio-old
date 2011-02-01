@@ -13,9 +13,9 @@ from logging import getLogger
 log = getLogger(__name__)
 
 # TODO: change this to be more elegant ...
-_RemoteController = GraphControllerFactory(base, handler)
+#_RemoteController = _GraphController()
 
-class RemoteController(_RemoteController):
+class RemoteController(_GraphController):
     def index(self):
         try:
             return super(RemoteController, self).index()
