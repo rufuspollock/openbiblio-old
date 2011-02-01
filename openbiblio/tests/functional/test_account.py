@@ -4,8 +4,8 @@ class TestAccountController(TestController):
 
     def test_index(self):
         response = self.app.get(url(controller='account', action='index'))
-        response = response.follow()
-        assert 'Account' in response
+        assert 'Account' in response, response
+
         assert 'Login' in response
 
     def test_index_logged_in(self):

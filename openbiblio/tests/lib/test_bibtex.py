@@ -18,5 +18,5 @@ class TestBibtex:
         b.load_from_graph(g)
         assert b.uri != None # make sure it's not None
         print b
-        assert False 
+        #assert False 
 

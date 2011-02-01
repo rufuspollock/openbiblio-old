@@ -34,4 +34,4 @@ class TestGraphController(TestController):
         ## now put it back
         body = g.serialize(format="pretty-xml")
         response = self.app.put(url("/graph", uri=test_graph), params=body, headers={"Content-type": "application/rdf+xml"})
-        assert response.body.startswith("urn:uuid:")
+        assert response.body.find("urn:uuid:") == -1

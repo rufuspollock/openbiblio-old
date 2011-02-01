@@ -24,7 +24,7 @@ __all__ = ['environ', 'url', 'test_graph', 'TestController']
 # Invoke websetup with the current config file
 SetupCommand('setup-app').run([pylons.test.pylonsapp.config['__file__']])
 
-test_graph = "http://bibliographica.org/test"
+test_graph = "http://bnb.bibliographica.org/entry/GB5006595"
 
 # ensure cache_dir exists as we use it for e.g. pairtree
 # and pair tree falls over if parent dir does not exist
