@@ -18,6 +18,7 @@ class Entry(AnnotatibleTerms, DomainObject):
     isbn = predicate(BIBO.isbn)
     bl_id = predicate(OV.blid)
     creators = object_predicate(DC.contributor, Entity) 
+    publishers = object_predicate(DC.publisher, Entity) 
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)
