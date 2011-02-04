@@ -1,7 +1,9 @@
 from .base import *
+from entity import Entity
 
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
-from ordf.namespace import BIBLIOENTRY
+register_ns("OV", Namespace("http://open.vocab.org/terms/"))
+from ordf.namespace import BIBLIOENTRY, DC, FOAF, BIBO, OV
 
 class Entry(AnnotatibleTerms, DomainObject):
     '''A catalogue entry (or record).
@@ -11,6 +13,11 @@ class Entry(AnnotatibleTerms, DomainObject):
     namespace = BIBLIOENTRY
 
     label = predicate(RDFS.label)
+    title = predicate(DC.title)
+    bnb_id = predicate(BIBO.identifier)
+    isbn = predicate(BIBO.isbn)
+    bl_id = predicate(OV.blid)
+    creators = object_predicate(DC.contributor, Entity) 
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)
