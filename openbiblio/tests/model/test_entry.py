@@ -30,6 +30,11 @@ class TestEntry:
         assert entry.title[0] == "Rama revealed", entry.title
         creator_names = set([x.name[0] for x in entry.creators])
         assert creator_names == set(["Clarke, Arthur C. (Arthur Charles)", "Lee, Gentry."]), creator_names
+        for author in entry.creators:
+            if author.name[0] == "Clarke, Arthur C. (Arthur Charles)":
+                bday = author.birth.next()
+                assert bday.date[0] == "1917", bday.date[0]
+
 
 
 class TestEntity:
