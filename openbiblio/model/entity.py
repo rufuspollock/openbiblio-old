@@ -1,7 +1,7 @@
 from .base import *
 
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
-from ordf.namespace import BIBLIOENTRY, FOAF, SKOS, BIO
+from ordf.namespace import BIBLIOENTRY, FOAF, SKOS, BIO, OWL
 
 class Birthdate(AnnotatibleTerms, DomainObject):
     '''A bio:Birth event'''
@@ -26,8 +26,9 @@ class Entity(AnnotatibleTerms, DomainObject):
 
     marc_text = predicate(SKOS.notation)
     name = predicate(FOAF.name)
-    birthdate = object_predicate(BIO.event, Birthdate)
-    deathdate = object_predicate(BIO.event, Deathdate)
+    merge_id = predicate(OWL.sameAs)
+    birth = object_predicate(BIO.event, Birthdate)
+    death = object_predicate(BIO.event, Deathdate)
     
     def __init__(self, *av, **kw):
         super(Entity, self).__init__(*av, **kw)
