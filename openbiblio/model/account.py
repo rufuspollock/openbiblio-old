@@ -1,48 +1,4 @@
-from ordf.namespace import FOAF
-from ordf.term import URIRef, Node
-from ordf.vocab.owl import Class, predicate, object_predicate
-from ordf.graph import Graph
-
-from openbiblio import handler
-from openbiblio.lib.utils import coerce_uri as u, coerce_literal as l
-
-class DomainObject(object):
-    @classmethod
-    def create(cls, uri):
-        '''Create an object with uri `uri` and associated to a graph identified
-        by same uri'''
-        uri = u(uri)
-        graph = Graph(identifier=uri)
-        out = cls(uri, graph=graph)
-        return out
-
-    @classmethod
-    def get_by_uri(cls, uri):
-        uri = u(uri)
-        graph = handler.get(uri)
-        obj = cls(uri, graph=graph)
-        return obj
-
-    @classmethod
-    def purge(self, uri):
-        uri = u(uri)
-        handler.remove(Graph(identifier=uri))
-    
-    def save(self, user, message=''):
-        if not isinstance(self.graph.identifier, URIRef):
-            raise TypeError(self.graph.identifier, type(self.graph.identifier), "graph identifier must be URIRef")
-        ctx = handler.context(user, message)
-        ctx.add(self.graph)
-        ctx.commit()
-
-    # Hand creating sparql is not going to scale!
-    # ww recommended alternative requires another dependency (telescope)
-    # http://packages.python.org/ordf/odm.html#queries-and-filters
-    sparql_select_base = '''
-SPAQRL
-
-'''
-
+from .base import *
     
 class Account(Class, DomainObject):
     '''User accounts based on openids.
