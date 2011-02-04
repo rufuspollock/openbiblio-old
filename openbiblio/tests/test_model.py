@@ -39,3 +39,22 @@ class TestAccount:
         assert len(out) == 1, out
         assert self.account_id == out[0].identifier, out
 
+class TestEntry:
+    label = 'my-test-entry'
+
+    @classmethod
+    def setup_class(self):
+        entry = model.Entry.create()
+        entry.label = self.label
+        self.entry_id = entry.identifier
+        current_user = 'ouruser'
+        entry.save(current_user, 'xyz')
+
+    @classmethod
+    def teardown_class(self):
+        model.Entry.purge(self.entry_id)
+
+    def test_01_get(self):
+        entry = model.Entry.get_by_uri(self.entry_id)
+        assert entry.label[0] == self.label, entry.label
+
