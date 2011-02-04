@@ -50,4 +50,7 @@ class DomainObject(object):
         ctx = handler.context(user, message)
         ctx.add(self.graph)
         ctx.commit()
+    
+    def __str__(self):
+        return self.graph.serialize(format='n3')
 
