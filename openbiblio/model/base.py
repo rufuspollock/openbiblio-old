@@ -1,11 +1,12 @@
 import uuid
 
 from ordf.namespace import register_ns, Namespace
-register_ns("BIBLIO_ONT", Namespace("http://bibliographica.org/onto#"))
+register_ns("biblio-ont", Namespace("http://bibliographica.org/onto#"))
 
+import ordf.namespace
 from ordf.namespace import FOAF, RDFS, BIBO
 from ordf.namespace import BIBLIO_ONT
-from ordf.term import URIRef, Node
+from ordf.term import URIRef, Node, Literal
 from ordf.vocab.owl import Class, AnnotatibleTerms, predicate, object_predicate
 from ordf.graph import Graph
 
@@ -69,4 +70,28 @@ class DomainObject(object):
         results = [ u(res[0]) for res in handler.query(q) ]
         results = [ self.get_by_uri(uri) for uri in results ]
         return results
+
+    def as_dict(self):
+        out = {'id': str(self.identifier)}
+        for s,p,o in self.graph.triples((None,None,None)):
+            if s == self.identifier:
+                if isinstance(o, Literal):
+                    val = o.toPython()
+                    if o.datatype is None:
+                        val = unicode(val)
+                else:
+                    val = o.n3()
+                # convert predicates to nice strings using namespace nicknames
+                ourp = str(p)
+                for ns_nick, ns_uri in ordf.namespace.namespaces.items():
+                    ourns_uri = str(ns_uri) 
+                    if ourp.startswith(ourns_uri):
+                        ourp = ns_nick + ':' + ourp[len(ourns_uri):]
+                        break
+                out[ourp] = val
+        return out
+    
+    def from_dict(self):
+        pass
+
 

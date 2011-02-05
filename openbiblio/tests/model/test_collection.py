@@ -1,3 +1,5 @@
+import pprint
+
 from ordf.term import URIRef
 
 from openbiblio.tests import delete_all
@@ -52,6 +54,11 @@ class TestCollection:
         assert len(out) == 1, out
         assert self.collection_id == out[0].identifier, out
 
-    def test_03_asdict(self):
-        pass
+    def test_04_asdict(self):
+        collection = model.Collection.get_by_uri(self.collection_id)
+        out = collection.as_dict()
+        pprint.pprint(out)
+        assert out['rdfs:label'] == self.label
+        assert out['id'] == str(self.collection_id)
+        assert out['biblio-ont:owner'] == self.account_id.n3()
 
