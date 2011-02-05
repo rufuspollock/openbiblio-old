@@ -19,7 +19,7 @@ import pylons.test
 
 from openbiblio.commands import Fixtures
 
-__all__ = ['environ', 'url', 'test_graph', 'TestController']
+__all__ = ['environ', 'url', 'test_graph', 'TestController', 'delete_all']
 
 # Invoke websetup with the current config file
 SetupCommand('setup-app').run([pylons.test.pylonsapp.config['__file__']])
@@ -47,5 +47,29 @@ class TestController(TestCase):
 
     def setUp(self):
         Fixtures.setUp()
+
     def tearDown(self):
         Fixtures.tearDown()
+
+def delete_all():
+    '''Remove all openbiblio related graphs from the store.
+    
+    '''
+    # TODO: not working properly and not all graphs deleted - not sure why
+    # TODO: none of changeset graphs get picked up here (not sure why)
+    from openbiblio import handler
+    from ordf.graph import Graph, ConjunctiveGraph
+    store = handler.__writers__[0].store
+    cg = ConjunctiveGraph(store)
+    for graph in cg.contexts():
+        toremove = (graph.identifier.startswith('http://bibliographica.org')
+            or # changesets
+            graph.identifier.startswith('urn:uuid')
+            )
+        if toremove:
+            store.remove((None, None, None), graph)
+    store.commit()
+
+    # virtuoso specific ...
+    store.cursor().execute('RDF_GLOBAL_RESET ()')
+
