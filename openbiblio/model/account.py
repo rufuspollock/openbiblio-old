@@ -5,6 +5,7 @@ class Account(Class, DomainObject):
     
     OpenID url is used as identifier for the graph and object.
     '''
+    rdfclass = FOAF.OnlineAccount
     accountServiceHomepage = predicate(FOAF.accountServiceHomepage)
     accountName = predicate(FOAF.accountName)
     
@@ -62,29 +63,6 @@ class Account(Class, DomainObject):
         for person,p,o in self.graph.triples((None, FOAF.account, self.identifier)):
             yield Person(person, graph=self.graph)
             
-
-    @classmethod
-    def find(self, limit=20, offset=0):
-        ### should really use a lens (upgrade the bibo lens to
-        ### understand about accounts and just display the
-        ### account graph in here. no need for this find
-        ### method...
-        sparql_select = '''
-        SELECT DISTINCT ?id
-        WHERE {
-            ?id a %(class_)s
-        } OFFSET %(offset)s LIMIT %(limit)s
-        '''
-        params = dict(
-            class_='<%s>' % FOAF.OnlineAccount,
-            limit=limit,
-            offset=offset)
-        query = sparql_select % params
-        def cvt(qresult):
-            return URIRef(qresult[0])
-        results = map(cvt, handler.query(query))
-        results = [self.get_by_uri(uri) for uri in results]
-        return results
 
 class Person(Class, DomainObject):
     name = predicate(FOAF.name)

@@ -54,3 +54,19 @@ class DomainObject(object):
     def __str__(self):
         return self.graph.serialize(format='n3')
 
+    @classmethod
+    def find(self, limit=20, offset=0):
+        q = '''
+        SELECT DISTINCT ?id
+        WHERE {
+            ?id a %(class_)s
+        } OFFSET %(offset)s LIMIT %(limit)s
+        ''' % dict(
+            class_='%s' % self.rdfclass.n3(),
+            limit=limit,
+            offset=offset)
+        # have to do this first otherwise get closed cursor error
+        results = [ u(res[0]) for res in handler.query(q) ]
+        results = [ self.get_by_uri(uri) for uri in results ]
+        return results
+
