@@ -17,7 +17,7 @@ class Collection(AnnotatibleTerms, DomainObject):
         self.type = BIBO.Collection
 
     @classmethod
-    def by_user(cls, user):
+    def get_by_user(cls, user):
         q = u"""
         PREFIX bb: <http://bibliographica.org/onto#>
 
@@ -29,4 +29,3 @@ class Collection(AnnotatibleTerms, DomainObject):
         """ % user.n3()
         for collection, in handler.query(q):
             return cls.get_by_uri(collection)
-

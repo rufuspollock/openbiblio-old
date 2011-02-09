@@ -11,6 +11,13 @@ class TestCollection:
     entrylabel = 'my-test-entry'
     label = 'my-test-collection'
     openid = 'http://myopen.id/2'
+    onedict = {
+            'title': 'Interplanetary flight : an introduction to astronautics',
+            'id': '<http://bnb.bibliographica.org/entry/GB5006595>',
+            'subject': 'astronautics'
+    }
+
+
 
     @classmethod
     def setup_class(self):
@@ -46,7 +53,7 @@ class TestCollection:
         assert len(entries) == 1, entries
 
     def test_02_by_user(self):
-        collection = model.Collection.by_user(self.account_id)
+        collection = model.Collection.get_by_user(self.account_id)
         assert collection.label[0] == self.label, collection
 
     def test_03_find(self):
@@ -54,11 +61,17 @@ class TestCollection:
         assert len(out) == 1, out
         assert self.collection_id == out[0].identifier, out
 
-    def test_04_asdict(self):
+    def test_04_todict(self):
         collection = model.Collection.get_by_uri(self.collection_id)
-        out = collection.as_dict()
+        out = collection.to_dict()
         pprint.pprint(out)
-        assert out['rdfs:label'] == self.label
+        assert out['label'] == self.label
         assert out['id'] == str(self.collection_id)
-        assert out['biblio-ont:owner'] == self.account_id.n3()
+        assert out['owner'] == self.account_id.n3()
+    def test_05_from_dict(self):
+        collection = model.Collection.create()
+        out = collection.from_dict(self.onedict)
+        pprint.pprint(out)
+        collection.save(collection.identifier.n3())
+
 

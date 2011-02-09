@@ -19,6 +19,7 @@ class Entry(AnnotatibleTerms, DomainObject):
     bl_id = predicate(OV.blid)
     creators = object_predicate(DC.contributor, Entity) 
     publishers = object_predicate(DC.publisher, Entity) 
+    subject = object_predicate(DC.subject, Entity)
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)

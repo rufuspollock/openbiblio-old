@@ -71,7 +71,7 @@ class DomainObject(object):
         results = [ self.get_by_uri(uri) for uri in results ]
         return results
 
-    def as_dict(self):
+    def to_dict(self):
         out = {'id': str(self.identifier)}
         for s,p,o in self.graph.triples((None,None,None)):
             if s == self.identifier:
@@ -86,12 +86,15 @@ class DomainObject(object):
                 for ns_nick, ns_uri in ordf.namespace.namespaces.items():
                     ourns_uri = str(ns_uri) 
                     if ourp.startswith(ourns_uri):
-                        ourp = ns_nick + ':' + ourp[len(ourns_uri):]
+                        ourp = ourp[len(ourns_uri):]
                         break
                 out[ourp] = val
         return out
-    
-    def from_dict(self):
-        pass
+
+
+    def from_dict(self,objectdict):
+        for key, value in objectdict.items():
+# need to distinguish between lits and uris, next commit hopefully!
+            self.__setattr__(key, value)
 
 
