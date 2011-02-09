@@ -12,9 +12,7 @@ class TestCollection:
     label = 'my-test-collection'
     openid = 'http://myopen.id/2'
     onedict = {
-            'title': 'Interplanetary flight : an introduction to astronautics',
-            'id': '<http://bnb.bibliographica.org/entry/GB5006595>',
-            'subject': 'astronautics'
+            'label': 'Interplanetary flight : an introduction to astronautics',
     }
 
 
@@ -70,8 +68,10 @@ class TestCollection:
         assert out['owner'] == self.account_id.n3()
     def test_05_from_dict(self):
         collection = model.Collection.create()
-        out = collection.from_dict(self.onedict)
+        collection.from_dict(self.onedict)
+        out = collection.to_dict()
         pprint.pprint(out)
         collection.save(collection.identifier.n3())
+        assert out['label'] == u'Interplanetary flight : an introduction to astronautics'
 
 
