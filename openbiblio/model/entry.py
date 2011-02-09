@@ -1,10 +1,12 @@
 from .base import *
 from entity import Entity
 from subject import Concept
+from misc import Label
 
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
 register_ns("OV", Namespace("http://open.vocab.org/terms/"))
-from ordf.namespace import BIBLIOENTRY, DC, FOAF, BIBO, OV, RDFS
+register_ns("ISBD", Namespace("http://iflastandards.info/ns/isbd/elements/"))
+from ordf.namespace import BIBLIOENTRY, DC, FOAF, BIBO, OV, RDFS, ISBD
 
 class Entry(AnnotatibleTerms, DomainObject):
     '''A catalogue entry (or record).
@@ -24,6 +26,9 @@ class Entry(AnnotatibleTerms, DomainObject):
     issued = predicate(DC.issued)
     seealso = predicate(RDFS.seeAlso)
     descriptions = predicate(DC.description)
+    edition = predicate(ISBD.hasEditionStatement)
+    language = object_predicate(DC.language, Label)
+    extent = object_predicate(DC.extent, Label)
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)

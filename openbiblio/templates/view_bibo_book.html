@@ -32,6 +32,12 @@
           ${desc}
         </div>
       </div>
+      <div class="extent" py:if="c.model.extent">
+        Extent: <span class="extent_value">${c.model.extent.next().value}</span>
+      </div>
+      <div class="language" py:if="c.model.language">
+        Language: <span class="language_value">${c.model.language.next().value}</span>
+      </div>
       <h2>Subjects:</h2>
       <ul>
         <li py:for="subj in c.model.subjects">
