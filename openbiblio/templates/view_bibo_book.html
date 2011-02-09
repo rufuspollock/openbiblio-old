@@ -1,0 +1,31 @@
+<html xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  py:strip=""
+  >
+
+  <py:def function="page_title">Bibliographica - ${c.model.title[0]} - http://bnb.bibliographica.org/modelview/${c.model.bnb_id[0]}</py:def> 
+
+  <py:def function="optional_head">
+    <link type="text/css" href="/css/overcast/jquery-ui-1.8.1.custom.css" rel="stylesheet" />	
+    <link type="text/css" href="/css/book.css" rel="stylesheet" />	
+    <script type="text/javascript" src="/js/jquery-ui-1.8.1.custom.min.js"></script>
+  </py:def>
+
+  <div py:match="content">
+    <div id="book">
+      <h1>Title: ${c.model.title[0]}</h1>
+      <h2>Authors:</h2>
+      <ul>
+        <li py:for="auth in c.model.creators">
+            ${auth.name[0]}
+            <span py:if="auth.birth">b${auth.birth.next().date[0]}</span>
+            <span py:if="auth.death">- d${auth.death.next().date[0]}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <xi:include href="base.html" />
+</html>
+
+

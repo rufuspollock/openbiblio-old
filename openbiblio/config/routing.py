@@ -47,6 +47,8 @@ def make_map(config):
     map.connect("collection", "/collection/{collection}", controller="collection", action="index")
     map.connect("collection", "/collection", controller="collection", action="index")
 
+    map.connect("modeview", "/modelview", controller="modelview", action="index")
+
     # map.connect("changeset", "/changeset/{changeset}", 
     #             controller="changeset", action="view")
     map.connect("changesets", "/changeset", 
