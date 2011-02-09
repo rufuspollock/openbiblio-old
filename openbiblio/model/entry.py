@@ -1,5 +1,6 @@
 from .base import *
 from entity import Entity
+from subject import Concept
 
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
 register_ns("OV", Namespace("http://open.vocab.org/terms/"))
@@ -19,7 +20,7 @@ class Entry(AnnotatibleTerms, DomainObject):
     bl_id = predicate(OV.blid)
     creators = object_predicate(DC.contributor, Entity) 
     publishers = object_predicate(DC.publisher, Entity) 
-    subject = object_predicate(DC.subject, Entity)
+    subject = object_predicate(DC.subject, Concept)
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)

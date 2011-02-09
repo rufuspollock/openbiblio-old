@@ -3,21 +3,12 @@ from .base import *
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
 from ordf.namespace import BIBLIOENTRY, FOAF, SKOS, BIO, OWL
 
-class Birthdate(AnnotatibleTerms, DomainObject):
-    '''A bio:Birth event'''
+class Event(AnnotatibleTerms, DomainObject):
+    '''A bio:Birth or Death event'''
 
     date = predicate(BIO.date)
     def __init__(self, *av, **kw): 
-        super(Birthdate, self).__init__(*av, **kw)   
-        self.type = BIO.Birth
-
-class Deathdate(AnnotatibleTerms, DomainObject):
-    '''A bio:Death event'''
-
-    date = predicate(BIO.date)
-    def __init__(self, *av, **kw): 
-        super(Deathdate, self).__init__(*av, **kw)   
-        self.type = BIO.Death
+        super(Event, self).__init__(*av, **kw)   
 
 class Entity(AnnotatibleTerms, DomainObject):
     '''An entity - person, organisation and so on.
@@ -27,12 +18,18 @@ class Entity(AnnotatibleTerms, DomainObject):
     marc_text = predicate(SKOS.notation)
     name = predicate(FOAF.name)
     merge_id = predicate(OWL.sameAs)
-    birth = object_predicate(BIO.event, Birthdate)
-    death = object_predicate(BIO.event, Deathdate)
+    events = object_predicate(BIO.event, Event)
     
     def __init__(self, *av, **kw):
         super(Entity, self).__init__(*av, **kw)
         self.type = FOAF.Agent
+        self.birth = None
+        self.death = None
+        for event in self.events:
+            if BIO.Birth in list(event.type):
+                self.birth = event
+            elif BIO.Death in list(event.type):
+                self.death = event
 
     @classmethod
     def find(self, limit=20, offset=0):

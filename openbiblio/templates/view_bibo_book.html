@@ -18,7 +18,7 @@
       <ul>
         <li py:for="auth in c.model.creators">
             ${auth.name[0]}
-            <py:with vars="birth=auth.birth.next(); death=auth.death.next()">
+            <py:with vars="birth=auth.birth; death=auth.death">
               <py:if test="birth">${birth.date[0]}</py:if> -
               <py:if test="death">${death.date[0]}</py:if>
             </py:with>
