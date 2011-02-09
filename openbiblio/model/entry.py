@@ -4,7 +4,7 @@ from subject import Concept
 
 register_ns("BIBLIOENTRY", Namespace("http://bibliographica.org/entry/"))
 register_ns("OV", Namespace("http://open.vocab.org/terms/"))
-from ordf.namespace import BIBLIOENTRY, DC, FOAF, BIBO, OV
+from ordf.namespace import BIBLIOENTRY, DC, FOAF, BIBO, OV, RDFS
 
 class Entry(AnnotatibleTerms, DomainObject):
     '''A catalogue entry (or record).
@@ -20,7 +20,10 @@ class Entry(AnnotatibleTerms, DomainObject):
     bl_id = predicate(OV.blid)
     creators = object_predicate(DC.contributor, Entity) 
     publishers = object_predicate(DC.publisher, Entity) 
-    subject = object_predicate(DC.subject, Concept)
+    subjects = object_predicate(DC.subject, Concept)
+    issued = predicate(DC.issued)
+    seealso = predicate(RDFS.seeAlso)
+    descriptions = predicate(DC.description)
 
     def __init__(self, *av, **kw):
         super(Entry, self).__init__(*av, **kw)

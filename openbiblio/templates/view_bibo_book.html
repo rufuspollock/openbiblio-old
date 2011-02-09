@@ -19,9 +19,39 @@
         <li py:for="auth in c.model.creators">
             ${auth.name[0]}
             <py:with vars="birth=auth.birth; death=auth.death">
-              <py:if test="birth">${birth.date[0]}</py:if> -
-              <py:if test="death">${death.date[0]}</py:if>
+              <py:if test="birth">${birth.date[0]} -
+                <py:if test="death">${death.date[0]}</py:if>
+              </py:if>
+              <py:if test="death and not birth">Died: ${death.date[0]}</py:if>
             </py:with>
+        </li>
+      </ul>
+      <h3 py:if="c.model.issued[0]">Issued: ${c.model.issued[0]}</h3>
+      <div class="description">
+        <div py:for="desc in c.model.descriptions">
+          ${desc}
+        </div>
+      </div>
+      <h2>Subjects:</h2>
+      <ul>
+        <li py:for="subj in c.model.subjects">
+            <!-- simple keyword subject? -->
+            <py:if test="subj.label">
+                <span class="subject_kw">${subj.label[0]}</span>
+            </py:if>
+            <!-- Dewey? -->
+            <py:if test="subj.inscheme and subj.inscheme[0].startswith('http://dewey')">
+            <span class="ddc">Dewey (DDC): ${subj.notation[0]} <span class="ddc_scheme"><a href="${subj.inscheme[0]}">${subj.inscheme[0]}</a></span></span>
+            </py:if>
+            <py:if test="subj.inscheme and subj.inscheme[0].startswith('http://id.loc.gov')">
+            <span class="lcsh">LCSH: ${subj.preflabel[0]} <span class="lcsh_scheme"><a href="${subj.inscheme[0]}">${subj.inscheme[0]}</a></span></span>
+            </py:if>
+        </li>
+      </ul>
+      <h3> See Also:</h3>
+      <ul>
+        <li py:for="link in c.model.seealso">
+            <a href="${link}">${link}</a>
         </li>
       </ul>
     </div>
